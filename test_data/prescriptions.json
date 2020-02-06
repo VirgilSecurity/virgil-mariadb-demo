@@ -1,0 +1,18 @@
+[
+    {
+        "id" : "prescription_unique_id_1",
+        "patient_id" : "patient_alice_uid",
+        "physician_id" : "physician_bob_uid",
+        "assign_date" : "2020-01-01",
+        "release_date" : "2020-02-01",
+        "notes" : "Pills XXX 1 tablet per day"
+    },
+    {
+        "id" : "prescription_unique_id_2",
+        "patient_id" : "patient_alice_uid",
+        "physician_id" : "physician_bob_uid",
+        "assign_date" : "2020-02-01",
+        "release_date" : "2020-03-01",
+        "notes" : "Pills YYY 2 tablet per day"
+    }
+]

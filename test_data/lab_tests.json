@@ -1,0 +1,29 @@
+[
+    {
+        "id" : "test_unique_id_1",
+        "patient_id" : "patient_alice_uid",
+        "physician_id" : "physician_bob_uid",
+        "name" : "blood test1",
+        "test_date" : "2020-01-01",
+        "status" : "ready",
+        "results" : "OK"
+    },
+    {
+        "id" : "test_unique_id_2",
+        "patient_id" : "patient_alice_uid",
+        "physician_id" : "physician_bob_uid",
+        "name" : "blood test2",
+        "test_date" : "2020-01-01",
+        "status" : "access denied",
+        "results" : null
+    },
+    {
+        "id" : "test_unique_id_3",
+        "patient_id" : "patient_alice_uid",
+        "physician_id" : "physician_bob_uid",
+        "name" : "blood test3",
+        "test_date" : "2020-01-01",
+        "status" : "no ready",
+        "results" : null
+    },
+]
