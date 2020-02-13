@@ -1,11 +1,12 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.virgilsecurity.common.util.Base64;
 import com.virgilsecurity.demo.purekit.server.exception.EncryptionException;
 import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.mapper.PatientMapper;
@@ -55,16 +56,16 @@ public class PatientService {
 		}
 	}
 
-	public void shareSsn(String physicianId, PureGrant pureGrant) {
+	public void shareSsn(String physicianId, PureGrant grant) {
 		try {
-			pure.share(pureGrant, SSN_DATA_ID, physicianId);
+			pure.share(grant, SSN_DATA_ID, physicianId);
 		} catch (PureException e) {
 			log.debug("PatientEntity SSN sharing failed", e);
 			throw new EncryptionException();
 		}
 	}
 
-	public Patient readPatient(String patientId, PureGrant grant) {
+	public Patient get(String patientId, PureGrant grant) {
 		PatientEntity patient = this.patientMapper.findById(patientId);
 		if (patient == null) {
 			throw new NotFoundException();
@@ -73,12 +74,21 @@ public class PatientService {
 		return decryptPatient(patient, grant);
 	}
 
+	public List<Patient> findAll(PureGrant grant) {
+		List<PatientEntity> patients = this.patientMapper.findAll();
+		List<Patient> result = new LinkedList<Patient>();
+		patients.forEach(patientEntity -> {
+			result.add(decryptPatient(patientEntity, grant));
+		});
+		return result;
+	}
+
 	private Patient decryptPatient(PatientEntity patientEntity, PureGrant grant) {
 		String ssn = null;
 		if (patientEntity.getSsn() != null) {
 			try {
 				byte[] decryptedSsn = this.pure.decrypt(grant, patientEntity.getId(), SSN_DATA_ID,
-						Base64.decode(patientEntity.getSsn()));
+						patientEntity.getSsn());
 				ssn = new String(decryptedSsn);
 			} catch (PureException e) {
 				ssn = Constants.NO_PERMISSIONS_TEXT;

@@ -1,6 +1,5 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import com.virgilsecurity.demo.purekit.server.mapper.PrescriptionMapper;
 import com.virgilsecurity.demo.purekit.server.model.http.Patient;
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
-import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.storage.MariaDbPureStorage;
 
 import lombok.extern.log4j.Log4j2;
@@ -43,7 +41,7 @@ public class ResetService {
 
 	@Autowired
 	private PatientService patientService;
-	
+
 	@Autowired
 	private PhysicianService physicianService;
 
@@ -72,11 +70,11 @@ public class ResetService {
 		String password = UUID.randomUUID().toString();
 
 		// Register patients
-		Patient patient = new Patient("PatientEntity 1", Utils.generateSsn());
+		Patient patient = new Patient("PatientEntity 1", "12345678901");
 		String patientGrant = this.patientService.registerPatient(patient, password);
 		resetData.getPatients().add(patientGrant);
-		
-		patient = new Patient("PatientEntity 2", Utils.generateSsn());
+
+		patient = new Patient("PatientEntity 2", "12345678902");
 		patientGrant = this.patientService.registerPatient(patient, password);
 		resetData.getPatients().add(patientGrant);
 
@@ -84,10 +82,9 @@ public class ResetService {
 		Physician physician = new Physician("PhysicianEntity 1", 1L);
 		String physicianGrant = this.physicianService.registerPhysician(physician, password);
 		resetData.getPhysicians().add(physicianGrant);
-		
+
 		// Create laboratory tests
-		
-				
+
 		return resetData;
 	}
 
