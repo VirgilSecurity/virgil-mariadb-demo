@@ -1,0 +1,98 @@
+package com.virgilsecurity.demo.purekit.server.mapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Date;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.virgilsecurity.demo.purekit.server.model.db.PrescriptionEntity;
+import com.virgilsecurity.demo.purekit.server.utils.Utils;
+
+@MybatisTest
+public class PrescriptionMapperTest {
+
+	@Autowired
+	private PrescriptionMapper prescriptionMapper;
+
+	@Test
+	void findAllTest() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		assertNotNull(prescriptions);
+		assertTrue(prescriptions.isEmpty());
+	}
+
+	@Test
+	void insertTest() {
+		String id = Utils.generateId();
+		insertPrescription(id);
+
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		assertNotNull(prescriptions);
+		assertEquals(1, prescriptions.size());
+	}
+
+	@Test
+	void updateTest() {
+		String id = Utils.generateId();
+		PrescriptionEntity prescription = insertPrescription(id);
+
+		Date date = Utils.today();
+		prescription.setNotes("New notes");
+		prescription.setReleaseDate(date);
+		prescription.setAssingDate(date);
+		this.prescriptionMapper.update(prescription);
+
+		PrescriptionEntity prescription2 = this.prescriptionMapper.findById(id);
+		assertNotNull(prescription2);
+		assertEquals(prescription.getId(), prescription2.getId());
+		assertEquals(prescription.getPatientId(), prescription2.getPatientId());
+		assertEquals(prescription.getPhysicianId(), prescription2.getPhysicianId());
+		assertEquals("New notes", prescription2.getNotes());
+		assertEquals(prescription.getReleaseDate(), prescription2.getReleaseDate());
+		assertEquals(prescription.getAssingDate(), prescription2.getAssingDate());
+
+	}
+
+	@Test
+	void findById() {
+		String id = Utils.generateId();
+		PrescriptionEntity prescription = insertPrescription(id);
+		assertNotNull(prescription);
+		assertEquals(id, prescription.getId());
+		assertEquals(PatientMapperTest.PATIENT1_ID, prescription.getPatientId());
+		assertEquals(PhysicianMapperTest.PHYSICIAN1_ID, prescription.getPhysicianId());
+		assertEquals("notes as a text", prescription.getNotes());
+		assertNotNull(prescription.getReleaseDate());
+		assertNotNull(prescription.getAssingDate());
+	}
+
+	@Test
+	void findById_notExists() {
+		PrescriptionEntity prescription = this.prescriptionMapper.findById("0");
+		assertNull(prescription);
+	}
+
+	@Test
+	void deleteAll() {
+		this.prescriptionMapper.deleteAll();
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		assertTrue(prescriptions.isEmpty());
+	}
+
+	private PrescriptionEntity insertPrescription(String id) {
+		Date date = Utils.today();
+		PrescriptionEntity prescription = new PrescriptionEntity(id, PatientMapperTest.PATIENT1_ID,
+				PhysicianMapperTest.PHYSICIAN1_ID, "notes as a text", date, date);
+		this.prescriptionMapper.insert(prescription);
+
+		return prescription;
+	}
+
+}
