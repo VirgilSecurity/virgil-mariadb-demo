@@ -1,0 +1,160 @@
+package com.virgilsecurity.demo.purekit.server.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+
+import java.util.Date;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.google.gson.Gson;
+import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
+import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
+import com.virgilsecurity.demo.purekit.server.utils.Constants;
+import com.virgilsecurity.demo.purekit.server.utils.Utils;
+import com.virgilsecurity.purekit.pure.Pure;
+import com.virgilsecurity.purekit.pure.model.PureGrant;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class PrescriptionControllerTest extends RestDocTest {
+
+	@Autowired
+	private TestRestTemplate restTemplate;
+
+	@Autowired
+	private Pure pure;
+
+	private String physicianGrant;
+	private Set<String> prescriptions;
+
+	@BeforeEach
+	void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+		super.setup(webApplicationContext, restDocumentation);
+
+		ResetData resetData = this.restTemplate.postForObject("/reset", null, ResetData.class);
+		this.physicianGrant = resetData.getPhysicians().iterator().next();
+		this.prescriptions = resetData.getPrescriptions();
+	}
+
+	@Test
+	void get_byPhysician() throws Exception {
+		PureGrant pureGrant = this.pure.decryptGrantFromUser(this.physicianGrant);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		for (String prescriptionId : this.prescriptions) {
+			ResponseEntity<Prescription> response = this.restTemplate.exchange("/prescriptions/" + prescriptionId,
+					HttpMethod.GET, entity, Prescription.class);
+			assertEquals(200, response.getStatusCodeValue());
+
+			Prescription prescription = response.getBody();
+			assertNotNull(prescription);
+			assertEquals(prescriptionId, prescription.getId());
+			assertEquals(pureGrant.getUserId(), prescription.getPhysicianId());
+		}
+
+		this.mockMvc
+				.perform(MockMvcRequestBuilders
+						.request(HttpMethod.GET, "/prescriptions/" + this.prescriptions.iterator().next())
+						.header(Constants.GRANT_HEADER, this.physicianGrant))
+				.andDo(document("prescription/get", preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint())));
+	}
+
+	@Test
+	void list() throws Exception {
+		// Get prescriptions from REST
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		ResponseEntity<Prescription[]> response = this.restTemplate.exchange("/prescriptions", HttpMethod.GET, entity,
+				Prescription[].class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		Prescription[] retrievedPrescriptions = response.getBody();
+		assertNotNull(retrievedPrescriptions);
+		assertEquals(3, retrievedPrescriptions.length);
+
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/prescriptions").header(Constants.GRANT_HEADER,
+						this.physicianGrant))
+				.andDo(document("prescription/list", preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint())));
+	}
+
+	@Test
+	void list_noGrant() {
+		ResponseEntity<String> response = this.restTemplate.getForEntity("/prescriptions", String.class);
+		assertEquals(400, response.getStatusCodeValue());
+	}
+
+	@Test
+	void update() throws Exception {
+		String prescriptionId = this.prescriptions.iterator().next();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+		ResponseEntity<Prescription> response;
+
+		// Get prescription
+		response = this.restTemplate.exchange("/prescriptions/" + prescriptionId, HttpMethod.GET, entity,
+				Prescription.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		Prescription prescription = response.getBody();
+		assertNotNull(prescription);
+
+		String newNotes = "New notes";
+		Date newAssignDate = Utils.yesterday();
+		Date newReleaseDate = Utils.today();
+		prescription.setNotes(newNotes);
+		prescription.setAssingDate(newAssignDate);
+		prescription.setReleaseDate(newReleaseDate);
+
+		// Update prescription
+		entity = new HttpEntity<>(prescription, headers);
+		response = this.restTemplate.exchange("/prescriptions/" + prescriptionId, HttpMethod.PUT, entity,
+				Prescription.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		// Verify prescription
+		entity = new HttpEntity<>(headers);
+		response = this.restTemplate.exchange("/prescriptions/" + prescriptionId, HttpMethod.GET, entity,
+				Prescription.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		Prescription updatedPrescription = response.getBody();
+		assertNotNull(updatedPrescription);
+		assertEquals(newNotes, updatedPrescription.getNotes());
+		assertEquals(newAssignDate, updatedPrescription.getAssingDate());
+		assertEquals(newReleaseDate, updatedPrescription.getReleaseDate());
+
+		// Document REST
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.request(HttpMethod.PUT, "/prescriptions/" + prescriptionId)
+						.content(new Gson().toJson(prescription)).header(Constants.GRANT_HEADER, this.physicianGrant))
+				.andDo(document("prescription/update", preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint())));
+	}
+
+}

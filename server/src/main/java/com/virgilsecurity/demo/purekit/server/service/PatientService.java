@@ -33,7 +33,7 @@ public class PatientService {
 	@Autowired
 	private Pure pure;
 
-	public String registerPatient(Patient patient, String password) {
+	public String register(Patient patient, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -91,7 +91,7 @@ public class PatientService {
 						patientEntity.getSsn());
 				ssn = new String(decryptedSsn);
 			} catch (PureException e) {
-				ssn = Constants.NO_PERMISSIONS_TEXT;
+				ssn = Constants.Texts.NO_PERMISSIONS;
 			}
 		}
 		return new Patient(patientEntity.getId(), patientEntity.getName(), ssn);

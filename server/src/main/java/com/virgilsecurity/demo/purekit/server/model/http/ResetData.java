@@ -11,13 +11,16 @@ public class ResetData {
 	private Set<String> patients;
 
 	private Set<String> physicians;
+	
+	private Set<String> prescriptions;
 
-	private Set<String> labs;
+	private Set<String> labTests;
 
 	public ResetData() {
 		this.patients = new HashSet<String>();
 		this.physicians = new HashSet<String>();
-		this.labs = new HashSet<String>();
+		this.prescriptions = new HashSet<String>();
+		this.labTests = new HashSet<String>();
 	}
 
 }

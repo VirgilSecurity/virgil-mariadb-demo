@@ -14,8 +14,10 @@ import com.virgilsecurity.demo.purekit.server.model.db.PrescriptionEntity;
 @Mapper
 public interface PrescriptionMapper {
 
-	@Select("SELECT id, patient_id, physician_id, notes, assign_date, release_date FROM prescriptions")
-	List<PrescriptionEntity> findAll();
+	@Select("SELECT id, patient_id, physician_id, notes, assign_date, release_date "
+			+ "FROM prescriptions "
+			+ "WHERE patient_id = #{userId} or physician_id = #{userId}")
+	List<PrescriptionEntity> findAll(String userId);
 
 	@Select("SELECT id, patient_id, physician_id, notes, assign_date, release_date FROM prescriptions WHERE id = #{id}")
 	PrescriptionEntity findById(@Param("id") String id);

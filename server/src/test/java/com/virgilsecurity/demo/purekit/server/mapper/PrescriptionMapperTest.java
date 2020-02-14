@@ -22,8 +22,22 @@ public class PrescriptionMapperTest {
 	private PrescriptionMapper prescriptionMapper;
 
 	@Test
-	void findAllTest() {
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+	void findAll_byPhysician() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(PhysicianMapperTest.PHYSICIAN1_ID);
+		assertNotNull(prescriptions);
+		assertEquals(2, prescriptions.size());
+	}
+
+	@Test
+	void findAll_byPatient() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(PatientMapperTest.PATIENT1_ID);
+		assertNotNull(prescriptions);
+		assertEquals(2, prescriptions.size());
+	}
+
+	@Test
+	void findAll_byWrongUserId() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll("780b28cb531c4e4fb1513529b09b8a33");
 		assertNotNull(prescriptions);
 		assertTrue(prescriptions.isEmpty());
 	}
@@ -33,9 +47,9 @@ public class PrescriptionMapperTest {
 		String id = Utils.generateId();
 		insertPrescription(id);
 
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll("0e1ddb5ff64941e382b36018f1ee8663");
 		assertNotNull(prescriptions);
-		assertEquals(1, prescriptions.size());
+		assertEquals(3, prescriptions.size());
 	}
 
 	@Test
@@ -82,7 +96,7 @@ public class PrescriptionMapperTest {
 	@Test
 	void deleteAll() {
 		this.prescriptionMapper.deleteAll();
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(PatientMapperTest.PATIENT1_ID);
 		assertTrue(prescriptions.isEmpty());
 	}
 

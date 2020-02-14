@@ -39,17 +39,21 @@ public class PatientControllerTest extends RestDocTest {
 	@Autowired
 	private Pure pure;
 
-	private Set<String> grants;
+	private Set<String> patientGrants;
+	private String physicianGrant;
 
 	@BeforeEach
 	void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		super.setup(webApplicationContext, restDocumentation);
-		this.grants = this.restTemplate.getForObject("/reset", ResetData.class).getPatients();
+
+		ResetData resetData = this.restTemplate.postForObject("/reset", null, ResetData.class);
+		this.patientGrants = resetData.getPatients();
+		this.physicianGrant = resetData.getPhysicians().iterator().next();
 	}
 
 	@Test
 	void get() throws Exception {
-		String grant = this.grants.iterator().next();
+		String grant = this.patientGrants.iterator().next();
 		PureGrant pureGrant = this.pure.decryptGrantFromUser(grant);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -73,7 +77,7 @@ public class PatientControllerTest extends RestDocTest {
 
 	@Test
 	void list() throws Exception {
-		for (String grant : this.grants) {
+		for (String grant : this.patientGrants) {
 			// Get patients from REST
 			HttpHeaders headers = new HttpHeaders();
 			headers.set(Constants.GRANT_HEADER, grant);
@@ -95,7 +99,7 @@ public class PatientControllerTest extends RestDocTest {
 				if (pureGrant.getUserId().equals(patient.getId())) {
 					assertTrue(isSsnValid(patient));
 				} else {
-					assertEquals(Constants.NO_PERMISSIONS_TEXT, patient.getSsn());
+					assertEquals(Constants.Texts.NO_PERMISSIONS, patient.getSsn());
 				}
 			}
 
@@ -111,6 +115,54 @@ public class PatientControllerTest extends RestDocTest {
 	void list_noGrant() {
 		ResponseEntity<String> response = this.restTemplate.getForEntity("/patients", String.class);
 		assertEquals(400, response.getStatusCodeValue());
+	}
+
+	@Test
+	void share() throws Exception {
+		String grant = this.patientGrants.iterator().next();
+		PureGrant pureGrant = this.pure.decryptGrantFromUser(grant);
+		PureGrant physicianPureGrant = this.pure.decryptGrantFromUser(this.physicianGrant);
+
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<?> entity;
+		ResponseEntity<Patient> response;
+		Patient patient;
+
+		// Ensure physician can't read parent's ssn
+		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		entity = new HttpEntity<>(headers);
+		response = this.restTemplate.exchange("/patients/" + pureGrant.getUserId(), HttpMethod.GET, entity,
+				Patient.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		patient = response.getBody();
+		assertNotNull(patient);
+		assertEquals(Constants.Texts.NO_PERMISSIONS, patient.getSsn());
+
+		// Share SSN with physician
+		headers.set(Constants.GRANT_HEADER, grant);
+		entity = new HttpEntity<>(headers);
+		response = this.restTemplate.exchange("/patients/share/" + physicianPureGrant.getUserId(), HttpMethod.PUT,
+				entity, Patient.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		// Get patient info by physician
+		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		entity = new HttpEntity<>(headers);
+		response = this.restTemplate.exchange("/patients/" + pureGrant.getUserId(), HttpMethod.GET, entity,
+				Patient.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		patient = response.getBody();
+		assertNotNull(patient);
+		assertTrue(isSsnValid(patient));
+
+		// Document share ssn REST
+		this.mockMvc
+				.perform(MockMvcRequestBuilders
+						.request(HttpMethod.PUT, "/patients/share/" + physicianPureGrant.getUserId())
+						.header(Constants.GRANT_HEADER, grant))
+				.andDo(document("patient/share", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
 	}
 
 	private boolean isSsnValid(Patient patient) {

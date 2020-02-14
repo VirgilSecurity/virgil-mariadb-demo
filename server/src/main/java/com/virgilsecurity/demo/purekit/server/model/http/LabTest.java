@@ -7,8 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LabTest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -29,5 +32,12 @@ public class LabTest implements Serializable {
 	private String results;
 
 	private String status;
+
+	public LabTest(String name, String patientId, Date testDate) {
+		super();
+		this.name = name;
+		this.patientId = patientId;
+		this.testDate = testDate;
+	}
 
 }

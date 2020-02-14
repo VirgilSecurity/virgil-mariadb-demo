@@ -1,0 +1,106 @@
+== Reset
+
+.request
+include::{snippets}/reset/http-request.adoc[]
+
+.response
+include::{snippets}/reset/http-response.adoc[]
+
+== Patient
+
+=== Get
+.request
+include::{snippets}/patient/get/http-request.adoc[]
+
+.response
+include::{snippets}/patient/get/http-response.adoc[]
+
+=== List
+.request
+include::{snippets}/patient/list/http-request.adoc[]
+
+.response
+include::{snippets}/patient/list/http-response.adoc[]
+
+=== Share
+.request
+include::{snippets}/patient/share/http-request.adoc[]
+
+.response
+include::{snippets}/patient/share/http-response.adoc[]
+
+== Physician
+
+=== Get
+.request
+include::{snippets}/physician/get/http-request.adoc[]
+
+.response
+include::{snippets}/physician/get/http-response.adoc[]
+
+=== List
+.request
+include::{snippets}/physician/list/http-request.adoc[]
+
+.response
+include::{snippets}/physician/list/http-response.adoc[]
+
+=== Share
+.request
+include::{snippets}/physician/share/http-request.adoc[]
+
+.response
+include::{snippets}/physician/share/http-response.adoc[]
+
+== Prescription
+
+=== Get
+.request
+include::{snippets}/prescription/get/http-request.adoc[]
+
+.response
+include::{snippets}/prescription/get/http-response.adoc[]
+
+=== List
+.request
+include::{snippets}/prescription/list/http-request.adoc[]
+
+.response
+include::{snippets}/prescription/list/http-response.adoc[]
+
+=== Update
+.request
+include::{snippets}/prescription/update/http-request.adoc[]
+
+.response
+include::{snippets}/prescription/update/http-response.adoc[]
+
+== Laboratory test
+
+=== Get
+.request
+include::{snippets}/labtest/get/http-request.adoc[]
+
+.response
+include::{snippets}/labtest/get/http-response.adoc[]
+
+=== List
+.request
+include::{snippets}/labtest/list/http-request.adoc[]
+
+.response
+include::{snippets}/labtest/list/http-response.adoc[]
+
+=== Update
+.request
+include::{snippets}/labtest/update/http-request.adoc[]
+
+.response
+include::{snippets}/labtest/update/http-response.adoc[]
+
+=== Share
+.request
+include::{snippets}/labtest/share/http-request.adoc[]
+
+.response
+include::{snippets}/labtest/share/http-response.adoc[]

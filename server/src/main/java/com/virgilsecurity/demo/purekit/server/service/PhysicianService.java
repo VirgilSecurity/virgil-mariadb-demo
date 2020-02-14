@@ -1,6 +1,8 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,7 @@ public class PhysicianService {
 	@Autowired
 	private Pure pure;
 
-	public String registerPhysician(Physician physician, String password) {
+	public String register(Physician physician, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -48,21 +50,30 @@ public class PhysicianService {
 
 			return authResult.getEncryptedGrant();
 		} catch (PureException e) {
-			log.debug("PhysicianEntity SSN can't be encrypted", e);
+			log.debug("PhysicianEntity License No can't be encrypted", e);
 			throw new EncryptionException();
 		}
 	}
 
-	public void shareSsn(String physicianId, PureGrant pureGrant) {
+	public List<Physician> findAll(PureGrant grant) {
+		List<PhysicianEntity> physicians = this.physicianMapper.findAll();
+		List<Physician> result = new LinkedList<Physician>();
+		physicians.forEach(entity -> {
+			result.add(decryptPhysician(entity, grant));
+		});
+		return result;
+	}
+
+	public void shareLicense(String patientId, PureGrant pureGrant) {
 		try {
-			pure.share(pureGrant, LICENSE_NO_DATA_ID, physicianId);
+			pure.share(pureGrant, LICENSE_NO_DATA_ID, patientId);
 		} catch (PureException e) {
-			log.debug("PhysicianEntity SSN sharing failed", e);
+			log.debug("PhysicianEntity License No sharing failed", e);
 			throw new EncryptionException();
 		}
 	}
 
-	public Physician readPhysician(String physicianId, PureGrant grant) {
+	public Physician get(String physicianId, PureGrant grant) {
 		PhysicianEntity physicianEntity = this.physicianMapper.findById(physicianId);
 		if (physicianEntity == null) {
 			throw new NotFoundException();
@@ -76,10 +87,10 @@ public class PhysicianService {
 		try {
 			byte[] decryptedLicenseNo = this.pure.decrypt(grant, physicianEntity.getId(), LICENSE_NO_DATA_ID,
 					physicianEntity.getLicenseNo());
-			licenseNo = ByteBuffer.allocate(8).put(decryptedLicenseNo).getLong();
+			licenseNo = ByteBuffer.allocate(8).put(decryptedLicenseNo).flip().getLong();
 		} catch (PureException e) {
-			log.debug("Physician's {} license No can't be decrypted for {}", physicianEntity.getId(),
-					grant.getUserId());
+			log.debug("Physician's {} License No can't be decrypted for {}", physicianEntity.getId(), grant.getUserId(),
+					e);
 		}
 		return new Physician(physicianEntity.getId(), physicianEntity.getName(), licenseNo);
 	}

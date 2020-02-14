@@ -11,20 +11,3 @@ spring:
       username: purekit
       password: 1qaz2wsx
       initialize: true
-
-#FIXME remove credentials
-virgil:
-  # Application ID
-  appId: 
-  # Application token. AT.****
-  at: 
-  # Nonrotatable master secret. NM.****
-  nms: 
-  # Backup public key. BU.****
-  bu: 
-  # App secret key. SK.****
-  sk: 
-  # Service public key. PK.**** 
-  pk: 
-  pheServiceAddress: https://api.virgilsecurity.com/phe/v1
-  kmsServiceAddress: https://api.virgilsecurity.com/kms/v1
