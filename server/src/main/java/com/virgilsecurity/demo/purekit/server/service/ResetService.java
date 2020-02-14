@@ -143,6 +143,7 @@ public class ResetService {
 		labTest = new LabTest("Bood test 3", patient2PureGrant.getUserId(), Utils.today());
 		resetData.getLabTests().add(this.labTestService.create(labTest, physicianPureGrant));
 
+		
 		return resetData;
 	}
 

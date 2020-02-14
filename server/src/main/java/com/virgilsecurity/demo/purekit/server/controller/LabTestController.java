@@ -41,9 +41,10 @@ public class LabTestController {
 		return this.labTestService.get(labTestId, grant);
 	}
 
-	@PutMapping("/share/{userId}")
-	public void share(@RequestHeader(Constants.GRANT_HEADER) PureGrant grant, @PathVariable("userId") String userId) {
-		this.labTestService.shareResults(userId, grant);
+	@PutMapping("/{id}/share/{userId}")
+	public void share(@RequestHeader(Constants.GRANT_HEADER) PureGrant grant, @PathVariable("id") String id,
+			@PathVariable("userId") String userId) {
+		this.labTestService.shareResults(id, userId, grant);
 	}
 
 	@PutMapping("/{id}")

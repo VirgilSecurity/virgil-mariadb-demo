@@ -188,7 +188,7 @@ public class LabTestControllerTest extends RestDocTest {
 		// Share lab test results with patient
 		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
 		entity = new HttpEntity<>(headers);
-		response = this.restTemplate.exchange("/lab-tests/share/" + patientId, HttpMethod.PUT, entity, LabTest.class);
+		response = this.restTemplate.exchange("/lab-tests/" + labTestId + "/share/" + patientId, HttpMethod.PUT, entity, LabTest.class);
 		assertEquals(200, response.getStatusCodeValue());
 
 		// Get lab test results by patient
@@ -203,8 +203,8 @@ public class LabTestControllerTest extends RestDocTest {
 
 		// Document REST
 		this.mockMvc
-				.perform(MockMvcRequestBuilders.request(HttpMethod.PUT, "/lab-tests/share/" + labTestId)
-						.header(Constants.GRANT_HEADER, patientGrant))
+				.perform(MockMvcRequestBuilders.request(HttpMethod.PUT, "/lab-tests/" + labTestId + "/share/" + patientId)
+						.header(Constants.GRANT_HEADER, physicianGrant))
 				.andDo(document("labtest/share", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
 	}
 

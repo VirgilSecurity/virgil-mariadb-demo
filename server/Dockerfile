@@ -1,24 +1,31 @@
-FROM mariadb:10.4
+FROM adoptopenjdk:11-jdk-openj9
 
-# Create MariaDB database
-#TODO
+# Install tools
+RUN apt-get update && apt-get install -y curl wget
 
-# Install Java
-ENV JAVA_HOME /opt/jdk
-ENV PATH ${PATH}:${JAVA_HOME}/bin
+# Install Maven
+ENV MAVEN_HOME /opt/maven
+ENV PATH ${PATH}:${MAVEN_HOME}/bin
 
-ENV JDK_URL https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.6%2B10/OpenJDK11U-jdk_x64_linux_hotspot_11.0.6_10.tar.gz
-ENV JDK_SHA256 330d19a2eaa07ed02757d7a785a77bab49f5ee710ea03b4ee2fa220ddd0feffc
-ENV JDK_FILENAME /tmp/OpenJDK11.tar.gz
+ENV MAVEN_URL http://apache.volia.net/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+ENV MAVEN_FILENAME /tmp/maven.tar.gz
 
-RUN mkdir -p $JAVA_HOME && chmod -R 777 /opt
-RUN curl $JDK_URL -o $JDK_FILENAME \
-    && sha256sum $JDK_FILENAME | grep $JDK_SHA256 \
-    && tar -xf $JDK_FILENAME --strip-components=1 -C $JAVA_HOME \
-    && rm $JDK_FILENAME \
-    && chmod -R 777 $JAVA_HOME
+RUN mkdir -p $MAVEN_HOME && chmod -R 777 /opt
+RUN wget $MAVEN_URL -O $MAVEN_FILENAME \
+  && tar -xf $MAVEN_FILENAME --strip-components=1 -C $MAVEN_HOME \
+  && rm $MAVEN_FILENAME \
+  && chmod -R 777 $MAVEN_HOME
 
-# Install server
-ARG JAR_FILE=server/target/*.jar
-COPY ${JAR_FILE} server.jar
+# Build an app
+RUN mkdir -p server
+COPY . server
+WORKDIR server
+RUN mvn clean package
+RUN cp ./target/server.jar /server.jar
+
+WORKDIR /
+#COPY target/*.jar /server.jar
+
+EXPOSE 8080
 ENTRYPOINT ["java","-jar","/server.jar"]
+#ENTRYPOINT ["/bin/bash"]

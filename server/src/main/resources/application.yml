@@ -1,13 +1,12 @@
 mybatis:
-   type-aliases-package: com.virgilsecurity.demo.purekit.server.model
-   configuration:
-      map-underscore-to-camel-case: true
-      default-fetch-size: 100
-      default-statement-timeout: 30
+  type-aliases-package: com.virgilsecurity.demo.purekit.server.model
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
 spring:
-   datasource:
-      driverClassName: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3307/purekit_demo?characterEncoding=UTF-8&serverTimezone=UTC
-      username: purekit
-      password: 1qaz2wsx
-      initialize: true
+  datasource:
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
+#     driverClassName: com.mysql.cj.jdbc.Driver
+#     url: jdbc:mysql://mariadb:3306/purekit?characterEncoding=UTF-8&serverTimezone=UTC

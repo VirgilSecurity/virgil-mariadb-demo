@@ -22,5 +22,10 @@ public class ResetData {
 		this.prescriptions = new HashSet<String>();
 		this.labTests = new HashSet<String>();
 	}
+	
+	public static class GrantedUser {
+		public String id;
+		public String grant;
+	}
 
 }

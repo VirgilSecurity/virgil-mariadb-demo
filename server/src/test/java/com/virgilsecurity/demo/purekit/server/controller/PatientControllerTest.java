@@ -104,7 +104,7 @@ public class PatientControllerTest extends RestDocTest {
 			}
 
 			this.mockMvc
-					.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/patient/").header(Constants.GRANT_HEADER,
+					.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/patients/").header(Constants.GRANT_HEADER,
 							grant))
 					.andDo(document("patient/list", preprocessRequest(prettyPrint()),
 							preprocessResponse(prettyPrint())));

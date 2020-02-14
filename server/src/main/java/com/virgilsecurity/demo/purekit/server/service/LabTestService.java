@@ -88,7 +88,7 @@ public class LabTestService {
 		this.labTestMapper.update(entity);
 	}
 
-	public void shareResults(String userId, PureGrant grant) {
+	public void shareResults(String id, String userId, PureGrant grant) {
 		try {
 			pure.share(grant, RESULTS_DATA_ID, userId);
 		} catch (PureException e) {

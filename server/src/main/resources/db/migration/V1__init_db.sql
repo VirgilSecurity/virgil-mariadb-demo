@@ -1,14 +1,14 @@
 CREATE TABLE patients (
   id char(32) NOT NULL,
   full_name varchar(128) NOT NULL,
-  ssn varbinary(2000) NOT NULL,
+  ssn varbinary(2000),
   PRIMARY KEY (id)
 );
 
 CREATE TABLE physicians (
   id char(32) NOT NULL,
   full_name varchar(128) NOT NULL,
-  license_no varbinary(2000) NOT NULL,
+  license_no varbinary(2000),
   PRIMARY KEY (id)
 );
 
