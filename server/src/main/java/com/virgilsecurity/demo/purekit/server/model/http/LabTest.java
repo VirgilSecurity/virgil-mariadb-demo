@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.virgilsecurity.demo.purekit.server.model.TestStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class LabTest implements Serializable {
 
 	private String results;
 
-	private String status;
+	private TestStatus status;
 
 	public LabTest(String name, String patientId, Date testDate) {
 		super();

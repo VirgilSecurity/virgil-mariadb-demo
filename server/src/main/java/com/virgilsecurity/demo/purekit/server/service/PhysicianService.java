@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.virgilsecurity.demo.purekit.server.exception.EncryptionException;
 import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
+import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.AuthResult;
 import com.virgilsecurity.purekit.pure.Pure;
@@ -24,15 +26,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class PhysicianService {
 
-	private static final String LICENSE_NO_DATA_ID = "licence_no";
-
 	@Autowired
-	private PhysicianMapper physicianMapper;
+	private PhysicianMapper mapper;
 
 	@Autowired
 	private Pure pure;
 
-	public String register(Physician physician, String password) {
+	public UserRegitration register(Physician physician, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -41,14 +41,14 @@ public class PhysicianService {
 			PureGrant pureGrant = authResult.getGrant();
 
 			// Encrypt sensitive data
-			byte[] encryptedLicenseNo = pure.encrypt(pureGrant.getUserId(), LICENSE_NO_DATA_ID,
+			byte[] encryptedLicenseNo = pure.encrypt(pureGrant.getUserId(), SharedRole.LICENSE_NO.getCode(),
 					ByteBuffer.allocate(8).putLong(physician.getLicenseNo()).array());
 
 			// Store physician in a database
 			PhysicianEntity physicianEntity = new PhysicianEntity(userId, physician.getName(), encryptedLicenseNo);
-			this.physicianMapper.insert(physicianEntity);
+			this.mapper.insert(physicianEntity);
 
-			return authResult.getEncryptedGrant();
+			return new UserRegitration(userId, authResult.getEncryptedGrant());
 		} catch (PureException e) {
 			log.debug("PhysicianEntity License No can't be encrypted", e);
 			throw new EncryptionException();
@@ -56,7 +56,7 @@ public class PhysicianService {
 	}
 
 	public List<Physician> findAll(PureGrant grant) {
-		List<PhysicianEntity> physicians = this.physicianMapper.findAll();
+		List<PhysicianEntity> physicians = this.mapper.findAll();
 		List<Physician> result = new LinkedList<Physician>();
 		physicians.forEach(entity -> {
 			result.add(decryptPhysician(entity, grant));
@@ -64,29 +64,24 @@ public class PhysicianService {
 		return result;
 	}
 
-	public void shareLicense(String patientId, PureGrant pureGrant) {
-		try {
-			pure.share(pureGrant, LICENSE_NO_DATA_ID, patientId);
-		} catch (PureException e) {
-			log.debug("PhysicianEntity License No sharing failed", e);
-			throw new EncryptionException();
-		}
-	}
-
 	public Physician get(String physicianId, PureGrant grant) {
-		PhysicianEntity physicianEntity = this.physicianMapper.findById(physicianId);
+		PhysicianEntity physicianEntity = this.mapper.findById(physicianId);
 		if (physicianEntity == null) {
 			throw new NotFoundException();
 		}
 
 		return decryptPhysician(physicianEntity, grant);
 	}
+	
+	public void reset() {
+		this.mapper.deleteAll();
+	}
 
 	private Physician decryptPhysician(PhysicianEntity physicianEntity, PureGrant grant) {
 		Long licenseNo = 0L;
 		try {
-			byte[] decryptedLicenseNo = this.pure.decrypt(grant, physicianEntity.getId(), LICENSE_NO_DATA_ID,
-					physicianEntity.getLicenseNo());
+			byte[] decryptedLicenseNo = this.pure.decrypt(grant, physicianEntity.getId(),
+					SharedRole.LICENSE_NO.getCode(), physicianEntity.getLicenseNo());
 			licenseNo = ByteBuffer.allocate(8).put(decryptedLicenseNo).flip().getLong();
 		} catch (PureException e) {
 			log.debug("Physician's {} License No can't be decrypted for {}", physicianEntity.getId(), grant.getUserId(),

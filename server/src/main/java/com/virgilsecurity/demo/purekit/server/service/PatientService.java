@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.virgilsecurity.demo.purekit.server.exception.EncryptionException;
 import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.mapper.PatientMapper;
+import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PatientEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Patient;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.AuthResult;
@@ -25,15 +27,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class PatientService {
 
-	private static final String SSN_DATA_ID = "ssn";
-
 	@Autowired
-	private PatientMapper patientMapper;
+	private PatientMapper mapper;
 
 	@Autowired
 	private Pure pure;
 
-	public String register(Patient patient, String password) {
+	public UserRegitration register(Patient patient, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -42,31 +42,22 @@ public class PatientService {
 			PureGrant pureGrant = authResult.getGrant();
 
 			// Encrypt sensitive data
-			byte[] encryptedSsn = pure.encrypt(pureGrant.getUserId(), SSN_DATA_ID,
+			byte[] encryptedSsn = pure.encrypt(pureGrant.getUserId(), SharedRole.SSN.getCode(),
 					patient.getSsn().getBytes(StandardCharsets.UTF_8));
 
 			// Store patient in a database
 			PatientEntity patientEntity = new PatientEntity(userId, patient.getName(), encryptedSsn);
-			this.patientMapper.insert(patientEntity);
+			this.mapper.insert(patientEntity);
 
-			return authResult.getEncryptedGrant();
+			return new UserRegitration(userId, authResult.getEncryptedGrant());
 		} catch (PureException e) {
 			log.debug("PatientEntity SSN can't be encrypted", e);
 			throw new EncryptionException();
 		}
 	}
 
-	public void shareSsn(String physicianId, PureGrant grant) {
-		try {
-			pure.share(grant, SSN_DATA_ID, physicianId);
-		} catch (PureException e) {
-			log.debug("PatientEntity SSN sharing failed", e);
-			throw new EncryptionException();
-		}
-	}
-
 	public Patient get(String patientId, PureGrant grant) {
-		PatientEntity patient = this.patientMapper.findById(patientId);
+		PatientEntity patient = this.mapper.findById(patientId);
 		if (patient == null) {
 			throw new NotFoundException();
 		}
@@ -75,19 +66,23 @@ public class PatientService {
 	}
 
 	public List<Patient> findAll(PureGrant grant) {
-		List<PatientEntity> patients = this.patientMapper.findAll();
+		List<PatientEntity> patients = this.mapper.findAll();
 		List<Patient> result = new LinkedList<Patient>();
 		patients.forEach(patientEntity -> {
 			result.add(decryptPatient(patientEntity, grant));
 		});
 		return result;
 	}
+	
+	public void reset() {
+		this.mapper.deleteAll();
+	}
 
 	private Patient decryptPatient(PatientEntity patientEntity, PureGrant grant) {
 		String ssn = null;
 		if (patientEntity.getSsn() != null) {
 			try {
-				byte[] decryptedSsn = this.pure.decrypt(grant, patientEntity.getId(), SSN_DATA_ID,
+				byte[] decryptedSsn = this.pure.decrypt(grant, patientEntity.getId(), SharedRole.SSN.getCode(),
 						patientEntity.getSsn());
 				ssn = new String(decryptedSsn);
 			} catch (PureException e) {

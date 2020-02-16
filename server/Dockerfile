@@ -16,16 +16,27 @@ RUN wget $MAVEN_URL -O $MAVEN_FILENAME \
   && rm $MAVEN_FILENAME \
   && chmod -R 777 $MAVEN_HOME
 
-# Build an app
-RUN mkdir -p server
-COPY . server
-WORKDIR server
-RUN mvn clean package
-RUN cp ./target/server.jar /server.jar
+
+# Prepare Java application
+
+# Case 1 - Build an app with Maven. This operation is too long
+#RUN mkdir -p server
+#COPY . server
+#WORKDIR server
+#RUN mvn clean package
+#RUN cp ./target/server.jar /server.jar
+
+# Case 2 - Copy pre-built resources from outside. This operation is much faster,
+# because Java artifacts already cached in you local maven repository.
+COPY target/*.jar /server.jar
 
 WORKDIR /
-#COPY target/*.jar /server.jar
+
+COPY scripts/wait-for-it.sh /wait-for-it.sh
+RUN chmod 777 /wait-for-it.sh
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/server.jar"]
+#ENTRYPOINT ["java","-jar","/server.jar"]
+ENTRYPOINT ["./wait-for-it.sh", "mariadb:3306", "--timeout=120", "--", "java", "-jar", "/server.jar"]
+
 #ENTRYPOINT ["/bin/bash"]

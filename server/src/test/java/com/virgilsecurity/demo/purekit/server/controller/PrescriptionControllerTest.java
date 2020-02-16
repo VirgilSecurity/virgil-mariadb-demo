@@ -23,13 +23,12 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
-import com.virgilsecurity.purekit.pure.Pure;
-import com.virgilsecurity.purekit.pure.model.PureGrant;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PrescriptionControllerTest extends RestDocTest {
@@ -38,9 +37,9 @@ public class PrescriptionControllerTest extends RestDocTest {
 	private TestRestTemplate restTemplate;
 
 	@Autowired
-	private Pure pure;
+	private ObjectMapper jackson2ObjectMapper;
 
-	private String physicianGrant;
+	private UserRegitration registeredPhysician;
 	private Set<String> prescriptions;
 
 	@BeforeEach
@@ -48,16 +47,14 @@ public class PrescriptionControllerTest extends RestDocTest {
 		super.setup(webApplicationContext, restDocumentation);
 
 		ResetData resetData = this.restTemplate.postForObject("/reset", null, ResetData.class);
-		this.physicianGrant = resetData.getPhysicians().iterator().next();
+		this.registeredPhysician = resetData.getPhysicians().iterator().next();
 		this.prescriptions = resetData.getPrescriptions();
 	}
 
 	@Test
 	void get_byPhysician() throws Exception {
-		PureGrant pureGrant = this.pure.decryptGrantFromUser(this.physicianGrant);
-
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
 		for (String prescriptionId : this.prescriptions) {
@@ -68,13 +65,13 @@ public class PrescriptionControllerTest extends RestDocTest {
 			Prescription prescription = response.getBody();
 			assertNotNull(prescription);
 			assertEquals(prescriptionId, prescription.getId());
-			assertEquals(pureGrant.getUserId(), prescription.getPhysicianId());
+			assertEquals(this.registeredPhysician.getUserId(), prescription.getPhysicianId());
 		}
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders
 						.request(HttpMethod.GET, "/prescriptions/" + this.prescriptions.iterator().next())
-						.header(Constants.GRANT_HEADER, this.physicianGrant))
+						.header(Constants.GRANT_HEADER, this.registeredPhysician.getGrant()))
 				.andDo(document("prescription/get", preprocessRequest(prettyPrint()),
 						preprocessResponse(prettyPrint())));
 	}
@@ -83,7 +80,7 @@ public class PrescriptionControllerTest extends RestDocTest {
 	void list() throws Exception {
 		// Get prescriptions from REST
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 
 		ResponseEntity<Prescription[]> response = this.restTemplate.exchange("/prescriptions", HttpMethod.GET, entity,
@@ -96,7 +93,7 @@ public class PrescriptionControllerTest extends RestDocTest {
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/prescriptions").header(Constants.GRANT_HEADER,
-						this.physicianGrant))
+						this.registeredPhysician.getGrant()))
 				.andDo(document("prescription/list", preprocessRequest(prettyPrint()),
 						preprocessResponse(prettyPrint())));
 	}
@@ -112,7 +109,7 @@ public class PrescriptionControllerTest extends RestDocTest {
 		String prescriptionId = this.prescriptions.iterator().next();
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(Constants.GRANT_HEADER, this.physicianGrant);
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 		ResponseEntity<Prescription> response;
 
@@ -152,7 +149,9 @@ public class PrescriptionControllerTest extends RestDocTest {
 		// Document REST
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.PUT, "/prescriptions/" + prescriptionId)
-						.content(new Gson().toJson(prescription)).header(Constants.GRANT_HEADER, this.physicianGrant))
+						.content(jackson2ObjectMapper.writeValueAsString(prescription))
+						.header(Constants.GRANT_HEADER, this.registeredPhysician.getGrant())
+						.header(HttpHeaders.CONTENT_TYPE, "application/json"))
 				.andDo(document("prescription/update", preprocessRequest(prettyPrint()),
 						preprocessResponse(prettyPrint())));
 	}

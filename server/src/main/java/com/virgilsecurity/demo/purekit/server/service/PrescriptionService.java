@@ -1,5 +1,6 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,21 +8,32 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.virgilsecurity.demo.purekit.server.exception.EncryptionException;
 import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.exception.PermissionDeniedException;
 import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
 import com.virgilsecurity.demo.purekit.server.mapper.PrescriptionMapper;
+import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
 import com.virgilsecurity.demo.purekit.server.model.db.PrescriptionEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
+import com.virgilsecurity.demo.purekit.server.utils.Constants;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
+import com.virgilsecurity.purekit.pure.Pure;
+import com.virgilsecurity.purekit.pure.exception.PureException;
 import com.virgilsecurity.purekit.pure.model.PureGrant;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class PrescriptionService {
 
 	@Autowired
-	private PrescriptionMapper prescriptionMapper;
+	private PrescriptionMapper mapper;
+
+	@Autowired
+	private Pure pure;
 
 	@Autowired
 	private PhysicianMapper physicianMapper;
@@ -30,44 +42,50 @@ public class PrescriptionService {
 		validatePermissions(grant);
 
 		String id = Utils.generateId();
+		byte[] encryptedNotes = encryptNotes(prescription.getNotes(), grant);
 		PrescriptionEntity entity = new PrescriptionEntity(id, prescription.getPatientId(), grant.getUserId(),
-				prescription.getNotes(), prescription.getAssingDate(), prescription.getReleaseDate());
-		this.prescriptionMapper.insert(entity);
+				encryptedNotes, prescription.getAssingDate(), prescription.getReleaseDate());
+		this.mapper.insert(entity);
 
 		return id;
 	}
 
 	public List<Prescription> findAll(PureGrant grant) {
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(grant.getUserId());
+		List<PrescriptionEntity> prescriptions = this.mapper.findAll(grant.getUserId());
 		List<Prescription> result = new LinkedList<Prescription>();
 		prescriptions.forEach(entity -> {
-			result.add(convert(entity));
+			result.add(decrypt(entity, grant));
 		});
 		return result;
 	}
 
 	public Prescription get(String prescriptionId, PureGrant grant) {
-		PrescriptionEntity entity = this.prescriptionMapper.findById(prescriptionId);
+		PrescriptionEntity entity = this.mapper.findById(prescriptionId);
 		if (entity == null) {
 			throw new NotFoundException();
 		}
 		validateReadPermissions(entity, grant);
 
-		return convert(entity);
+		return decrypt(entity, grant);
 	}
 
 	public void update(Prescription prescription, PureGrant grant) {
-		PrescriptionEntity entity = this.prescriptionMapper.findById(prescription.getId());
+		PrescriptionEntity entity = this.mapper.findById(prescription.getId());
 		if (entity == null) {
 			throw new NotFoundException();
 		}
 		validateWritePermissions(entity, grant);
 
-		entity.setNotes(prescription.getNotes());
+		byte[] encryptedNotes = encryptNotes(prescription.getNotes(), grant);
+		entity.setNotes(encryptedNotes);
 		entity.setAssingDate(prescription.getAssingDate());
 		entity.setReleaseDate(prescription.getReleaseDate());
 
-		this.prescriptionMapper.update(entity);
+		this.mapper.update(entity);
+	}
+
+	public void reset() {
+		this.mapper.deleteAll();
 	}
 
 	private void validatePermissions(PureGrant grant) {
@@ -91,9 +109,34 @@ public class PrescriptionService {
 		}
 	}
 
-	private Prescription convert(PrescriptionEntity entity) {
-		return new Prescription(entity.getId(), entity.getPatientId(), entity.getPhysicianId(), entity.getNotes(),
+	private Prescription decrypt(PrescriptionEntity entity, PureGrant grant) {
+		String notes = null;
+		if (entity.getNotes() != null) {
+			try {
+				byte[] decryptedNotes = this.pure.decrypt(grant, entity.getPhysicianId(), SharedRole.PRESCRIPTION.getCode(),
+						entity.getNotes());
+				notes = new String(decryptedNotes);
+			} catch (PureException e) {
+				notes = Constants.Texts.NO_PERMISSIONS;
+			}
+		}
+		return new Prescription(entity.getId(), entity.getPatientId(), entity.getPhysicianId(), notes,
 				entity.getAssingDate(), entity.getReleaseDate());
+	}
+
+	private byte[] encryptNotes(String notes, PureGrant grant) {
+		if (notes != null) {
+			try {
+				// Encrypt sensitive data
+				return this.pure.encrypt(grant.getUserId(), SharedRole.PRESCRIPTION.getCode(),
+						notes.getBytes(StandardCharsets.UTF_8));
+
+			} catch (PureException e) {
+				log.debug("PrescriptionEntity notes can't be encrypted", e);
+				throw new EncryptionException();
+			}
+		}
+		return null;
 	}
 
 }

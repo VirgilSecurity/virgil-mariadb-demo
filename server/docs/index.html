@@ -449,13 +449,26 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 985
+Content-Length: 1504
 
 {
-  "patients" : [ "CAESMJ7T8q88C6qr6y2zARCp2dkWbOmQIcFPcfxcB0SMzO/3b5siAjx7I5ZcV2V9faGaXxpwCiBmZTVkNGIzNDRmMWI0ZmNkYjUyZTk4YTE4ZmMxOWU4MxpAE+mnaByGf3fphYLnqLzDElqiHErnCAVaGykY/bahl0F8pnpO19VCDLhwBAjJdwqyi9Gz1gjiJVMJfCPcPSScQSDbwpnyBSjr3pnyBQ==", "CAESMN0sTSAeoAO5LA2AQfFvoMoFYzXpgRs1uD2KHOyOe4Fj6vNdEY1PjeStyUotA2QcVRpwCiA0ZTFhMGYyMWQ3M2M0ZjZlOTA2MmFiNjE0YzQwYzM5NRpAGREOjoBCsR++zso7KopkHukMH6+ofeL2wK9ZznxqEitQO5HAEEVOzE/f8ZyyJ6NZehzxeMJsQF8/yPupTMIgcCDawpnyBSjq3pnyBQ==" ],
-  "physicians" : [ "CAESMOYS/EP4zjgB7jIKqOJ4P8ONsSqlM52Kzr7667JTddkEJTKzPpkqDlh9jHA0nKjEMxpwCiBhZTY3OWQ4M2I5Y2M0M2JhODI5NmZhMDViYWY0YWViZRpAxuBNvPk47rRnthZS/3tDb56bG5wB1YceFEeRB+CzPuza4YXYzuwYO/XWiavqYAADFGV2ypopgjjBjOGSJBXAiSDbwpnyBSjr3pnyBQ==" ],
-  "prescriptions" : [ "46620b79598d46b79aae9cee0a264a18", "50a2a8bb4f134a4eb77b695609f09962", "94db7cab3de540cdbeae582013bf5581" ],
-  "labTests" : [ "781349fb62e74dababb1e4d02afdd04e", "2dc774e9d5ee4f3f872cad0f84dea829", "78b22e99a678469e9ce64fc9901e0d61" ]
+  "patients" : [ {
+    "grant" : "CAESMFQLT8UlVKtvT+IUisxNMwyAM0ATMd+MCKbzn8u2lAoANoi3zpwfxOF6aTGIUOY+MBpwCiBhMTdmYTJjZWFjNmU0MTU0YTA5OGU5NjM1ZGYxYWRjZBpAKDviLil5hSzhHYdvrVJtOoAF0CzO3nzveu+DsPdvjsnC10picqMgHNkr41Q81b5PhYkI04Cxunn7EMDzu2/TqyCPpafyBSifwafyBQ==",
+    "id" : "a17fa2ceac6e4154a098e9635df1adcd"
+  }, {
+    "grant" : "CAESMFk9OtOzsN/ZeapYD/IjE8Eo1mP8Up7vwIHSJvVB7oT5DMXCoicYLkK4rRUWrIcLkBpwCiAyNmY2YzU0YmJjNDY0MTY5OGE1Yjg0MDBjNDE5N2VjMhpAcjYRlf/i6VU3vbA4kG+4I/OrML/yP/DvOwVgJfGH9iQkHmQLeP2TSmdwkosij+nUQ7R5UMTsmmdNb5nkN0pxIiCPpafyBSifwafyBQ==",
+    "id" : "26f6c54bbc4641698a5b8400c4197ec2"
+  } ],
+  "physicians" : [ {
+    "grant" : "CAESMGUmdTM6CXhSbP10cybPDZPiYwbCipeiPDDXo/RWdP5Mz7+lo1zl3EeBis28OnukPhpwCiBlM2U5OTRiMmE5MTY0Y2YwYmMxYjk1ZWQ2ZDljMWU3MRpAT12GCFTb8T4nvYX0GtEO4+PObhZLctNNhaKKL+m/kzUNgBNoOgwweBX+oFH3pXwjlrg2rR0MgDsGFZMqUH3BJyCQpafyBSigwafyBQ==",
+    "id" : "e3e994b2a9164cf0bc1b95ed6d9c1e71"
+  } ],
+  "laboratories" : [ {
+    "grant" : "CAESMEkUhBr6wWiPHk7ewBzshro33nmEaexitye5tFACU+UCu0H9dHqm5RtneQmIpnBCGhpwCiA0NmJmYTQwZWY0Njc0MTJiYjZiOGE3ZTI3OTA2OTUxYxpApcHLA+uhaOHpp/dURYT93k2txM9/yKWMSxeDK0oA8bxM1UqnRlpY0pD23HK1AZABQhRgJkIwGqdiOHMGo1BOjSCQpafyBSigwafyBQ==",
+    "id" : "46bfa40ef467412bb6b8a7e27906951c"
+  } ],
+  "prescriptions" : [ "2c94bc62121c405abfbb3463cbffbc89", "14850e54ab6f40cf81a074008e07fc34", "bae23241ca634f96b36be9701000d069" ],
+  "labTests" : [ "961df8331ee44192af1c1137b1a15f76", "cbc5f82891d943c4b89653e062d30bd9", "2765d02e206f442a8859d2505046ed73" ]
 }</code></pre>
 </div>
 </div>
@@ -469,8 +482,8 @@ Content-Length: 985
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /patients/8db8603d0a9e4e9ba814ad5c66392fe4 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMNgHx3h3vlXfMZf5D8JZpLNKD+Avp1nzx6j5E9TJvlQ4jYEX4ZkKgsl/Fupmm7km0xpwCiA4ZGI4NjAzZDBhOWU0ZTliYTgxNGFkNWM2NjM5MmZlNBpAeS6tmVxTP5WGdmlvPlhI0Vwa/kblgVZ3JxkC2XCjYwub5W9USv+mwFDY6bix95FNqTpE1vDtiWdpH1IvL/hczCDkwpnyBSj03pnyBQ==
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /patients/a9b18ef9eb154fe0baaca9e9b038704d HTTP/1.1
+X-Virgil-Pure-Grant: CAESMJd9OcvlNRuGYNSJ7JUjO4Fw1+H9x7TjO2ZsbOsl7T9YFpo7hcNn9xGkarb7gs7deRpwCiBhOWIxOGVmOWViMTU0ZmUwYmFhY2E5ZTliMDM4NzA0ZBpAUPpWnqOsg4ndJBAVkL6fSGuySHgftLlj+3ESQ4Uj8eAox6EAU/NX7at1YGb1A4VcLXtugYmZBMxUlQkF7MYalSD7pKfyBSiLwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -482,7 +495,7 @@ Content-Type: application/json
 Content-Length: 102
 
 {
-  "id" : "8db8603d0a9e4e9ba814ad5c66392fe4",
+  "id" : "a9b18ef9eb154fe0baaca9e9b038704d",
   "name" : "PatientEntity 2",
   "ssn" : "12345678902"
 }</code></pre>
@@ -494,35 +507,27 @@ Content-Length: 102
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /patient/ HTTP/1.1
-X-Virgil-Pure-Grant: CAESMAw/b5efUaolUxASHE2gOBLjPgjnswpXLSEz9xDwCiKhrXI/VHYM3jKjB96XRSJRsxpwCiAzMDg3ZmQ4OTA1MDc0ODZjOTJjZDQ5ZjhkMzhmOTEyZBpAwPAw+loHFTWsNNAthNO/7x8IaNlL2tw7bT5okZJ2eNtmopBiR05QdfIbXJ8VlCMp/FDcIXHiGKriUOS8tegH9yDmwpnyBSj23pnyBQ==
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /patients/ HTTP/1.1
+X-Virgil-Pure-Grant: CAESMKqG4pzsqDZbYf6X2wc0Abm5tg9femyv4ndGPICGyL8ONeIBGl5DW2iK9/i5NcBZKBpwCiA5OWMyMjRiZjg2MzU0YTc4OWRlZTIyMGM2MzExZGUzMxpAHUl3jtN5lcNNrVUy/Kj4F+Ubw5K4Nsa6O95ghOkFtpu6Jvpl2ugd4y/oZh54cBFUUmL286yZJWBVdmL+AWJ/xCD8pKfyBSiMwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">response</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 404 Not Found
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_share">Share</h3>
-<div class="listingblock">
-<div class="title">request</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /patients/share/6b92789ffa264f9c8684d12664d99f91 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMDC3TRice37amgwAsfGUnEPV2hWz0d3aSuW6qZ96TBW2EBzMdOfTCxL8AJ+mqXjdZhpwCiBjNmY5OWJkYmQ4ZmE0YmY4OGUzZmY3ZDc3ZDIyMGMwMxpAvx3ilpFEumxT23FAcdHdCVYzo9dYsIR6r2jnQ/v/ZM4bHpGU3VX5egZ4OtUX8QbeB+HqNKbm0JDNmJwXXRifCiDowpnyBSj43pnyBQ==
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">response</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 213
+
+[ {
+  "id" : "99c224bf86354a789dee220c6311de33",
+  "name" : "PatientEntity 1",
+  "ssn" : "12345678901"
+}, {
+  "id" : "f2728ad3b37d48d5a1e0a5d5f8254296",
+  "name" : "PatientEntity 2",
+  "ssn" : "No permissions"
+} ]</code></pre>
 </div>
 </div>
 </div>
@@ -536,8 +541,8 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /physicians/b986285192d54b0ab592cf60bf94c594 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMLB+fmMdSNJz1JZyWoDUz0byBqHkx+TCIPeB1DHkMCOEQr/u3/0vkkaWVHFIAiWkLhpwCiBiOTg2Mjg1MTkyZDU0YjBhYjU5MmNmNjBiZjk0YzU5NBpAuvDjTrtzDSmXjrcGzzPI/TvM3HdPJj+bfxhGrYO9bmi1yecT41ftaODC+U8mxNHgD3wRdZPcLKsKfxwiZ8QgnSDFwpnyBSjV3pnyBQ==
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /physicians/ddebf1ebbd324706800221779b2f4ba1 HTTP/1.1
+X-Virgil-Pure-Grant: CAESMJZKylPlnCR+qonpqd/GocDNithD2iYPBAAnxL0FP8ebN14SxrXEbah5EmxcHwUGlxpwCiBkZGViZjFlYmJkMzI0NzA2ODAwMjIxNzc5YjJmNGJhMRpAYBv8bW/aNi7gpM4jvL39rwHQ7wUud7nxdDlmgoVgy8vJT/49GgbXPq5SjbX5rnNNVreq5OlI2Cf4EaeX5h1lzSCIpafyBSiYwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -546,12 +551,12 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 101
+Content-Length: 102
 
 {
-  "id" : "b986285192d54b0ab592cf60bf94c594",
+  "id" : "ddebf1ebbd324706800221779b2f4ba1",
   "name" : "PhysicianEntity 1",
-  "licenseNo" : 1001
+  "license_no" : 1001
 }</code></pre>
 </div>
 </div>
@@ -562,7 +567,7 @@ Content-Length: 101
 <div class="title">request</div>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /physicians/ HTTP/1.1
-X-Virgil-Pure-Grant: CAESMDDyZ6zjlxk0Tnj2SCIx3DSXB/eDmZvGPeJ3Az+tufZqdcpsMHSTwI+rbggdfG3YSxpwCiA1MWFkNmQxOWJjZWQ0MjdmYjUwMGZhMWU5ZWU5N2Y2ZBpA3bRRTWYaWavb75e2IITjnWSw3rC5BHzlbUPH5TSfRJbP75HMEIvTOcPhlYjPJVeWOLz0Eb8jjPkdxMWag+7rQyDIwpnyBSjY3pnyBQ==
+X-Virgil-Pure-Grant: CAESMORW1JKoLH1yw4/1Xf+QeYtb1ymWbVTwgw6Xor0muz8qCYWDJoFRp4GPhRHjv15ZJRpwCiA2OGUzMGRhYzlhOWQ0YTZmODlmZDg2M2M1NmEwMDllMRpA9SY5gIkepHhZtnADvWC3gNZC30yrhukNnHrq3qmGFAGXHqZJw10EABS/Pd7Y0yeOovF01l0TLYXNPzwccY1OoSCKpafyBSiawafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -571,30 +576,13 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 105
+Content-Length: 106
 
 [ {
-  "id" : "51ad6d19bced427fb500fa1e9ee97f6d",
+  "id" : "68e30dac9a9d4a6f89fd863c56a009e1",
   "name" : "PhysicianEntity 1",
-  "licenseNo" : 1001
+  "license_no" : 1001
 } ]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_share_2">Share</h3>
-<div class="listingblock">
-<div class="title">request</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /physicians/share/25af5ffb915c4b85ba25c111bd7e558c HTTP/1.1
-X-Virgil-Pure-Grant: CAESMOH1gVWibldXg+NWoQSupn1k8skJUgYSHWGuQyoeN4R/FiBLCSx4j+YIoZowrC8v9hpwCiBkMDc2NzY5YWM0ODU0Njg2YWQ2OGE2MDg4OWViN2FjYxpADTLQsoTmOyjmObP5Jt+DewSIBJiJmGgWU2sCwaMpUZujNRbyC1YSNl+bSs1r4MVprsNBKruufmYinBKMfq7HdCDLwpnyBSjb3pnyBQ==
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">response</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
 </div>
 </div>
 </div>
@@ -608,8 +596,8 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /prescriptions/812aa6c274be4be1ae4511495eb5cd19 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMPpXDCPehLRsD0/ACcDVsMTJmRqKGlDJQFTHW0z0YtTByNGnBLiG5R3JCclNwCe4ERpwCiBlZGM2MTc1MjY2OWM0ZGJiOTIxYmMxOGE1NDk0MGY4NRpADJiV5AVahzCZa+dS3ikMbD05PE7znttG4eWxcDFJPdhqjTGHLtaBgSspHqyN3o00fcwSHPdXFBMyiK1Bz/g4biDfwpnyBSjv3pnyBQ==
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /prescriptions/b11675bfd26448daae565fa6ae9689c2 HTTP/1.1
+X-Virgil-Pure-Grant: CAESMGyN7j14GacQXgTkO7KNQoUwWYmXR4mwMs+PNonuwuvi2MZ2walR5X8W4H2sh9PsZhpwCiBmY2Y0YTBhNjE0NzE0OGQ4YWIwNTIyMGM3NjEyNGQ0MxpAPYqSHLl5TaSMPOBPVAb8lfHkGAO03DkTB0wBS1MYgnj8jiA0DKRI7H5s30Owc58JVgq0vMqOMq79oecjrjs5WyCDpafyBSiTwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -621,12 +609,12 @@ Content-Type: application/json
 Content-Length: 294
 
 {
-  "id" : "812aa6c274be4be1ae4511495eb5cd19",
-  "notes" : "Pills 1 tablet per day",
-  "patient_id" : "6294f848e33044ab98905857ba7b9d41",
-  "physician_id" : "edc61752669c4dbb921bc18a54940f85",
-  "assign_date" : "2020-02-14T08:59:11.524+0000",
-  "release_date" : "2020-02-15T08:59:11.524+0000"
+  "id" : "b11675bfd26448daae565fa6ae9689c2",
+  "notes" : "Pills 8 tablet per day",
+  "patient_id" : "aeee4f2b37844911a046acc6a6285bcc",
+  "physician_id" : "fcf4a0a6147148d8ab05220c76124d43",
+  "assign_date" : "2020-02-16T23:38:43.692+0000",
+  "release_date" : "2020-02-26T23:38:43.692+0000"
 }</code></pre>
 </div>
 </div>
@@ -637,7 +625,7 @@ Content-Length: 294
 <div class="title">request</div>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /prescriptions HTTP/1.1
-X-Virgil-Pure-Grant: CAESMLBRk9yOdRHA0HwQgScrxxn4BGoYW5o3TuGpE/adqQYT6Yep+TSGG8VG3v+ePaaTQRpwCiA4YjljNmQwMDc2MDU0YzI2ODgyZjEwYzM3MDE2MjI1ORpAVQz3f0Q8U9XERbhKKOA8sOfgQbVukjQnewnQWDLEoOTFehJYXjJa+/8S5P3yXDV/EuLzQ5ij+mBj1qpezmAPUyDhwpnyBSjx3pnyBQ==
+X-Virgil-Pure-Grant: CAESMFqQ6avaIcEg753CbrHSwAkK7bXZuc6jPQH3TUw8rie24KrTr9Wq1S4J6zxVPFnhshpwCiBhMGVlMmUxMGEzNzE0NmQ1OWY5ZDViODczYzNlM2ZiZRpAPSaY5QAfZAM7mM66rZH1111VuyLBopMCvpKcjKmQ5n+FdEkCQzGDY8I3KMfcpCYFhNgwWV0D3t1KJ0Hmu/t1wiCFpafyBSiVwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -649,26 +637,26 @@ Content-Type: application/json
 Content-Length: 890
 
 [ {
-  "id" : "3446605eff124acfac69ac3d0a500d0e",
-  "notes" : "Pills 8 tablet per day",
-  "patient_id" : "0f4d8e2d2af545f3a58fd93994013778",
-  "physician_id" : "8b9c6d0076054c26882f10c370162259",
-  "assign_date" : "2020-02-14T08:59:13.716+0000",
-  "release_date" : "2020-02-24T08:59:13.716+0000"
-}, {
-  "id" : "84adf23497a5478dbbcb3e3a3c14fb2c",
-  "notes" : "Pills 1 tablet per day",
-  "patient_id" : "73d754464a2e4e1d8aaf84bfc37c302f",
-  "physician_id" : "8b9c6d0076054c26882f10c370162259",
-  "assign_date" : "2020-02-14T08:59:13.697+0000",
-  "release_date" : "2020-02-15T08:59:13.697+0000"
-}, {
-  "id" : "dbb14037f29c4c0e95b466b20214840f",
+  "id" : "53b11d13be064657824387117938c023",
   "notes" : "Pills 2 tablet per day",
-  "patient_id" : "73d754464a2e4e1d8aaf84bfc37c302f",
-  "physician_id" : "8b9c6d0076054c26882f10c370162259",
-  "assign_date" : "2020-02-14T08:59:13.707+0000",
-  "release_date" : "2020-02-16T08:59:13.707+0000"
+  "patient_id" : "322d352252c34f12ab3b4807c2a22e33",
+  "physician_id" : "a0ee2e10a37146d59f9d5b873c3e3fbe",
+  "assign_date" : "2020-02-16T23:38:45.644+0000",
+  "release_date" : "2020-02-18T23:38:45.644+0000"
+}, {
+  "id" : "79700bedcb874845a38c8163edb24efc",
+  "notes" : "Pills 8 tablet per day",
+  "patient_id" : "2a808f6aaafc4bb3acd0cf70cac0e9fb",
+  "physician_id" : "a0ee2e10a37146d59f9d5b873c3e3fbe",
+  "assign_date" : "2020-02-16T23:38:45.646+0000",
+  "release_date" : "2020-02-26T23:38:45.646+0000"
+}, {
+  "id" : "d37e035657f34d15923faaddb7b4d49b",
+  "notes" : "Pills 1 tablet per day",
+  "patient_id" : "322d352252c34f12ab3b4807c2a22e33",
+  "physician_id" : "a0ee2e10a37146d59f9d5b873c3e3fbe",
+  "assign_date" : "2020-02-16T23:38:45.640+0000",
+  "release_date" : "2020-02-17T23:38:45.640+0000"
 } ]</code></pre>
 </div>
 </div>
@@ -678,26 +666,26 @@ Content-Length: 890
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /prescriptions/695f424f192c42258781470def6ac2c5 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMJ60GVrJv4ag3O2dOkyWLic7tGndL+Jb/N0LtMT/VvtHFEIm3LEwUWHqBNajqjVxAxpwCiBjZTcwYjZlZjA3YTE0ZDRmODE1MmNhOTFhNmIwN2M5ZBpA3S4EP3yyFmOMeD/sE4dmPPnMa1dedeqM/Yqgs4tvm6AxLUm8K6JxTCDSlx16vGOV7ZwcSl6meipt+lp2ntUBdiDdwpnyBSjt3pnyBQ==
-Content-Length: 271
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /prescriptions/d381a380620e4adfbd2188eba9e7407f HTTP/1.1
+X-Virgil-Pure-Grant: CAESML5maUBpp7j1FWnzYWmjVvT2Jn25eNdi+9a9vOQo012Z85tuaZwHdfLtqaTTo8hgjBpwCiBkZDAwNTY2ZjViMmE0NjdmYmFkZGQ5ZWNiNDg0Y2YwORpAXvv4IDuc1j6sbILfRcvBiDdB94HFviAVeAtscj+4py2wapmPCvnExeY40LmhkiQlb+2dt14wsb9BmBeE4oDp4CCBpafyBSiRwafyBQ==
+Content-Type: application/json
+Content-Length: 281
 Host: localhost:8080
 
 {
-  "id" : "695f424f192c42258781470def6ac2c5",
-  "patientId" : "2e97ac48c0d5400eae919bcc87c7a5bf",
-  "physicianId" : "ce70b6ef07a14d4f8152ca91a6b07c9d",
+  "id" : "d381a380620e4adfbd2188eba9e7407f",
   "notes" : "New notes",
-  "assingDate" : "Feb 13, 2020, 10:59:09 AM",
-  "releaseDate" : "Feb 14, 2020, 10:59:09 AM"
+  "patient_id" : "4aec924930fe463eb0b25dc5e6f066b1",
+  "physician_id" : "dd00566f5b2a467fbaddd9ecb484cf09",
+  "assign_date" : "2020-02-15T23:38:41.884+0000",
+  "release_date" : "2020-02-16T23:38:41.884+0000"
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">response</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 415 Unsupported Media Type
-Accept: application/octet-stream, text/plain, application/xml, text/xml, application/x-www-form-urlencoded, application/*+xml, multipart/form-data, multipart/mixed, application/json, application/*+json, */*</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
 </div>
 </div>
 </div>
@@ -711,8 +699,8 @@ Accept: application/octet-stream, text/plain, application/xml, text/xml, applica
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /lab-tests/94e9ceaf324d4621bf616b3eb08001a2 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMBE9sy1cm/SKzKauHfyF4aKQHCkUpa+5Q6wyxeA1CeRrjSW4if8v+lrpZzJXxH5EVBpwCiBiOTU3YTBiYWU5NTU0NGRkOTEyZjVjYmEzOTc3N2U4MBpAyS1al+JgdHizB9FPmKRGvHxoLVvle6vEQGbQEOutaatX/IZAfrFxBGqw7/UkNwSmOYo02UM7PPqkkG/xhSSDyiCCx5nyBSiS45nyBQ==
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /lab-tests/bc7e00bd45b04ee99cc8e712166647d8 HTTP/1.1
+X-Virgil-Pure-Grant: CAESMOqNf9tU34DeeSsTlblmCih857v8mWkaIV6nwm6p3I4QnH6OedwOoW/FVOGs6B3qtRpwCiBhNTAzYmEwM2UxYzI0NTE0YmRmMTM0MGU4M2Y2MTM3OBpAOVAAhUnZW8iE1lRQDMssHfXtxx1pgh2edtMvkGMCTAFLE3h+x3/FyrCo37oRIH5nKjfn8U1ELxBMvxKsnzscmCD1pKfyBSiFwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -721,16 +709,16 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 273
+Content-Length: 275
 
 {
-  "id" : "94e9ceaf324d4621bf616b3eb08001a2",
-  "name" : "Bood test 1",
-  "results" : "Not ready",
-  "status" : "",
-  "patient_id" : "3d88eff988e146c1b9fc4c026d3ebd1d",
-  "physician_id" : "b957a0bae95544dd912f5cba39777e80",
-  "test_date" : "2020-02-14T09:08:18.706+0000"
+  "id" : "bc7e00bd45b04ee99cc8e712166647d8",
+  "name" : "Bood test 2",
+  "results" : null,
+  "status" : "NOT_READY",
+  "patient_id" : "7a50500baf2841519d9ee3e40d60ae86",
+  "physician_id" : "a503ba03e1c24514bdf1340e83f61378",
+  "test_date" : "2020-02-16T23:38:30.068+0000"
 }</code></pre>
 </div>
 </div>
@@ -741,7 +729,7 @@ Content-Length: 273
 <div class="title">request</div>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /lab-tests HTTP/1.1
-X-Virgil-Pure-Grant: CAESMETOfzjXggHNb50LwIHPgUyYDLstuoHgCCZRsFwy980brzDHbOBeuh47nkXYnOf+LxpwCiBlYTFkYjQ2Y2M5OTM0ZTE1YjIwZDQ5MmQxNGRkODlkZRpAmxE2l8sxKA64oYVRv8Zqd2HJD6b4SSpf42+v08WEum7+1qoH+xhsyEtcyDCN1kPBTP2rOIXBOmYUbQ/hDRKFASCFx5nyBSiV45nyBQ==
+X-Virgil-Pure-Grant: CAESMEd9LBPbb3YogUs/MHteFKE/I4xyT70LVfcjDTXQz7I6S9TxrqGMj/pvirJL4A+kaRpwCiBiZTY3M2I1NGY5NjI0N2I5YjAxNTgzNTBhNTA5ZjE1MBpAuJB0I/EHGo2GshK02nqaA4Jif8yAQTOCYNlaAjr9+Dp4j5ImpZh9U7nskHSwvVibRbSaIj8sl+GV6uZPHpj/fCD3pKfyBSiHwafyBQ==
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -750,32 +738,32 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 827
+Content-Length: 833
 
 [ {
-  "id" : "40d8d52911324d51a687983293e20d88",
+  "id" : "2d99a2ae10544f1384049dc4fd3d42d3",
   "name" : "Bood test 3",
-  "results" : "Not ready",
-  "status" : "",
-  "patient_id" : "96b2d1dc116d44dbbd432fc5cf9b3c95",
-  "physician_id" : "ea1db46cc9934e15b20d492d14dd89de",
-  "test_date" : "2020-02-14T09:08:21.984+0000"
+  "results" : null,
+  "status" : "NOT_READY",
+  "patient_id" : "62a19adeec454e7faee613a3c146e03c",
+  "physician_id" : "be673b54f96247b9b0158350a509f150",
+  "test_date" : "2020-02-16T23:38:32.164+0000"
 }, {
-  "id" : "78bdd7aa7a524459952f9c0ef6d07f89",
+  "id" : "4af791cf7ca34e51b06423befa2dc2f6",
   "name" : "Bood test 2",
-  "results" : "Not ready",
-  "status" : "",
-  "patient_id" : "0a904dafa56f4726878b534d59ffdb4e",
-  "physician_id" : "ea1db46cc9934e15b20d492d14dd89de",
-  "test_date" : "2020-02-14T09:08:21.981+0000"
+  "results" : null,
+  "status" : "NOT_READY",
+  "patient_id" : "8f4079dadf9a449683a44d2b33f3d845",
+  "physician_id" : "be673b54f96247b9b0158350a509f150",
+  "test_date" : "2020-02-16T23:38:32.163+0000"
 }, {
-  "id" : "b4994a8f591241a39bc806ede934d098",
+  "id" : "e44bb0b2fc914e658b6881c189927564",
   "name" : "Bood test 1",
-  "results" : "Not ready",
-  "status" : "",
-  "patient_id" : "0a904dafa56f4726878b534d59ffdb4e",
-  "physician_id" : "ea1db46cc9934e15b20d492d14dd89de",
-  "test_date" : "2020-02-14T09:08:21.979+0000"
+  "results" : null,
+  "status" : "NOT_READY",
+  "patient_id" : "8f4079dadf9a449683a44d2b33f3d845",
+  "physician_id" : "be673b54f96247b9b0158350a509f150",
+  "test_date" : "2020-02-16T23:38:32.161+0000"
 } ]</code></pre>
 </div>
 </div>
@@ -785,38 +773,21 @@ Content-Length: 827
 <div class="listingblock">
 <div class="title">request</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /lab-tests/217daa7899a04e608a72fbf030ef2852 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMFFRh2VHMPUzmwbIYI5A9/ghkW/zF1GyB6KuCBNJ4iYJ++pC+30NpPQziHV38Fo04BpwCiBlNGU3ZDk0NjVhNTc0ODIxOGQ1YjY3NmJkYzBkMzE1MxpAeIOLhW/PpElGiSUYJJlZW9O4uMOPKhCtgj5zrxsjRmLTcbya+Udu7XwJmb+1lxNmoDjGedJnG0stymn6GbRpriCAx5nyBSiQ45nyBQ==
-Content-Length: 279
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /lab-tests/3b479636190b409aa636602d70246b5d HTTP/1.1
+X-Virgil-Pure-Grant: CAESMPuvmxZfVw926AUrpPjeO2Zin1pxT9tq+ObNdbRiJHDjVXBYKibsKkYbVBp33ZfGqhpwCiA3MjM5NmViYzdhYTM0YzE0OGNhYzc4MTFiMWM5MDMzNBpAOeMAG/t/z2BZRh5y/3ETblpWnoUbbd5t1AYTgb9SGxMu/FuV44H8zVXXVabkKmmiuq5N0OPsbJUKM6L+cHonoiDypKfyBSiCwafyBQ==
+Content-Type: application/json
+Content-Length: 294
 Host: localhost:8080
 
 {
-  "id" : "217daa7899a04e608a72fbf030ef2852",
+  "id" : "3b479636190b409aa636602d70246b5d",
   "name" : "Bood test 2",
-  "patientId" : "8efa14eafbb24f6ea999999b36bbb07f",
-  "physicianId" : "e4e7d9465a5748218d5b676bdc0d3153",
-  "testDate" : "Feb 14, 2020, 11:08:16 AM",
   "results" : "Here are your results",
-  "status" : ""
+  "status" : "NOT_READY",
+  "patient_id" : "258973197ea141f8842df1bbf32ab554",
+  "physician_id" : "72396ebc7aa34c148cac7811b1c90334",
+  "test_date" : "2020-02-16T23:38:26.866+0000"
 }</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">response</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 415 Unsupported Media Type
-Accept: application/octet-stream, text/plain, application/xml, text/xml, application/x-www-form-urlencoded, application/*+xml, multipart/form-data, multipart/mixed, application/json, application/*+json, */*</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_share_3">Share</h3>
-<div class="listingblock">
-<div class="title">request</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">PUT /lab-tests/7498628f55bd4a55a8230805fd71641c/share/ce6e64e8ed6543eaaf897eea49dda6a3 HTTP/1.1
-X-Virgil-Pure-Grant: CAESMKhgaCZs1qmY7BpR8NSOePVA77AZtqOwzgHHmKM5CkmUCGNSGqTVtIDPsCCcc5gQMRpwCiA4NGE5NGE1ZDMyYWY0YmZjOGRkMDc4MWE5MmIzNjRmZRpAb2CVy44VqmrHe8k9DqM9vBWRYzqKGJ+qJW+ms+ayF2dwCY+kxE6Om7/dFi97/4A3F2OkfA1ZFvN2Q2QVsGki8CDgx5nyBSjw45nyBQ==
-Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -828,10 +799,23 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_share">Share</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<div class="title">request</div>
+<p>Unresolved directive in index.adoc - include::/home/teonit/Projects/Virgil/demo/virgil-mariadb-demo/server/target/generated-snippets/share/http-request.adoc[]</p>
+</div>
+<div class="paragraph">
+<div class="title">response</div>
+<p>Unresolved directive in index.adoc - include::/home/teonit/Projects/Virgil/demo/virgil-mariadb-demo/server/target/generated-snippets/share/http-response.adoc[]</p>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-02-14 10:52:53 +0200
+Last updated 2020-02-16 23:05:14 +0200
 </div>
 </div>
 </body>

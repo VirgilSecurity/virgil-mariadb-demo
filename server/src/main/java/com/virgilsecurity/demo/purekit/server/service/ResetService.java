@@ -6,16 +6,13 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.virgilsecurity.demo.purekit.server.mapper.LabTestMapper;
-import com.virgilsecurity.demo.purekit.server.mapper.PatientMapper;
-import com.virgilsecurity.demo.purekit.server.mapper.PhysicianAssignmentsMapper;
-import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
-import com.virgilsecurity.demo.purekit.server.mapper.PrescriptionMapper;
 import com.virgilsecurity.demo.purekit.server.model.http.LabTest;
+import com.virgilsecurity.demo.purekit.server.model.http.Laboratory;
 import com.virgilsecurity.demo.purekit.server.model.http.Patient;
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
 import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.Pure;
 import com.virgilsecurity.purekit.pure.exception.PureException;
@@ -32,21 +29,6 @@ public class ResetService {
 	private Pure pure;
 
 	@Autowired
-	private PatientMapper patientMapper;
-
-	@Autowired
-	private PhysicianMapper physicianMapper;
-
-	@Autowired
-	private PrescriptionMapper prescriptionMapper;
-
-	@Autowired
-	private LabTestMapper labTestMapper;
-
-	@Autowired
-	private PhysicianAssignmentsMapper physicianAssignmentsMapper;
-
-	@Autowired
 	private MariaDbPureStorage pureStorage;
 
 	@Autowired
@@ -54,6 +36,9 @@ public class ResetService {
 
 	@Autowired
 	private PhysicianService physicianService;
+
+	@Autowired
+	private LaboratoryService laboratoryService;
 
 	@Autowired
 	private PrescriptionService prescriptionService;
@@ -67,11 +52,12 @@ public class ResetService {
 	}
 
 	private void clearTables() {
-		this.labTestMapper.deleteAll();
-		this.prescriptionMapper.deleteAll();
-		this.physicianAssignmentsMapper.deleteAll();
-		this.patientMapper.deleteAll();
-		this.physicianMapper.deleteAll();
+		this.labTestService.reset();
+		this.prescriptionService.reset();
+		this.laboratoryService.reset();
+		this.patientService.reset();
+		this.physicianService.reset();
+		;
 
 //FIXME
 //		try {
@@ -87,22 +73,22 @@ public class ResetService {
 
 		// Register patients
 		Patient patient = new Patient("PatientEntity 1", "12345678901");
-		String patientGrant = this.patientService.register(patient, password);
-		resetData.getPatients().add(patientGrant);
+		UserRegitration registeredPatient = this.patientService.register(patient, password);
+		resetData.getPatients().add(registeredPatient);
 		PureGrant patient1PureGrant;
 		try {
-			patient1PureGrant = this.pure.decryptGrantFromUser(patientGrant);
+			patient1PureGrant = this.pure.decryptGrantFromUser(registeredPatient.getGrant());
 		} catch (PureException e) {
 			log.error("Patient1 grant decryption failed", e);
 			throw new RuntimeException();
 		}
 
 		patient = new Patient("PatientEntity 2", "12345678902");
-		patientGrant = this.patientService.register(patient, password);
-		resetData.getPatients().add(patientGrant);
+		registeredPatient = this.patientService.register(patient, password);
+		resetData.getPatients().add(registeredPatient);
 		PureGrant patient2PureGrant;
 		try {
-			patient2PureGrant = this.pure.decryptGrantFromUser(patientGrant);
+			patient2PureGrant = this.pure.decryptGrantFromUser(registeredPatient.getGrant());
 		} catch (PureException e) {
 			log.error("Patient2 grant decryption failed", e);
 			throw new RuntimeException();
@@ -110,13 +96,25 @@ public class ResetService {
 
 		// Register physician
 		Physician physician = new Physician("PhysicianEntity 1", 1001L);
-		String physicianGrant = this.physicianService.register(physician, password);
-		resetData.getPhysicians().add(physicianGrant);
+		UserRegitration registeredPhysician = this.physicianService.register(physician, password);
+		resetData.getPhysicians().add(registeredPhysician);
 		PureGrant physicianPureGrant;
 		try {
-			physicianPureGrant = this.pure.decryptGrantFromUser(physicianGrant);
+			physicianPureGrant = this.pure.decryptGrantFromUser(registeredPhysician.getGrant());
 		} catch (PureException e) {
 			log.error("Physician grant decryption failed", e);
+			throw new RuntimeException();
+		}
+
+		// Register laboratory
+		Laboratory laboratory = new Laboratory("Laboratory 1");
+		UserRegitration registeredLaboratory = this.laboratoryService.register(laboratory, password);
+		resetData.getLaboratories().add(registeredLaboratory);
+		PureGrant laboratoryPureGrant;
+		try {
+			laboratoryPureGrant = this.pure.decryptGrantFromUser(registeredLaboratory.getGrant());
+		} catch (PureException e) {
+			log.error("Laboratory grant decryption failed", e);
 			throw new RuntimeException();
 		}
 
@@ -143,7 +141,6 @@ public class ResetService {
 		labTest = new LabTest("Bood test 3", patient2PureGrant.getUserId(), Utils.today());
 		resetData.getLabTests().add(this.labTestService.create(labTest, physicianPureGrant));
 
-		
 		return resetData;
 	}
 

@@ -12,6 +12,8 @@ import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.exception.PermissionDeniedException;
 import com.virgilsecurity.demo.purekit.server.mapper.LabTestMapper;
 import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
+import com.virgilsecurity.demo.purekit.server.model.SharedRole;
+import com.virgilsecurity.demo.purekit.server.model.TestStatus;
 import com.virgilsecurity.demo.purekit.server.model.db.LabTestEntity;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.LabTest;
@@ -27,10 +29,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LabTestService {
 
-	private static final String RESULTS_DATA_ID = "results";
-
 	@Autowired
-	private LabTestMapper labTestMapper;
+	private LabTestMapper mapper;
 
 	@Autowired
 	private PhysicianMapper physicianMapper;
@@ -44,13 +44,13 @@ public class LabTestService {
 		String id = Utils.generateId();
 		LabTestEntity entity = new LabTestEntity(id, labTest.getName(), labTest.getPatientId(), grant.getUserId(),
 				labTest.getTestDate(), null);
-		this.labTestMapper.insert(entity);
+		this.mapper.insert(entity);
 
 		return id;
 	}
 
 	public List<LabTest> findAll(PureGrant grant) {
-		List<LabTestEntity> labTests = this.labTestMapper.findAll();
+		List<LabTestEntity> labTests = this.mapper.findAll();
 		List<LabTest> result = new LinkedList<LabTest>();
 		labTests.forEach(entity -> {
 			result.add(decryptEntity(entity, grant));
@@ -59,7 +59,7 @@ public class LabTestService {
 	}
 
 	public LabTest get(String labTestId, PureGrant grant) {
-		LabTestEntity entity = this.labTestMapper.findById(labTestId);
+		LabTestEntity entity = this.mapper.findById(labTestId);
 		if (entity == null) {
 			throw new NotFoundException();
 		}
@@ -69,7 +69,7 @@ public class LabTestService {
 	}
 
 	public void update(LabTest labTest, PureGrant grant) {
-		LabTestEntity entity = this.labTestMapper.findById(labTest.getId());
+		LabTestEntity entity = this.mapper.findById(labTest.getId());
 		if (entity == null) {
 			throw new NotFoundException();
 		}
@@ -77,7 +77,7 @@ public class LabTestService {
 
 		byte[] encryptedResults;
 		try {
-			encryptedResults = this.pure.encrypt(labTest.getPhysicianId(), RESULTS_DATA_ID,
+			encryptedResults = this.pure.encrypt(labTest.getPhysicianId(), SharedRole.TEST_RESULTS.getCode(),
 					labTest.getResults().getBytes());
 		} catch (PureException e) {
 			log.error("Laboratory test results encryption failed", e);
@@ -85,16 +85,11 @@ public class LabTestService {
 		}
 		entity.setResults(encryptedResults);
 
-		this.labTestMapper.update(entity);
+		this.mapper.update(entity);
 	}
 
-	public void shareResults(String id, String userId, PureGrant grant) {
-		try {
-			pure.share(grant, RESULTS_DATA_ID, userId);
-		} catch (PureException e) {
-			log.debug("LabTest results sharing failed", e);
-			throw new EncryptionException();
-		}
+	public void reset() {
+		this.mapper.deleteAll();
 	}
 
 	private void validatePermissions(PureGrant grant) {
@@ -119,17 +114,20 @@ public class LabTestService {
 	}
 
 	private LabTest decryptEntity(LabTestEntity entity, PureGrant grant) {
-		String results = Constants.Texts.NOT_READY;
+		String results = null;
+		TestStatus status = TestStatus.NOT_READY;
 		if (entity.getResults() != null) {
 			try {
-				results = new String(
-						this.pure.decrypt(grant, entity.getPhysicianId(), RESULTS_DATA_ID, entity.getResults()));
+				results = new String(this.pure.decrypt(grant, entity.getPhysicianId(),
+						SharedRole.TEST_RESULTS.getCode(), entity.getResults()));
+				status = TestStatus.OK;
 			} catch (PureException e) {
 				results = Constants.Texts.NO_PERMISSIONS;
+				status = TestStatus.PERMISSION_DENIED;
 			}
 		}
 		return new LabTest(entity.getId(), entity.getName(), entity.getPatientId(), entity.getPhysicianId(),
-				entity.getTestDate(), results, "");
+				entity.getTestDate(), results, status);
 	}
 
 }

@@ -21,7 +21,7 @@ public class PrescriptionEntity implements Serializable {
 	@JsonProperty("physician_id")
 	private String physicianId;
 
-	private String notes;
+	private byte[] notes;
 
 	@JsonProperty("assign_date")
 	private Date assingDate;

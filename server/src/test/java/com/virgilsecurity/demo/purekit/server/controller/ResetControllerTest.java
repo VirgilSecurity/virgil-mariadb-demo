@@ -29,6 +29,7 @@ public class ResetControllerTest extends RestDocTest {
 		assertEquals(2, body.getPatients().size());
 		assertEquals(1, body.getPhysicians().size());
 		assertEquals(3, body.getLabTests().size());
+		assertEquals(1, body.getLaboratories().size());
 
 		this.mockMvc.perform(MockMvcRequestBuilders.request(HttpMethod.POST, "/reset"))
 				.andDo(document("reset", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
