@@ -24,8 +24,5 @@ docker build -t virgil/mariadb-demo .
 ## Run Docker container
 
 ```
-docker run --env-file .env -p 8080:8080 virgil/mariadb-demo
+docker-compose up
 ```
-
-# REST API
-
