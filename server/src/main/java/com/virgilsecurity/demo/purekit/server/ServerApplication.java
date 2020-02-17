@@ -46,14 +46,13 @@ public class ServerApplication {
 		String kmsServiceAddress = this.env.getProperty("virgil.kmsServiceAddress",
 				"https://api.virgilsecurity.com/kms/v1");
 		try {
-			PureContext context = PureContext.createContext(appToken, nms, bu, pureStorage, secretKey, publicKey, null,
+			PureContext context = PureContext.createContext(appToken, nms, bu, secretKey, publicKey, pureStorage, null,
 					pheServiceAddress, kmsServiceAddress);
 			return new Pure(context);
 		} catch (PureException e) {
 			log.fatal("Can't initialize Virgil Pure", e);
 			throw new RuntimeException("Virgil Pure initialization error");
 		}
-//		return null;
 	}
 
 }

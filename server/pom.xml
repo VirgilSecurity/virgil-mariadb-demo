@@ -21,6 +21,8 @@
 		<virgil-crypto.version>0.12.0</virgil-crypto.version>
 		<virgil-sdk.version>7.1.0</virgil-sdk.version>
 		<virgil-purekit.version>3.0.0-alpha1-SNAPSHOT</virgil-purekit.version>
+
+		<snippetsDirectory>${project.build.directory}/generated-snippets</snippetsDirectory>
 	</properties>
 
 	<dependencies>
@@ -104,6 +106,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>server</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
@@ -119,6 +122,11 @@
 						<configuration>
 							<backend>html</backend>
 							<doctype>book</doctype>
+							<attributes>
+								<snippets>${snippetsDirectory}</snippets>
+							</attributes>
+							<sourceDirectory>src/main/docs/asciidocs</sourceDirectory>
+							<outputDirectory>docs</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>

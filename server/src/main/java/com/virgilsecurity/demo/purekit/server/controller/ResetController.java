@@ -1,7 +1,7 @@
 package com.virgilsecurity.demo.purekit.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +15,7 @@ public class ResetController {
 	@Autowired
 	private ResetService resetService;
 
-	@GetMapping
+	@PostMapping
 	public ResetData reset() {
 		return this.resetService.reset();
 	}

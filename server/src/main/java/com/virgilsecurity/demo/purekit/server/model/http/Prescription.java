@@ -7,8 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Prescription implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,5 +31,13 @@ public class Prescription implements Serializable {
 
 	@JsonProperty("release_date")
 	private Date releaseDate;
+
+	public Prescription(String patientId, String notes, Date assingDate, Date releaseDate) {
+		super();
+		this.patientId = patientId;
+		this.notes = notes;
+		this.assingDate = assingDate;
+		this.releaseDate = releaseDate;
+	}
 
 }

@@ -1,5 +1,6 @@
 package com.virgilsecurity.demo.purekit.server.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -22,8 +23,22 @@ public class PrescriptionMapperTest {
 	private PrescriptionMapper prescriptionMapper;
 
 	@Test
-	void findAllTest() {
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+	void findAll_byPhysician() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(PhysicianMapperTest.PHYSICIAN1_ID);
+		assertNotNull(prescriptions);
+		assertEquals(2, prescriptions.size());
+	}
+
+	@Test
+	void findAll_byPatient() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(PatientMapperTest.PATIENT1_ID);
+		assertNotNull(prescriptions);
+		assertEquals(2, prescriptions.size());
+	}
+
+	@Test
+	void findAll_byWrongUserId() {
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll("780b28cb531c4e4fb1513529b09b8a33");
 		assertNotNull(prescriptions);
 		assertTrue(prescriptions.isEmpty());
 	}
@@ -33,9 +48,9 @@ public class PrescriptionMapperTest {
 		String id = Utils.generateId();
 		insertPrescription(id);
 
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll("0e1ddb5ff64941e382b36018f1ee8663");
 		assertNotNull(prescriptions);
-		assertEquals(1, prescriptions.size());
+		assertEquals(3, prescriptions.size());
 	}
 
 	@Test
@@ -44,7 +59,7 @@ public class PrescriptionMapperTest {
 		PrescriptionEntity prescription = insertPrescription(id);
 
 		Date date = Utils.today();
-		prescription.setNotes("New notes");
+		prescription.setNotes("New notes".getBytes());
 		prescription.setReleaseDate(date);
 		prescription.setAssingDate(date);
 		this.prescriptionMapper.update(prescription);
@@ -54,7 +69,7 @@ public class PrescriptionMapperTest {
 		assertEquals(prescription.getId(), prescription2.getId());
 		assertEquals(prescription.getPatientId(), prescription2.getPatientId());
 		assertEquals(prescription.getPhysicianId(), prescription2.getPhysicianId());
-		assertEquals("New notes", prescription2.getNotes());
+		assertArrayEquals("New notes".getBytes(), prescription2.getNotes());
 		assertEquals(prescription.getReleaseDate(), prescription2.getReleaseDate());
 		assertEquals(prescription.getAssingDate(), prescription2.getAssingDate());
 
@@ -68,7 +83,7 @@ public class PrescriptionMapperTest {
 		assertEquals(id, prescription.getId());
 		assertEquals(PatientMapperTest.PATIENT1_ID, prescription.getPatientId());
 		assertEquals(PhysicianMapperTest.PHYSICIAN1_ID, prescription.getPhysicianId());
-		assertEquals("notes as a text", prescription.getNotes());
+		assertArrayEquals("notes as a text".getBytes(), prescription.getNotes());
 		assertNotNull(prescription.getReleaseDate());
 		assertNotNull(prescription.getAssingDate());
 	}
@@ -82,14 +97,14 @@ public class PrescriptionMapperTest {
 	@Test
 	void deleteAll() {
 		this.prescriptionMapper.deleteAll();
-		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll();
+		List<PrescriptionEntity> prescriptions = this.prescriptionMapper.findAll(PatientMapperTest.PATIENT1_ID);
 		assertTrue(prescriptions.isEmpty());
 	}
 
 	private PrescriptionEntity insertPrescription(String id) {
 		Date date = Utils.today();
 		PrescriptionEntity prescription = new PrescriptionEntity(id, PatientMapperTest.PATIENT1_ID,
-				PhysicianMapperTest.PHYSICIAN1_ID, "notes as a text", date, date);
+				PhysicianMapperTest.PHYSICIAN1_ID, "notes as a text".getBytes(), date, date);
 		this.prescriptionMapper.insert(prescription);
 
 		return prescription;

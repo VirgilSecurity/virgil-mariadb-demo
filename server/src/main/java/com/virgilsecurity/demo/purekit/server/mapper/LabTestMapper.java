@@ -14,10 +14,10 @@ import com.virgilsecurity.demo.purekit.server.model.db.LabTestEntity;
 @Mapper
 public interface LabTestMapper {
 
-	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results, null FROM lab_tests")
+	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results FROM lab_tests")
 	List<LabTestEntity> findAll();
 
-	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results, null FROM lab_tests WHERE id = #{id}")
+	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results FROM lab_tests WHERE id = #{id}")
 	LabTestEntity findById(@Param("id") String id);
 
 	@Insert("INSERT INTO lab_tests (id, test_name, patient_id, physician_id, test_date, results) "

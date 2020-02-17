@@ -1,0 +1,27 @@
+version: '3'
+services:
+  app:
+    image: "virgil/mariadb-demo"
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_URL: jdbc:mysql://mariadb:3306/purekit?characterEncoding=UTF-8&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpassword
+      WAIT_HOSTS: mysql:3306
+    depends_on:
+      - mariadb
+  mariadb:
+    image: "mariadb:latest"
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=purekit
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=mariadbuser
+      - MYSQL_PASSWORD=mariadbpwd
