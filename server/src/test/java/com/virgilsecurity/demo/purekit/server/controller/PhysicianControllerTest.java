@@ -96,6 +96,15 @@ public class PhysicianControllerTest extends RestDocTest {
 		assertEquals(400, response.getStatusCodeValue());
 	}
 
+	@Test
+	void cors() throws Exception {
+		this.mockMvc
+				.perform(MockMvcRequestBuilders
+						.request(HttpMethod.OPTIONS, "/physicians/" + this.registeredPhysician.getUserId())
+						.header(Constants.GRANT_HEADER, this.registeredPhysician.getGrant()))
+				.andDo(document("physician/cors", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
+	}
+
 	public static void validateLicense(Physician physician) {
 		assertEquals(1001L, physician.getLicenseNo());
 	}

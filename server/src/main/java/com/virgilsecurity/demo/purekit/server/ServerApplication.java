@@ -7,6 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.virgilsecurity.purekit.pure.Pure;
 import com.virgilsecurity.purekit.pure.PureContext;
@@ -53,6 +55,16 @@ public class ServerApplication {
 			log.fatal("Can't initialize Virgil Pure", e);
 			throw new RuntimeException("Virgil Pure initialization error");
 		}
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/").allowedOrigins("*");
+			}
+		};
 	}
 
 }
