@@ -25,7 +25,7 @@ public class Utils {
 	}
 
 	private static Date truncate(Date date) {
-		return DateUtils.truncate(date, Calendar.MILLISECOND);
+		return DateUtils.truncate(date, Calendar.DAY_OF_MONTH);
 	}
 
 }

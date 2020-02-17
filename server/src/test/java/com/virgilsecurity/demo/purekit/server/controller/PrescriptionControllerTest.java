@@ -39,6 +39,7 @@ public class PrescriptionControllerTest extends RestDocTest {
 	@Autowired
 	private ObjectMapper jackson2ObjectMapper;
 
+	private Set<UserRegitration> registeredPatients;
 	private UserRegitration registeredPhysician;
 	private Set<String> prescriptions;
 
@@ -47,8 +48,47 @@ public class PrescriptionControllerTest extends RestDocTest {
 		super.setup(webApplicationContext, restDocumentation);
 
 		ResetData resetData = this.restTemplate.postForObject("/reset", null, ResetData.class);
+		this.registeredPatients = resetData.getPatients();
 		this.registeredPhysician = resetData.getPhysicians().iterator().next();
 		this.prescriptions = resetData.getPrescriptions();
+	}
+
+	@Test
+	void create() throws Exception {
+		String patientId = this.registeredPatients.iterator().next().getUserId();
+
+		// Create prescription
+		Prescription prescription = new Prescription(patientId, "The notes", Utils.yesterday(), Utils.today());
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
+		HttpEntity<Prescription> entity = new HttpEntity<>(prescription, headers);
+		ResponseEntity<String> createResponse = this.restTemplate.exchange("/prescriptions", HttpMethod.POST, entity,
+				String.class);
+		assertEquals(200, createResponse.getStatusCodeValue());
+
+		String prescriptionId = createResponse.getBody();
+
+		// Verify prescription
+		entity = new HttpEntity<>(headers);
+		ResponseEntity<Prescription> response = this.restTemplate.exchange("/prescriptions/" + prescriptionId,
+				HttpMethod.GET, entity, Prescription.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		Prescription readPrescription = response.getBody();
+		assertNotNull(readPrescription);
+		assertEquals(prescription.getNotes(), readPrescription.getNotes());
+		assertEquals(prescription.getAssingDate(), readPrescription.getAssingDate());
+		assertEquals(prescription.getReleaseDate(), readPrescription.getReleaseDate());
+
+		// Document REST
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.request(HttpMethod.POST, "/prescriptions")
+						.content(jackson2ObjectMapper.writeValueAsString(prescription))
+						.header(Constants.GRANT_HEADER, this.registeredPhysician.getGrant())
+						.header(HttpHeaders.CONTENT_TYPE, "application/json"))
+				.andDo(document("prescription/create", preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint())));
 	}
 
 	@Test
