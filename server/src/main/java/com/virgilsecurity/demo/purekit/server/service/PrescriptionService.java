@@ -128,7 +128,7 @@ public class PrescriptionService {
 		if (notes != null) {
 			try {
 				// Encrypt sensitive data
-				return this.pure.encrypt(grant.getUserId(), SharedRole.PRESCRIPTION.getCode(),
+				return this.pure.encrypt(grant.getUserId(), SharedRole.PRESCRIPTION.getCode(), // patientId, null, null,
 						notes.getBytes(StandardCharsets.UTF_8));
 
 			} catch (PureException e) {

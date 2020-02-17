@@ -9,13 +9,16 @@ import com.virgilsecurity.purekit.pure.model.PureGrant;
 
 @Service
 public class SharingService {
-	
+
 	@Autowired
 	private Pure pure;
-	
+
 	public void share(SharingData sharingData, PureGrant grant) {
-		//TODO
-//		this.pure.share(grant, sharingData., otherUserId);
+		// TODO
+		// patient: ssn
+		// physician: license_no
+		// labtest: test id
+//		this.pure.share(grant, sharingData.getDataId(), sharingData.getOtherUserIds(), null);
 	}
 
 }

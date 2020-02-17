@@ -3,6 +3,8 @@ package com.virgilsecurity.demo.purekit.server.model.http;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 
 @Getter
@@ -16,6 +18,7 @@ public class ResetData {
 
 	private Set<String> prescriptions;
 
+	@JsonProperty("lab_tests")
 	private Set<String> labTests;
 
 	public ResetData() {
