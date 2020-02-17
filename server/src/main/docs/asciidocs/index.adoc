@@ -43,6 +43,14 @@ include::{snippets}/physician/list/http-response.adoc[]
 
 == Prescription
 
+=== Create
+
+.request
+include::{snippets}/prescription/create/http-request.adoc[]
+
+.response
+include::{snippets}/prescription/create/http-response.adoc[]
+
 === Get
 
 .request

@@ -27,9 +27,11 @@ public class Prescription implements Serializable {
 	private String notes;
 
 	@JsonProperty("assign_date")
+//	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date assingDate;
 
 	@JsonProperty("release_date")
+//	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date releaseDate;
 
 	public Prescription(String patientId, String notes, Date assingDate, Date releaseDate) {

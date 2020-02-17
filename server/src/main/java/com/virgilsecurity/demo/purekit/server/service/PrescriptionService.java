@@ -17,7 +17,6 @@ import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
 import com.virgilsecurity.demo.purekit.server.model.db.PrescriptionEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
-import com.virgilsecurity.demo.purekit.server.utils.Constants;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.Pure;
 import com.virgilsecurity.purekit.pure.exception.PureException;
@@ -113,11 +112,11 @@ public class PrescriptionService {
 		String notes = null;
 		if (entity.getNotes() != null) {
 			try {
-				byte[] decryptedNotes = this.pure.decrypt(grant, entity.getPhysicianId(), SharedRole.PRESCRIPTION.getCode(),
-						entity.getNotes());
+				byte[] decryptedNotes = this.pure.decrypt(grant, entity.getPhysicianId(),
+						SharedRole.PRESCRIPTION.getCode(), entity.getNotes());
 				notes = new String(decryptedNotes);
 			} catch (PureException e) {
-				notes = Constants.Texts.NO_PERMISSIONS;
+				log.debug("Prescription notes can't be decrypted", e);
 			}
 		}
 		return new Prescription(entity.getId(), entity.getPatientId(), entity.getPhysicianId(), notes,
