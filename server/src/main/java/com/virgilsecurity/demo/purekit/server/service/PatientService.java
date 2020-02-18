@@ -13,8 +13,7 @@ import com.virgilsecurity.demo.purekit.server.mapper.PatientMapper;
 import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PatientEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Patient;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
-import com.virgilsecurity.demo.purekit.server.utils.Constants;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.AuthResult;
 import com.virgilsecurity.purekit.pure.Pure;
@@ -33,7 +32,7 @@ public class PatientService {
 	@Autowired
 	private Pure pure;
 
-	public UserRegitration register(Patient patient, String password) {
+	public UserRegistration register(Patient patient, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -49,7 +48,7 @@ public class PatientService {
 			PatientEntity patientEntity = new PatientEntity(userId, patient.getName(), encryptedSsn);
 			this.mapper.insert(patientEntity);
 
-			return new UserRegitration(userId, authResult.getEncryptedGrant());
+			return new UserRegistration(userId, authResult.getEncryptedGrant());
 		} catch (PureException e) {
 			log.debug("PatientEntity SSN can't be encrypted", e);
 			throw new EncryptionException();
@@ -73,7 +72,7 @@ public class PatientService {
 		});
 		return result;
 	}
-	
+
 	public void reset() {
 		this.mapper.deleteAll();
 	}
@@ -86,7 +85,8 @@ public class PatientService {
 						patientEntity.getSsn());
 				ssn = new String(decryptedSsn);
 			} catch (PureException e) {
-				ssn = Constants.Texts.NO_PERMISSIONS;
+				log.debug("Patient's '{}' SSN can't be decrypted for '{}'", patientEntity.getId(), grant.getUserId(),
+						e);
 			}
 		}
 		return new Patient(patientEntity.getId(), patientEntity.getName(), ssn);

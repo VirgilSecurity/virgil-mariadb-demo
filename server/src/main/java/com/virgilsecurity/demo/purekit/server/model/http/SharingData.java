@@ -25,7 +25,7 @@ public class SharingData {
 	@JsonProperty("roles")
 	private List<String> roles;
 
-	public SharingData(String otherUserId, String dataId) {
+	public SharingData(String dataId, String otherUserId) {
 		this.dataId = dataId;
 		this.otherUserIds = new HashSet<String>(Arrays.asList(otherUserId));
 	}

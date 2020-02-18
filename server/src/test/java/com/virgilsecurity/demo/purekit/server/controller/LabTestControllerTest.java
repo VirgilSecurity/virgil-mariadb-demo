@@ -27,8 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virgilsecurity.demo.purekit.server.model.TestStatus;
 import com.virgilsecurity.demo.purekit.server.model.http.LabTest;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
+import com.virgilsecurity.demo.purekit.server.utils.Utils;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LabTestControllerTest extends RestDocTest {
@@ -39,7 +40,9 @@ public class LabTestControllerTest extends RestDocTest {
 	@Autowired
 	private ObjectMapper jackson2ObjectMapper;
 
-	private UserRegitration registeredPhysician;
+	private Set<UserRegistration> registeredPatients;
+	private UserRegistration registeredPhysician;
+	private UserRegistration laboratory;
 	private Set<String> labTests;
 
 	@BeforeEach
@@ -47,8 +50,50 @@ public class LabTestControllerTest extends RestDocTest {
 		super.setup(webApplicationContext, restDocumentation);
 
 		ResetData resetData = this.restTemplate.postForObject("/reset", null, ResetData.class);
+		this.registeredPatients = resetData.getPatients();
 		this.registeredPhysician = resetData.getPhysicians().iterator().next();
+		this.laboratory = resetData.getLaboratories().iterator().next();
 		this.labTests = resetData.getLabTests();
+	}
+
+	@Test
+	void create() throws Exception {
+		String patientId = this.registeredPatients.iterator().next().getUserId();
+
+		// Create laboratory test
+		LabTest labTest = new LabTest("Lab test No8", patientId, Utils.today());
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
+		HttpEntity<LabTest> entity = new HttpEntity<>(labTest, headers);
+		ResponseEntity<String> createResponse = this.restTemplate.exchange("/lab-tests", HttpMethod.POST, entity,
+				String.class);
+		assertEquals(200, createResponse.getStatusCodeValue());
+
+		String labTestId = createResponse.getBody();
+
+		// Verify laboratory test
+		entity = new HttpEntity<>(headers);
+		ResponseEntity<LabTest> response = this.restTemplate.exchange("/lab-tests/" + labTestId, HttpMethod.GET, entity,
+				LabTest.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		LabTest readLabTest = response.getBody();
+		assertNotNull(readLabTest);
+		assertEquals(labTest.getName(), readLabTest.getName());
+		assertEquals(labTest.getPatientId(), readLabTest.getPatientId());
+		assertEquals(this.registeredPhysician.getUserId(), readLabTest.getPhysicianId());
+		assertEquals(labTest.getTestDate(), readLabTest.getTestDate());
+		assertNull(readLabTest.getResults());
+		assertEquals(TestStatus.NOT_READY, readLabTest.getStatus());
+
+		// Document REST
+		this.mockMvc
+				.perform(MockMvcRequestBuilders.request(HttpMethod.POST, "/lab-tests")
+						.content(jackson2ObjectMapper.writeValueAsString(labTest))
+						.header(Constants.GRANT_HEADER, this.registeredPhysician.getGrant())
+						.header(HttpHeaders.CONTENT_TYPE, "application/json"))
+				.andDo(document("labtest/create", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
 	}
 
 	@Test
@@ -108,7 +153,7 @@ public class LabTestControllerTest extends RestDocTest {
 		String labTestId = this.labTests.iterator().next();
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
+		headers.set(Constants.GRANT_HEADER, this.laboratory.getGrant());
 		HttpEntity<?> entity = new HttpEntity<>(headers);
 		ResponseEntity<LabTest> response;
 
@@ -127,6 +172,7 @@ public class LabTestControllerTest extends RestDocTest {
 		assertEquals(200, response.getStatusCodeValue());
 
 		// Verify labTest
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
 		entity = new HttpEntity<>(headers);
 		response = this.restTemplate.exchange("/lab-tests/" + labTestId, HttpMethod.GET, entity, LabTest.class);
 		assertEquals(200, response.getStatusCodeValue());

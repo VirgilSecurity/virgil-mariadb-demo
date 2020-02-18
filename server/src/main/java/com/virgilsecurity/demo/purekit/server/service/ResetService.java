@@ -12,7 +12,7 @@ import com.virgilsecurity.demo.purekit.server.model.http.Patient;
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
 import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.Pure;
 import com.virgilsecurity.purekit.pure.exception.PureException;
@@ -73,7 +73,7 @@ public class ResetService {
 
 		// Register patients
 		Patient patient = new Patient("PatientEntity 1", "12345678901");
-		UserRegitration registeredPatient = this.patientService.register(patient, password);
+		UserRegistration registeredPatient = this.patientService.register(patient, password);
 		resetData.getPatients().add(registeredPatient);
 		PureGrant patient1PureGrant;
 		try {
@@ -95,8 +95,8 @@ public class ResetService {
 		}
 
 		// Register physician
-		Physician physician = new Physician("PhysicianEntity 1", 1001L);
-		UserRegitration registeredPhysician = this.physicianService.register(physician, password);
+		Physician physician = new Physician("PhysicianEntity 1", "1001");
+		UserRegistration registeredPhysician = this.physicianService.register(physician, password);
 		resetData.getPhysicians().add(registeredPhysician);
 		PureGrant physicianPureGrant;
 		try {
@@ -108,7 +108,7 @@ public class ResetService {
 
 		// Register laboratory
 		Laboratory laboratory = new Laboratory("Laboratory 1");
-		UserRegitration registeredLaboratory = this.laboratoryService.register(laboratory, password);
+		UserRegistration registeredLaboratory = this.laboratoryService.register(laboratory, password);
 		resetData.getLaboratories().add(registeredLaboratory);
 		PureGrant laboratoryPureGrant;
 		try {

@@ -22,7 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -31,7 +31,7 @@ public class PhysicianControllerTest extends RestDocTest {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	private UserRegitration registeredPhysician;
+	private UserRegistration registeredPhysician;
 
 	@BeforeEach
 	void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -53,7 +53,7 @@ public class PhysicianControllerTest extends RestDocTest {
 
 		Physician physician = response.getBody();
 		assertNotNull(physician);
-		validateLicense(physician);
+		validate(physician);
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders
@@ -82,7 +82,7 @@ public class PhysicianControllerTest extends RestDocTest {
 		Physician physician = physicians[0];
 		assertEquals(this.registeredPhysician.getUserId(), physician.getId());
 		assertEquals("PhysicianEntity 1", physician.getName());
-		validateLicense(physician);
+		validate(physician);
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/physicians/").header(Constants.GRANT_HEADER,
@@ -105,8 +105,8 @@ public class PhysicianControllerTest extends RestDocTest {
 				.andDo(document("physician/cors", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
 	}
 
-	public static void validateLicense(Physician physician) {
-		assertEquals(1001L, physician.getLicenseNo());
+	public static void validate(Physician physician) {
+		assertEquals("1001", physician.getLicenseNo());
 	}
 
 }

@@ -1,9 +1,9 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
 import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.AuthResult;
 import com.virgilsecurity.purekit.pure.Pure;
@@ -32,7 +32,7 @@ public class PhysicianService {
 	@Autowired
 	private Pure pure;
 
-	public UserRegitration register(Physician physician, String password) {
+	public UserRegistration register(Physician physician, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -41,14 +41,17 @@ public class PhysicianService {
 			PureGrant pureGrant = authResult.getGrant();
 
 			// Encrypt sensitive data
-			byte[] encryptedLicenseNo = pure.encrypt(pureGrant.getUserId(), SharedRole.LICENSE_NO.getCode(),
-					ByteBuffer.allocate(8).putLong(physician.getLicenseNo()).array());
+			byte[] encryptedLicenseNo = null;
+			if (StringUtils.isNotEmpty(physician.getLicenseNo())) {
+				encryptedLicenseNo = pure.encrypt(pureGrant.getUserId(), SharedRole.LICENSE_NO.getCode(),
+						physician.getLicenseNo().getBytes());
+			}
 
 			// Store physician in a database
 			PhysicianEntity physicianEntity = new PhysicianEntity(userId, physician.getName(), encryptedLicenseNo);
 			this.mapper.insert(physicianEntity);
 
-			return new UserRegitration(userId, authResult.getEncryptedGrant());
+			return new UserRegistration(userId, authResult.getEncryptedGrant());
 		} catch (PureException e) {
 			log.debug("PhysicianEntity License No can't be encrypted", e);
 			throw new EncryptionException();
@@ -72,17 +75,17 @@ public class PhysicianService {
 
 		return decryptPhysician(physicianEntity, grant);
 	}
-	
+
 	public void reset() {
 		this.mapper.deleteAll();
 	}
 
 	private Physician decryptPhysician(PhysicianEntity physicianEntity, PureGrant grant) {
-		Long licenseNo = 0L;
+		String licenseNo = null;
 		try {
 			byte[] decryptedLicenseNo = this.pure.decrypt(grant, physicianEntity.getId(),
 					SharedRole.LICENSE_NO.getCode(), physicianEntity.getLicenseNo());
-			licenseNo = ByteBuffer.allocate(8).put(decryptedLicenseNo).flip().getLong();
+			licenseNo = new String(decryptedLicenseNo);
 		} catch (PureException e) {
 			log.debug("Physician's {} License No can't be decrypted for {}", physicianEntity.getId(), grant.getUserId(),
 					e);

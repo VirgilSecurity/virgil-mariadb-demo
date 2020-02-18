@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserRegitration {
+public class UserRegistration {
 
 	@JsonProperty("id")
 	private String userId;
