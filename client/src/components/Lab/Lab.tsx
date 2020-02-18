@@ -27,7 +27,7 @@ const Item: React.FC<ItemProps> = ({ item }) => {
     return (
         <TableRow>
             <TableCell>{item.id}</TableCell>
-            <TableCell>{item.test_name}</TableCell>
+            <TableCell>{item.name}</TableCell>
             <TableCell>{item.test_date}</TableCell>
             <TableCell>
                 <SimpleModal value="Add">

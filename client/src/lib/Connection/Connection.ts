@@ -1,6 +1,6 @@
 import { Request } from './Request';
 
-const URL = 'http://127.0.0.1:3001/';
+const URL = 'http://127.0.0.1:8080/';
 
 export enum Method {
 	Get = 'GET',

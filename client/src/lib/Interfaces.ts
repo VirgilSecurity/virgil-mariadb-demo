@@ -1,35 +1,43 @@
 
+export interface ICredentials {
+	grant: string;
+	id: string;
+};
+
+export interface IReset {
+	patients: ICredentials[];
+	physicians: ICredentials[];
+	laboratories: ICredentials[];
+};
+
 export interface IPatient {
     id: string;
-    full_name: string;
+    name: string;
     ssn: string;
-    share: boolean;
 };
 
 export interface IPhysician {
     id: string;
-    full_name: string;
+    name: string;
     license_no: string;
-    share: boolean;
 };
 
 export interface ILabTest {
     id: string;
-    test_name: string;
+    name: string;
+    results: string | null;
+    status: string;
     patient_id: string;
     physician_id: string;
     test_date: string;
-    results: string | null;
-    share: boolean;
 };
 
 export interface IPrescription {
     id: string;
+    notes: string | null;
     patient_id: string;
     physician_id: string;
-    notes: string;
     assign_date: string;
     release_date: string;
 };
 
-export interface InfoResponse extends IPatient, IPhysician {}

@@ -3,6 +3,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from
 import { ILabTest } from '../../lib/Interfaces';
 import Paper from '@material-ui/core/Paper';
 import { TableTitle, TextEllipsis } from '../../lib/components/Global';
+import { dateCrop } from '../../lib/utils';
 export interface LabTestProps {
     data: ILabTest[];
 };
@@ -14,10 +15,10 @@ interface ItemProps {
 const Item: React.FC<ItemProps> = ({ item }) => {
     return (
         <TableRow>
-            <TableCell>{item.test_name}</TableCell>
+            <TableCell>{item.name}</TableCell>
             {item.results ?
                 <TableCell>
-                    {item.share ?
+                    {item.results ?
                         <TextEllipsis label={'Result:'}>{item.results}</TextEllipsis>
                         :
                         <span style={{color: '#fb7267'}}>Access denied</span>
@@ -26,7 +27,7 @@ const Item: React.FC<ItemProps> = ({ item }) => {
                 :
                 <TableCell><span style={{color: '#e49e24'}}>Not ready</span></TableCell>
             }
-            <TableCell>{item.test_date}</TableCell>
+            <TableCell>{dateCrop(item.test_date)}</TableCell>
             <TableCell></TableCell>
 
         </TableRow>

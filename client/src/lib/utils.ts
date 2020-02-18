@@ -29,3 +29,5 @@ export const useCount = (start: number) => {
 
   return getNext;
 };
+
+export const dateCrop = (str: string) => str.replace(/T.+/g, '');

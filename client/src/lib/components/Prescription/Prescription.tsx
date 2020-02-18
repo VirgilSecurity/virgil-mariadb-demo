@@ -3,6 +3,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from
 import { IPrescription } from '../../Interfaces';
 import Paper from '@material-ui/core/Paper';
 import { TableTitle, TextEllipsis } from '../Global';
+import { dateCrop } from '../../utils';
 
 export interface PrescriptionsProps {
     data: IPrescription[];
@@ -18,8 +19,8 @@ const Item:React.FC<ItemProps> = ({item}) => {
             <TableCell >
                 <TextEllipsis label={'Notes:'}>{item.notes}</TextEllipsis>
             </TableCell>
-            <TableCell >{item.assign_date}</TableCell>
-            <TableCell >{item.release_date}</TableCell>
+            <TableCell >{dateCrop(item.assign_date)}</TableCell>
+            <TableCell >{dateCrop(item.release_date)}</TableCell>
         </TableRow>
     );
 };

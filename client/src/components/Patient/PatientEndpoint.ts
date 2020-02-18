@@ -1,14 +1,27 @@
 import { Request } from '../../lib/Connection/Request'
 import { Method } from '../../lib/Connection/Connection'
-import { InfoResponse, IPatient, ILabTest, IPrescription } from '../../lib/Interfaces';
+import { IPatient, ILabTest, IPrescription } from '../../lib/Interfaces';
 
-const PATIENT_INFO = 'patient_info';
 const LAB_TESTS = 'lab_tests';
 const PRESCRIPTIONS = 'prescriptions';
 
-export class GetPatientInfo extends Request<null, InfoResponse> {
+const PATIENT_BASE = 'patients';
+const PATIENT_INFO = (id: string) => `${PATIENT_BASE}/${id}`;
+
+export class PatientInfoReq extends Request<null, IPatient> {
 	method = Method.Get;
-	endpoint = PATIENT_INFO;
+	endpoint = PATIENT_INFO(this.id);
+	constructor(public id: string, public grant: string) {
+		super();
+	}
+};
+
+export class PatientListReq extends Request<null, IPatient[]> {
+	method = Method.Get;
+	endpoint = PATIENT_BASE;
+	constructor(public grant: string) {
+		super();
+	}
 };
 
 export class GetLabTest extends Request<null, ILabTest[]> {
@@ -23,8 +36,10 @@ export class PrescReq extends Request<null, IPrescription[]> {
 
 export class ChangePatientInfo extends Request<IPatient, null> {
 	method = Method.Post;
-	endpoint = PATIENT_INFO;
-	constructor(data: IPatient) {
+	get endpoint() {
+		return PATIENT_INFO(this.id);
+	}
+	constructor(private id: string, data: IPatient) {
 		super();
 		this.params = data;
 	}

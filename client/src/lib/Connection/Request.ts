@@ -9,9 +9,10 @@ export abstract class Request<ReqParams = unknown, RespParams = unknown> {
 
 	params?: ReqParams;
 	eventName?: string;
+	grant?: string;
 	headers: Headers = new Headers();
 
-	// prefix: string;
+	prefix?: string;
 	isEmptyResponse: boolean = false;
 
 	private successHandlers: SuccessHandler<RespParams>[] = [];
@@ -24,6 +25,9 @@ export abstract class Request<ReqParams = unknown, RespParams = unknown> {
 			options.body = JSON.stringify(this.params);
 			this.headers.set('Content-Type', 'application/json');
 		}
+
+		if (this.grant) this.headers.append('X-Virgil-Pure-Grant', this.grant);
+
 		if (this.headers) options.headers = this.headers;
 
 		return options;

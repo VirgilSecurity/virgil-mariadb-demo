@@ -40,12 +40,12 @@ const AddTest:React.FC<AddTestProps> = ({onSubmit}) => {
         if (patient && physician) {
             const res: ILabTest = {
                 id: `test_unique_id_${nextTestId()}`,
-                test_name: inputs['text'],
+                name: inputs['text'],
                 patient_id: patient.id,
                 physician_id: physician.id,
+                status: 'NOT_READY',
                 test_date: selectedDate.toISOString().split('T')[0],
-                results: null,
-                share: false
+                results: null
             };
             onSubmit(res);
         }

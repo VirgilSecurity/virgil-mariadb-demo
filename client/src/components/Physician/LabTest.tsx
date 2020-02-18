@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import { TableTitle, TextEllipsis } from '../../lib/components/Global';
 import StoreContext from '../StoreContext/StoreContext';
 import { ChangePermissionToResultReq } from './PhysicianEndpoint';
+import { dateCrop } from '../../lib/utils';
 
 export interface LabTestProps {
     data: ILabTest[];
@@ -26,31 +27,30 @@ const Item: React.FC<ItemProps> = ({ item }) => {
     const css = useStyles();
     const { connection } = React.useContext(StoreContext);
 
-    const handleClick = (id: string, share: boolean) => {
-        connection.send(new ChangePermissionToResultReq({
-            ...item,
-            share: !share,
-        }, id).onSuccess(() => {
-            // eslint-disable-next-line no-restricted-globals
-            location.reload();
-        }));
-    };
+    // const handleClick = (id: string, share: boolean) => {
+    //     connection.send(new ChangePermissionToResultReq({
+    //         ...item,
+    //     }, id).onSuccess(() => {
+    //         // eslint-disable-next-line no-restricted-globals
+    //         location.reload();
+    //     }));
+    // };
     
     return (
         <TableRow>
-            <TableCell>{item.test_name}</TableCell>
+            <TableCell>{item.name}</TableCell>
             <TableCell>
                 {item.results ? 
                 <TextEllipsis label={'Result:'}>{item.results}</TextEllipsis>
                 :
                 <span style={{color: '#e49e24'}}>Not ready</span>}
             </TableCell>
-            <TableCell>{item.test_date}</TableCell>
-            <TableCell>
+            <TableCell>{dateCrop(item.test_date)}</TableCell>
+            {/* <TableCell>
                 {item.results && !item.share &&
                     <div onClick={() => {handleClick(item.id, item.share)}} className={css.btn}>Share</div>
                 }
-            </TableCell>
+            </TableCell> */}
         </TableRow>
     );
 };
