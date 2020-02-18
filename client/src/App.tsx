@@ -23,6 +23,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: '20px 10px',
     backgroundColor: "#FFFa",
     minWidth: '250px'
+  },
+  loader: {
+    border: '16px solid #f3f3f3',
+    borderRadius: '50%',
+    borderTop: '16px solid #3498db',
+    width: '120px',
+    height: '120px',
+    webkitAnimation: 'spin 2s linear infinite',
+    animation: 'spin 2s linear infinite'
   }
 }));
 
@@ -62,11 +71,7 @@ function App() {
       })
     );
   };
-
-  if (isLoading) {
-    return <div style={{textAlign: 'center', margin: '0 auto'}}>Loading...</div>;
-  }
-
+  
   return (
     <>
       <Button
@@ -75,26 +80,30 @@ function App() {
         variant="contained"
         style={{display: 'block', backgroundColor: '#7bbd00', margin: '0 auto'}}
       >Restart demo</Button>
-      <div className={classes.root}>
-        {patientCred && <Card className={classes.card}>
-          <h2 className={styles.pageTitle}>Patient card</h2>
-          <CardContent>
-            <Patient patientCred={patientCred}/> 
-          </CardContent>
-        </Card>}
-        {physicianCred && <Card className={classes.card}>
-          <h2 className={styles.pageTitle}>Physician card</h2>
-          <CardContent>
-            <Physician physicianCred={physicianCred}/>
-          </CardContent>
-        </Card>}
-        {labCred && <Card className={classes.card}>
-          <h2 className={styles.pageTitle}>Lab</h2>
-          <CardContent>
-            <Lab labCred={labCred}/>
-          </CardContent>
-        </Card>}
-      </div>
+      {isLoading ? 
+        <img style={{display: 'block', margin: '0 auto'}} src="https://flevix.com/wp-content/uploads/2019/07/Ring-Preloader.gif"/>
+        :
+        <div className={classes.root}>
+          {patientCred && <Card className={classes.card}>
+            <h2 className={styles.pageTitle}>Patient card</h2>
+            <CardContent>
+              <Patient patientCred={patientCred}/> 
+            </CardContent>
+          </Card>}
+          {physicianCred && <Card className={classes.card}>
+            <h2 className={styles.pageTitle}>Physician card</h2>
+            <CardContent>
+              <Physician physicianCred={physicianCred}/>
+            </CardContent>
+          </Card>}
+          {labCred && <Card className={classes.card}>
+            <h2 className={styles.pageTitle}>Lab</h2>
+            <CardContent>
+              <Lab labCred={labCred}/>
+            </CardContent>
+          </Card>}
+        </div>
+      }
     </>
   );
 };
