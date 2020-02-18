@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { ILabTest } from '../../lib/Interfaces';
+import { ILabTest, Status } from '../../lib/Interfaces';
 import Paper from '@material-ui/core/Paper';
 import { TableTitle, TextEllipsis } from '../../lib/components/Global';
 import { dateCrop } from '../../lib/utils';
@@ -16,7 +16,7 @@ const Item: React.FC<ItemProps> = ({ item }) => {
     return (
         <TableRow>
             <TableCell>{item.name}</TableCell>
-            {item.results ?
+            {item.status !== Status.notReady ?
                 <TableCell>
                     {item.results ?
                         <TextEllipsis label={'Result:'}>{item.results}</TextEllipsis>

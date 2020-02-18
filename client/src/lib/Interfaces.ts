@@ -41,3 +41,8 @@ export interface IPrescription {
     release_date: string;
 };
 
+export enum Status {
+    notReady = "NOT_READY",
+    ok = "OK",
+    notAllow = "PERMISSION_DENIED"
+};

@@ -35,6 +35,7 @@ function App() {
   const connection: Connection = new Connection();
   const [patientCred, setPatientCred] = useState<ICredentials | undefined>();
   const [physicianCred, setPhysicianCred] = useState<ICredentials | undefined>();
+  const [labCred, setLabCred] = useState<ICredentials | undefined>();
 
   const [patient, setPatient] = useState<IPatient | undefined>();
   const [physician, setPhysician] = useState<IPhysician | undefined>();
@@ -61,11 +62,15 @@ function App() {
   useEffect(() => {
     const pat = localStorage.getItem('patientCred');
     const phy = localStorage.getItem('physicianCred');
+    const lab = localStorage.getItem('labCred');
     if (pat) {
       setPatientCred(JSON.parse(pat));
     }
     if (phy) {
       setPhysicianCred(JSON.parse(phy));
+    }
+    if (lab) {
+      setLabCred(JSON.parse(lab));
     }
   }, []);
   
@@ -80,8 +85,10 @@ function App() {
       .onSuccess((resp) => {
         localStorage.setItem('patientCred', JSON.stringify(resp.patients[1]));
         localStorage.setItem('physicianCred', JSON.stringify(resp.physicians[0]));
+        localStorage.setItem('labCred', JSON.stringify(resp.laboratories[0]));
         setPatientCred(resp.patients[1]);
         setPhysicianCred(resp.physicians[0]);
+        setLabCred(resp.laboratories[0]);
       })
     );
   };
@@ -115,12 +122,12 @@ function App() {
             <Physician physicianCred={physicianCred}/>
           </CardContent>
         </Card>}
-        {/* <Card className={classes.card}>
+        {labCred && <Card className={classes.card}>
           <h2 className={styles.pageTitle}>Lab</h2>
           <CardContent>
-            <Lab />
+            <Lab labCred={labCred}/>
           </CardContent>
-        </Card> */}
+        </Card>}
       </div>
     </StoreContext.Provider>
   );

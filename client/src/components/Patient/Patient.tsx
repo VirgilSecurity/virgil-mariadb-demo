@@ -40,19 +40,6 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
         
     }, [patientCred]);
 
-    // const { patient, setPatient, physician, prescription, connection } = React.useContext(StoreContext);
-    // const [labTests, setLabsTests] = useState<undefined | ILabTest[]>();
-    
-    // useEffect(() => {
-    //     connection.send(new GetPatientInfo().onSuccess((resp)=>{
-    //         setPatient(resp);
-    //     }));
-    //     connection.send(new GetLabTest().onSuccess((resp)=>{
-    //         setLabsTests(resp);
-    //     }));
-
-    // }, []);
-
     // const handelClick = () => {
     //     if (patient) {
     //         connection.send(new ChangePatientInfo({

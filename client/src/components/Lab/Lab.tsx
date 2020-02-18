@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { GetLabTest, AddResultReq } from './LabEndpoint';
+import { AddResultReq } from './LabEndpoint';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { TableTitle } from '../../lib/components/Global';
-import { ILabTest } from '../../lib/Interfaces';
+import { TableTitle, TextEllipsis } from '../../lib/components/Global';
+import { ILabTest, ICredentials, Status } from '../../lib/Interfaces';
 import StoreContext from '../StoreContext/StoreContext';
 import SimpleModal from '../../lib/components/Modal/Modal';
 import AddResult from './AddResult';
+import { LabTestListReq } from '../../lib/Connection/Endpoints';
+import { dateCrop } from '../../lib/utils';
 
 interface ItemProps {
     item: ILabTest;
+    grant: string;
 }
 
-const Item: React.FC<ItemProps> = ({ item }) => {
+const Item: React.FC<ItemProps> = ({ item, grant }) => {
     const { connection } = React.useContext(StoreContext);
 
     const handleSubmit = (res: string) => {
         connection.send(new AddResultReq({
             ...item,
+            status: 'OK',
             results: res
-        }, item.id).onSuccess(() => {
+        }, grant, item.id).onSuccess(() => {
             // eslint-disable-next-line no-restricted-globals
             location.reload();
         }));
@@ -26,9 +30,9 @@ const Item: React.FC<ItemProps> = ({ item }) => {
 
     return (
         <TableRow>
-            <TableCell>{item.id}</TableCell>
+            <TableCell><TextEllipsis>{item.id}</TextEllipsis>{}</TableCell>
             <TableCell>{item.name}</TableCell>
-            <TableCell>{item.test_date}</TableCell>
+            <TableCell>{dateCrop(item.test_date)}</TableCell>
             <TableCell>
                 <SimpleModal value="Add">
                     <AddResult onSubmit={handleSubmit}/>
@@ -38,15 +42,19 @@ const Item: React.FC<ItemProps> = ({ item }) => {
     );
 };
 
-const Lab = () => {
-    const [labTests, setLabsTests] = useState<undefined | ILabTest[]>();
+export interface LabProps {
+    labCred: ICredentials;
+};
+
+const Lab:React.FC<LabProps> = ({ labCred }) => {
+    const [labTests, setLabTests] = useState<undefined | ILabTest[]>();
     const { connection } = React.useContext(StoreContext);
 
     useEffect(() => {
-        connection.send(new GetLabTest().onSuccess((resp)=>{
-            setLabsTests(resp.filter((el) => !el.results));
+        connection.send(new LabTestListReq(labCred.grant).onSuccess((resp) => {
+            setLabTests(resp.filter(it => it.status === Status.notReady));
         }));
-    }, []);
+    }, [labCred]);
 
     const renderTable = (data: ILabTest[]) => {
         return (
@@ -62,7 +70,7 @@ const Lab = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((item) => <Item key={item.id} item={item}/>)}
+                    {data.map((item) => <Item key={item.id} grant={labCred.grant} item={item}/>)}
                 </TableBody>
             </Table>
         </TableContainer>

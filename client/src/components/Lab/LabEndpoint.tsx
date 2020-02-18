@@ -2,19 +2,16 @@ import { Request } from '../../lib/Connection/Request'
 import { Method } from '../../lib/Connection/Connection'
 import { ILabTest } from '../../lib/Interfaces';
 
-const LAB_TESTS = 'lab_tests/';
+const LAB_TESTS = 'lab-tests';
+const ADD_RESULT = (id: string) => `${LAB_TESTS}/${id}`;
 
-export class GetLabTest extends Request<null, ILabTest[]> {
-	method = Method.Get;
-	endpoint = LAB_TESTS;
-};
 
 export class AddResultReq extends Request<ILabTest, null> {
 	method = Method.Put;
-	endpoint = LAB_TESTS;
-	constructor(data: ILabTest, id: string) {
+	endpoint = ADD_RESULT(this.id);
+	isEmptyResponse = true;
+	constructor(data: ILabTest, public grant: string, public id: string) {
 		super();
 		this.params = data;
-		this.endpoint += id;
 	}
 };

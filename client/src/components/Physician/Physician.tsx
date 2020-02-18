@@ -27,14 +27,14 @@ export interface PhysicianProps {
 
 const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
     const gCss = useGlobalStyles();
+    // const css = useStyles();
+
     const { connection } = React.useContext(StoreContext);
+
     const [physician, setPhysician] = useState<IPhysician | undefined>();
     const [patient, setPatient] = useState<IPatient | undefined>();
     const [prescriptions, setPrescriptions] = useState<IPrescription[] | undefined>();
     const [labTests, setLabTests] = useState<ILabTest[] | undefined>();
-
-    // const css = useStyles();
-    // const [labTests, setLabsTests] = useState<undefined | ILabTest[]>();
 
     useEffect(() => {
         // get physician info
@@ -51,6 +51,7 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
         }));
         // get labsTest
         connection.send(new LabTestListReq(physicianCred.grant).onSuccess((resp) => {
+            console.log("Physician", resp);
             setLabTests(resp);
         }));
     }, [physicianCred]);
@@ -68,12 +69,10 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
     // };
 
     // const AddPrescriptions = (data: IPrescription) => {
-    //     if (prescription) {
-    //         connection.send(new AddPrescriptionsReq(data).onSuccess(()=>{
-    //             // eslint-disable-next-line no-restricted-globals
-    //             location.reload();
-    //         }));
-    //     }
+    //     connection.send(new AddPrescriptionsReq(data).onSuccess(()=>{
+    //         // eslint-disable-next-line no-restricted-globals
+    //         location.reload();
+    //     }));
     // };
 
     // const AddLabTest = (data: ILabTest) => {
