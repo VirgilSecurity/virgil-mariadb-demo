@@ -1,18 +1,20 @@
 import React from 'react';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeStyles } from '@material-ui/core';
-import { ILabTest } from '../../lib/Interfaces';
+import { ILabTest, Status } from '../../lib/Interfaces';
 import Paper from '@material-ui/core/Paper';
 import { TableTitle, TextEllipsis } from '../../lib/components/Global';
 import StoreContext from '../StoreContext/StoreContext';
-import { ChangePermissionToResultReq } from './PhysicianEndpoint';
 import { dateCrop } from '../../lib/utils';
+import { ShareReq } from '../../lib/Connection/Endpoints';
 
 export interface LabTestProps {
     data: ILabTest[];
+    grant: string;
 };
 
 interface ItemProps {
     item: ILabTest;
+    grant: string;
 };
 
 const useStyles = makeStyles(() => ({
@@ -23,18 +25,21 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const Item: React.FC<ItemProps> = ({ item }) => {
+const Item: React.FC<ItemProps> = ({ item, grant }) => {
     const css = useStyles();
     const { connection } = React.useContext(StoreContext);
 
-    // const handleClick = (id: string, share: boolean) => {
-    //     connection.send(new ChangePermissionToResultReq({
-    //         ...item,
-    //     }, id).onSuccess(() => {
-    //         // eslint-disable-next-line no-restricted-globals
-    //         location.reload();
-    //     }));
-    // };
+    const handleClick = () => {
+        connection.send(new ShareReq({
+            data_id: item.id,
+            share_with: [item.patient_id],
+            roles: null
+        }, grant).onSuccess(() => {
+            localStorage.setItem(item.id, 'true');
+            // eslint-disable-next-line no-restricted-globals
+            location.reload();
+        }));
+    };
     
     return (
         <TableRow>
@@ -46,16 +51,16 @@ const Item: React.FC<ItemProps> = ({ item }) => {
                 <span style={{color: '#e49e24'}}>Not ready</span>}
             </TableCell>
             <TableCell>{dateCrop(item.test_date)}</TableCell>
-            {/* <TableCell>
-                {item.results && !item.share &&
-                    <div onClick={() => {handleClick(item.id, item.share)}} className={css.btn}>Share</div>
+            <TableCell>
+                { item.status === Status.ok && !localStorage.getItem(item.id) && 
+                    <div onClick={handleClick} className={css.btn}>Share</div>
                 }
-            </TableCell> */}
+            </TableCell>
         </TableRow>
     );
 };
 
-const LabTest: React.FC<LabTestProps> = ({data}) => {
+const LabTest: React.FC<LabTestProps> = ({data, grant}) => {
     return (
         <>
             <TableContainer component={Paper} style={{margin: '15px 0'}}>
@@ -70,7 +75,7 @@ const LabTest: React.FC<LabTestProps> = ({data}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data.map((item) => <Item key={item.id} item={item}/>)}
+                        {data.map((item) => <Item grant={grant} key={item.id} item={item}/>)}
                     </TableBody>
                 </Table>
             </TableContainer>

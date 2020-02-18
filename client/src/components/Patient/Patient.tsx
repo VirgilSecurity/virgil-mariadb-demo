@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobalStyles } from '../../lib/styles';
-import { PrescriptionsListReq, LabTestListReq } from '../../lib/Connection/Endpoints';
+import { PrescriptionsListReq, LabTestListReq, ShareReq } from '../../lib/Connection/Endpoints';
 import { PatientInfoReq, ChangePatientInfo, GetLabTest } from './PatientEndpoint';
 import StoreContext from '../StoreContext/StoreContext';
 import { IPatient, IPhysician, IPrescription, ILabTest, ICredentials } from '../../lib/Interfaces';
@@ -40,17 +40,19 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
         
     }, [patientCred]);
 
-    // const handelClick = () => {
-    //     if (patient) {
-    //         connection.send(new ChangePatientInfo({
-    //             ...patient,
-    //             share: !patient.share
-    //         }).onSuccess(()=>{
-    //             // eslint-disable-next-line no-restricted-globals
-    //             location.reload();
-    //         }));
-    //     }
-    // };
+    const handelShareInfo = () => {
+        if (physician) {
+            connection.send(new ShareReq({
+                data_id: 'ssn',
+                share_with: [physician.id],
+                roles: null
+            }, patientCred.grant).onSuccess(() => {
+                localStorage.setItem('sharePatient', 'true');
+                // eslint-disable-next-line no-restricted-globals
+                location.reload();
+            }));
+        }
+    };
 
     const renderInfo = (person: IPatient) => (
         <div className={gCss.container}>
@@ -58,9 +60,10 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
             <div className={gCss.addInfoContainer}>
                 <div className={gCss.label}>Social security number:</div>
                 <div className={gCss.addInfo}>{person.ssn}</div>
-                {/* <div onClick={handelClick} className={gCss.share}>
-                    {!person.share && `share to ${physician?.full_name}`}
-                </div> */}
+                {!localStorage.getItem('sharePatient') &&  physician &&
+                <div onClick={handelShareInfo} className={gCss.share}>
+                    {`share to ${physician.name}`}
+                </div>}
             </div>
         </div>
     );

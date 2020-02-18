@@ -1,14 +1,15 @@
 import { Request } from '../../lib/Connection/Request'
 import { Method } from '../../lib/Connection/Connection'
-import { ILabTest, IPhysician, IPrescription } from '../../lib/Interfaces';
+import { IPhysician, IPrescriptionPost, ILabTestPost } from '../../lib/Interfaces';
 
-const PRESCRIPTION = 'prescriptions';
-const LAB_TESTS = 'lab_tests';
+const LAB_TESTS = 'lab-tests';
 const CHANGE_PERMISSION = 'lab_tests/';
 
 
 const PHYSICIAN_BASE = 'physicians';
 const PHYSICIAN_INFO = (id: string) => `${PHYSICIAN_BASE}/${id}`;
+
+const PRESCRIPTION_BASE = 'prescriptions';
 
 export class PhysicianInfoReq extends Request<null, IPhysician> {
 	method = Method.Get;
@@ -26,48 +27,34 @@ export class PhysicianListReq extends Request<null, IPhysician[]> {
 	}
 };
 
-
-
-export class GetLabTest extends Request<null, ILabTest[]> {
-	method = Method.Get;
-	endpoint = LAB_TESTS;
-};
-
-export class GetPhysicianInfo extends Request<null, IPhysician> {
-	method = Method.Get;
-	endpoint = PHYSICIAN_BASE;
-};
-
-export class ChangePhysicianReq extends Request<IPhysician, null> {
-	method = Method.Put;
-	endpoint = PHYSICIAN_BASE;
-	constructor(data: IPhysician) {
-		super();
-		this.params = data;
-	}
-};
-
-export class AddPrescriptionsReq extends Request<IPrescription, null> {
+export class AddPrescriptionsReq extends Request<IPrescriptionPost, null> {
 	method = Method.Post;
-	endpoint = PRESCRIPTION;
-	constructor(data: IPrescription) {
+	endpoint = PRESCRIPTION_BASE;
+	isEmptyResponse = true;
+	constructor(data: IPrescriptionPost, public grant: string) {
 		super();
 		this.params = data;
 	}
 };
-export class AddLabTestReq extends Request<ILabTest, null> {
+
+export class AddLabTestReq extends Request<ILabTestPost, null> {
 	method = Method.Post;
 	endpoint = LAB_TESTS;
-	constructor(data: ILabTest) {
+	isEmptyResponse = true;
+	constructor(data: ILabTestPost, public grant: string) {
 		super();
 		this.params = data;
 	}
 };
 
-export class ChangePermissionToResultReq extends Request<ILabTest, null> {
+
+
+
+
+export class ChangePermissionToResultReq extends Request<ILabTestPost, null> {
 	method = Method.Put;
 	endpoint = CHANGE_PERMISSION;
-	constructor(data: ILabTest, id: string) {
+	constructor(data: ILabTestPost, id: string) {
 		super();
 		this.params = data;
 		this.endpoint += id;

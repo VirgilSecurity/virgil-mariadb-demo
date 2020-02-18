@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { FormControl, InputLabel, Input, Button, makeStyles } from '@material-ui/core';
 import { useGlobalStyles } from '../../lib/styles';
 import { useSignUpForm } from '../../lib/utils';
-import { IPrescription } from '../../lib/Interfaces';
-import StoreContext from '../StoreContext/StoreContext';
+import { IPrescriptionPost } from '../../lib/Interfaces';
+
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,
@@ -11,7 +11,8 @@ import {
 import DateFnsUtils from '@date-io/date-fns';
 
 export interface AddPrescriptionProps {
-    onSubmit: (inputs:IPrescription) => void; 
+    onSubmit: (inputs:IPrescriptionPost) => void; 
+    patient_id: string;
 };
 
 const PLUS_YEAR = 86400000;
@@ -25,10 +26,9 @@ const useStyles = makeStyles(() => ({
     }
   }));
 
-const AddPrescription:React.FC<AddPrescriptionProps> = ({onSubmit}) => {
+const AddPrescription:React.FC<AddPrescriptionProps> = ({onSubmit, patient_id}) => {
     const gCss = useGlobalStyles();
     const css = useStyles();
-    const { patient, physician, nextPrescriptionId } = React.useContext(StoreContext);
 
     const [assignDate, setAssignDate] = React.useState<Date>(new Date(Date.now()));
     const [releaseDate, setReleaseDate] = React.useState<Date>(new Date(assignDate.getTime()+PLUS_YEAR));
@@ -51,16 +51,16 @@ const AddPrescription:React.FC<AddPrescriptionProps> = ({onSubmit}) => {
     }, [assignDate]);
 
     const {inputs, handleInputChange, handleSubmit} = useSignUpForm(() => {
-        if (patient && physician && assignDate < releaseDate) {
-            const res: IPrescription = {
-                id: `prescription_unique_id_${ nextPrescriptionId() }`,
-                patient_id: patient.id,
-                physician_id: physician.id,
+        if (assignDate < releaseDate) {
+            const res: IPrescriptionPost = {
+                id: null,
                 notes: inputs!['notes'] as string,
+                patient_id: patient_id,
+                physician_id: null,
                 assign_date: assignDate.toISOString().split('T')[0],
                 release_date: releaseDate.toISOString().split('T')[0]
             };
-            onSubmit(res)
+            onSubmit(res);
         }
     });
 

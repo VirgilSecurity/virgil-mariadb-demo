@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobalStyles } from '../../lib/styles';
-import { GetPhysicianInfo, ChangePhysicianReq, AddPrescriptionsReq, GetLabTest, AddLabTestReq, PhysicianInfoReq } from './PhysicianEndpoint';
+import { AddLabTestReq, PhysicianInfoReq, AddPrescriptionsReq } from './PhysicianEndpoint';
 import StoreContext from '../StoreContext/StoreContext';
-import { IPhysician, IPatient, IPrescription, ILabTest, ICredentials } from '../../lib/Interfaces';
+import { IPhysician, IPatient, IPrescription, ILabTest, ICredentials, IPrescriptionPost, ILabTestPost } from '../../lib/Interfaces';
 import { makeStyles } from '@material-ui/core';
 import Prescriptions from '../../lib/components/Prescription/Prescription';
 import SimpleModal from '../../lib/components/Modal/Modal';
@@ -10,7 +10,7 @@ import AddPrescription from './AddPrescription';
 import LabTest from './LabTest';
 import AddTest from './AddTest';
 import { PatientListReq } from '../Patient/PatientEndpoint';
-import { PrescriptionsListReq, LabTestListReq } from '../../lib/Connection/Endpoints';
+import { PrescriptionsListReq, LabTestListReq, ShareReq } from '../../lib/Connection/Endpoints';
 
 const useStyles = makeStyles(() => ({
     containerBtn: {
@@ -27,7 +27,7 @@ export interface PhysicianProps {
 
 const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
     const gCss = useGlobalStyles();
-    // const css = useStyles();
+    const css = useStyles();
 
     const { connection } = React.useContext(StoreContext);
 
@@ -51,36 +51,37 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
         }));
         // get labsTest
         connection.send(new LabTestListReq(physicianCred.grant).onSuccess((resp) => {
-            console.log("Physician", resp);
             setLabTests(resp);
         }));
     }, [physicianCred]);
 
-    // const ChangePhysician = () => {
-    //     if (physician) {
-    //         connection.send(new ChangePhysicianReq({
-    //             ...physician,
-    //             share: !physician.share
-    //         }).onSuccess(()=>{
-    //             // eslint-disable-next-line no-restricted-globals
-    //             location.reload();
-    //         }));
-    //     }
-    // };
+    const AddPrescriptions = (data: IPrescriptionPost) => {
+        connection.send(new AddPrescriptionsReq(data, physicianCred.grant).onSuccess(()=>{
+            // eslint-disable-next-line no-restricted-globals
+            location.reload();
+        }));
+    };
 
-    // const AddPrescriptions = (data: IPrescription) => {
-    //     connection.send(new AddPrescriptionsReq(data).onSuccess(()=>{
-    //         // eslint-disable-next-line no-restricted-globals
-    //         location.reload();
-    //     }));
-    // };
+    const AddLabTest = (data: ILabTestPost) => {
+        connection.send(new AddLabTestReq(data, physicianCred.grant).onSuccess(()=>{
+            // eslint-disable-next-line no-restricted-globals
+            location.reload(); 
+        }));
+    };
 
-    // const AddLabTest = (data: ILabTest) => {
-    //     connection.send(new AddLabTestReq(data).onSuccess(()=>{
-    //         // eslint-disable-next-line no-restricted-globals
-    //         location.reload(); 
-    //     }));
-    // };
+    const handelShareInfo = () => {
+        if (patient) {
+            connection.send(new ShareReq({
+                data_id: 'license_no',
+                share_with: [patient.id],
+                roles: null
+            }, physicianCred.grant).onSuccess(() => {
+                localStorage.setItem('sharePhysician', 'true');
+                // eslint-disable-next-line no-restricted-globals
+                location.reload();
+            }));
+        }
+    };
 
     const renderInfo = (person: IPhysician) => (
         <div className={gCss.container}>
@@ -88,9 +89,10 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
             <div className={gCss.addInfoContainer}>
                 <div className={gCss.label}>license number:</div>
                 <div className={gCss.addInfo}>{person.license_no}</div>
-                {/* <div onClick={ChangePhysician} className={gCss.share}>
-                    {!person.share && `share to ${patient?.full_name}`}
-                </div> */}
+                {!localStorage.getItem('sharePhysician') &&  patient &&
+                <div onClick={handelShareInfo} className={gCss.share}>
+                    {`share to ${patient.name}`}
+                </div>}
             </div>
         </div>
     );
@@ -114,21 +116,22 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
     };
 
     const renderLabTest = (tests: ILabTest[]) => {
-        return <LabTest data={tests} />;
+        return <LabTest grant={physicianCred.grant} data={tests} />;
     };
 
     return (
         <>
             {physician && renderInfo(physician)}
             {patient && renderPatient(patient)}
-            {/* <div className={css.containerBtn}>
+
+            {patient && <div className={css.containerBtn}>
                 <SimpleModal value="Add prescription">
-                    <AddPrescription onSubmit={AddPrescriptions}/>
+                    <AddPrescription patient_id={patient.id} onSubmit={AddPrescriptions}/>
                 </SimpleModal>
                 <SimpleModal value="Add lab test">
-                    <AddTest onSubmit={AddLabTest}/>
+                    <AddTest patient_id={patient.id} onSubmit={AddLabTest}/>
                 </SimpleModal>
-            </div> */}
+            </div>}
             {prescriptions && renderPrescription(prescriptions)}
             {labTests && renderLabTest(labTests)}
         </>

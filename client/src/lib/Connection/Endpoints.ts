@@ -1,10 +1,11 @@
 import { Request } from '../../lib/Connection/Request'
 import { Method } from '../../lib/Connection/Connection'
-import { IPrescription, ILabTest, IReset } from '../../lib/Interfaces';
+import { IPrescription, ILabTest, IReset, IShare } from '../../lib/Interfaces';
 
 const RESET = 'reset';
 const PRESCRIPTION_BASE = 'prescriptions';
 const LAB_TEST_BASE = 'lab-tests';
+const SHARE = 'share';
 
 
 export class ResetReq extends Request<null, IReset> {
@@ -28,7 +29,12 @@ export class LabTestListReq extends Request<null, ILabTest[]> {
 	}
 };
 
-export class PrescriptionsReq extends Request<null, IPrescription[]> {
-	method = Method.Get;
-	endpoint = PRESCRIPTION_BASE;
+export class ShareReq extends Request<IShare, null> {
+	method = Method.Post;
+	endpoint = SHARE;
+	isEmptyResponse = true;
+	constructor(data:IShare, public grant: string) {
+		super();
+		this.params = data;
+	}
 };

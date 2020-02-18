@@ -2,7 +2,7 @@ import React from 'react';
 import { FormControl, InputLabel, Input, Button, makeStyles } from '@material-ui/core';
 import { useGlobalStyles } from '../../lib/styles';
 import { useSignUpForm } from '../../lib/utils';
-import { ILabTest } from '../../lib/Interfaces';
+import { ILabTestPost } from '../../lib/Interfaces';
 import StoreContext from '../StoreContext/StoreContext';
 import {
     MuiPickersUtilsProvider,
@@ -11,7 +11,8 @@ import {
 import DateFnsUtils from '@date-io/date-fns';
 
 export interface AddTestProps {
-    onSubmit: (inputs:ILabTest) => void; 
+    onSubmit: (inputs:ILabTestPost) => void;
+    patient_id: string;
 };
 
 const useStyles = makeStyles(() => ({
@@ -23,10 +24,9 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const AddTest:React.FC<AddTestProps> = ({onSubmit}) => {
+const AddTest:React.FC<AddTestProps> = ({onSubmit, patient_id}) => {
     const gCss = useGlobalStyles();
     const css = useStyles();
-    const { patient, physician, nextTestId } = React.useContext(StoreContext);
 
     const [selectedDate, setSelectedDate] = React.useState<Date>(new Date(Date.now()));
 
@@ -37,18 +37,16 @@ const AddTest:React.FC<AddTestProps> = ({onSubmit}) => {
     };
 
     const {inputs, handleInputChange, handleSubmit } = useSignUpForm(() => {
-        if (patient && physician) {
-            const res: ILabTest = {
-                id: `test_unique_id_${nextTestId()}`,
-                name: inputs['text'],
-                patient_id: patient.id,
-                physician_id: physician.id,
-                status: 'NOT_READY',
-                test_date: selectedDate.toISOString().split('T')[0],
-                results: null
-            };
-            onSubmit(res);
-        }
+        const res: ILabTestPost = {
+            id: null,
+            name: inputs['text'],
+            results: null,
+            status: null,
+            patient_id: patient_id,
+            physician_id: null,
+            test_date: selectedDate.toISOString().split('T')[0],
+        };
+        onSubmit(res);
     });
 
     return (

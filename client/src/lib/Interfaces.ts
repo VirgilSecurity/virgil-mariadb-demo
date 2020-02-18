@@ -32,6 +32,16 @@ export interface ILabTest {
     test_date: string;
 };
 
+export interface ILabTestPost {
+    id: null;
+    name: string;
+    results: null;
+    status: null;
+    patient_id: string;
+    physician_id: null;
+    test_date: string;
+};
+
 export interface IPrescription {
     id: string;
     notes: string | null;
@@ -39,6 +49,21 @@ export interface IPrescription {
     physician_id: string;
     assign_date: string;
     release_date: string;
+};
+
+export interface IPrescriptionPost {
+    id: null;
+    notes: string;
+    patient_id: string;
+    physician_id: null;
+    assign_date: string;
+    release_date: string;
+};
+
+export interface IShare {
+    data_id: string;
+    share_with: string[];
+    roles: null;
 };
 
 export enum Status {
