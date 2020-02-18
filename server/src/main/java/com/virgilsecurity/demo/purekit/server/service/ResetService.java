@@ -72,30 +72,19 @@ public class ResetService {
 		String password = UUID.randomUUID().toString();
 
 		// Register patients
-		Patient patient = new Patient("PatientEntity 1", "12345678901");
+		Patient patient = new Patient("Alice", "12345678901");
 		UserRegistration registeredPatient = this.patientService.register(patient, password);
 		resetData.getPatients().add(registeredPatient);
-		PureGrant patient1PureGrant;
+		PureGrant patientPureGrant;
 		try {
-			patient1PureGrant = this.pure.decryptGrantFromUser(registeredPatient.getGrant());
+			patientPureGrant = this.pure.decryptGrantFromUser(registeredPatient.getGrant());
 		} catch (PureException e) {
-			log.error("Patient1 grant decryption failed", e);
-			throw new RuntimeException();
-		}
-
-		patient = new Patient("PatientEntity 2", "12345678902");
-		registeredPatient = this.patientService.register(patient, password);
-		resetData.getPatients().add(registeredPatient);
-		PureGrant patient2PureGrant;
-		try {
-			patient2PureGrant = this.pure.decryptGrantFromUser(registeredPatient.getGrant());
-		} catch (PureException e) {
-			log.error("Patient2 grant decryption failed", e);
+			log.error("Patient grant decryption failed", e);
 			throw new RuntimeException();
 		}
 
 		// Register physician
-		Physician physician = new Physician("PhysicianEntity 1", "1001");
+		Physician physician = new Physician("Bob", "77774444");
 		UserRegistration registeredPhysician = this.physicianService.register(physician, password);
 		resetData.getPhysicians().add(registeredPhysician);
 		PureGrant physicianPureGrant;
@@ -107,7 +96,7 @@ public class ResetService {
 		}
 
 		// Register laboratory
-		Laboratory laboratory = new Laboratory("Laboratory 1");
+		Laboratory laboratory = new Laboratory("Lab");
 		UserRegistration registeredLaboratory = this.laboratoryService.register(laboratory, password);
 		resetData.getLaboratories().add(registeredLaboratory);
 		PureGrant laboratoryPureGrant;
@@ -119,26 +108,19 @@ public class ResetService {
 		}
 
 		// Create prescriptions
-		Prescription prescription = new Prescription(patient1PureGrant.getUserId(), "Pills 1 tablet per day",
+		Prescription prescription = new Prescription(patientPureGrant.getUserId(), "Pills X 1 tablet per day",
 				Utils.today(), DateUtils.addDays(Utils.today(), 1));
 		resetData.getPrescriptions().add(this.prescriptionService.create(prescription, physicianPureGrant));
 
-		prescription = new Prescription(patient1PureGrant.getUserId(), "Pills 2 tablet per day", Utils.today(),
+		prescription = new Prescription(patientPureGrant.getUserId(), "Pills X 2 tablet per day", Utils.today(),
 				DateUtils.addDays(Utils.today(), 2));
 		resetData.getPrescriptions().add(this.prescriptionService.create(prescription, physicianPureGrant));
 
-		prescription = new Prescription(patient2PureGrant.getUserId(), "Pills 8 tablet per day", Utils.today(),
-				DateUtils.addDays(Utils.today(), 10));
-		resetData.getPrescriptions().add(this.prescriptionService.create(prescription, physicianPureGrant));
-
 		// Create laboratory tests
-		LabTest labTest = new LabTest("Bood test 1", patient1PureGrant.getUserId(), Utils.today());
+		LabTest labTest = new LabTest("Blood test 1", patientPureGrant.getUserId(), Utils.today());
 		resetData.getLabTests().add(this.labTestService.create(labTest, physicianPureGrant));
 
-		labTest = new LabTest("Bood test 2", patient1PureGrant.getUserId(), Utils.today());
-		resetData.getLabTests().add(this.labTestService.create(labTest, physicianPureGrant));
-
-		labTest = new LabTest("Bood test 3", patient2PureGrant.getUserId(), Utils.today());
+		labTest = new LabTest("Blood test 2", patientPureGrant.getUserId(), Utils.today());
 		resetData.getLabTests().add(this.labTestService.create(labTest, physicianPureGrant));
 
 		return resetData;
