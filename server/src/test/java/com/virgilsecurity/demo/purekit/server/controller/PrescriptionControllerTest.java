@@ -26,7 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virgilsecurity.demo.purekit.server.model.http.Prescription;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 
@@ -39,8 +39,8 @@ public class PrescriptionControllerTest extends RestDocTest {
 	@Autowired
 	private ObjectMapper jackson2ObjectMapper;
 
-	private Set<UserRegitration> registeredPatients;
-	private UserRegitration registeredPhysician;
+	private Set<UserRegistration> registeredPatients;
+	private UserRegistration registeredPhysician;
 	private Set<String> prescriptions;
 
 	@BeforeEach

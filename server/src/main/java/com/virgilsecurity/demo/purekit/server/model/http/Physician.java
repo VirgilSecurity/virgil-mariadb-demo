@@ -20,9 +20,9 @@ public class Physician implements Serializable {
 	private String name;
 
 	@JsonProperty("license_no")
-	private Long licenseNo;
+	private String licenseNo;
 
-	public Physician(String name, Long licenseNo) {
+	public Physician(String name, String licenseNo) {
 		this.name = name;
 		this.licenseNo = licenseNo;
 	}

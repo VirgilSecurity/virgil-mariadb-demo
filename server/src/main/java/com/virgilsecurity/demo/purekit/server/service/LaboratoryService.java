@@ -11,7 +11,7 @@ import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.mapper.LaboratoryMapper;
 import com.virgilsecurity.demo.purekit.server.model.db.LaboratoryEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.Laboratory;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.AuthResult;
 import com.virgilsecurity.purekit.pure.Pure;
@@ -30,7 +30,7 @@ public class LaboratoryService {
 	@Autowired
 	private Pure pure;
 
-	public UserRegitration register(Laboratory laboratory, String password) {
+	public UserRegistration register(Laboratory laboratory, String password) {
 		String userId = Utils.generateId();
 		try {
 			// Register Pure user
@@ -41,7 +41,7 @@ public class LaboratoryService {
 			LaboratoryEntity laboratoryEntity = new LaboratoryEntity(userId, laboratory.getName());
 			this.mapper.insert(laboratoryEntity);
 
-			return new UserRegitration(userId, authResult.getEncryptedGrant());
+			return new UserRegistration(userId, authResult.getEncryptedGrant());
 		} catch (PureException e) {
 			log.debug("Laboratory user can't be registered", e);
 			throw new EncryptionException();

@@ -1,6 +1,9 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class PrescriptionService {
 		validatePermissions(grant);
 
 		String id = Utils.generateId();
-		byte[] encryptedNotes = encryptNotes(prescription.getNotes(), grant);
+		byte[] encryptedNotes = encryptNotes(prescription, grant);
 		PrescriptionEntity entity = new PrescriptionEntity(id, prescription.getPatientId(), grant.getUserId(),
 				encryptedNotes, prescription.getAssingDate(), prescription.getReleaseDate());
 		this.mapper.insert(entity);
@@ -75,7 +78,7 @@ public class PrescriptionService {
 		}
 		validateWritePermissions(entity, grant);
 
-		byte[] encryptedNotes = encryptNotes(prescription.getNotes(), grant);
+		byte[] encryptedNotes = encryptNotes(prescription, grant);
 		entity.setNotes(encryptedNotes);
 		entity.setAssingDate(prescription.getAssingDate());
 		entity.setReleaseDate(prescription.getReleaseDate());
@@ -123,15 +126,15 @@ public class PrescriptionService {
 				entity.getAssingDate(), entity.getReleaseDate());
 	}
 
-	private byte[] encryptNotes(String notes, PureGrant grant) {
-		if (notes != null) {
+	private byte[] encryptNotes(Prescription prescription, PureGrant grant) {
+		if (prescription.getNotes() != null) {
 			try {
 				// Encrypt sensitive data
-				return this.pure.encrypt(grant.getUserId(), SharedRole.PRESCRIPTION.getCode(), // patientId, null, null,
-						notes.getBytes(StandardCharsets.UTF_8));
-
+				return this.pure.encrypt(grant.getUserId(), SharedRole.PRESCRIPTION.getCode(),
+						new HashSet<String>(Arrays.asList(prescription.getPatientId())), Collections.emptySet(),
+						Collections.emptySet(), prescription.getNotes().getBytes(StandardCharsets.UTF_8));
 			} catch (PureException e) {
-				log.debug("PrescriptionEntity notes can't be encrypted", e);
+				log.debug("Prescription '{}' can't be encrypted", prescription.getId(), e);
 				throw new EncryptionException();
 			}
 		}

@@ -10,11 +10,11 @@ import lombok.Getter;
 @Getter
 public class ResetData {
 
-	private Set<UserRegitration> patients;
+	private Set<UserRegistration> patients;
 
-	private Set<UserRegitration> physicians;
+	private Set<UserRegistration> physicians;
 
-	private Set<UserRegitration> laboratories;
+	private Set<UserRegistration> laboratories;
 
 	private Set<String> prescriptions;
 

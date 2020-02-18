@@ -12,12 +12,10 @@ import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
 import com.virgilsecurity.demo.purekit.server.exception.PermissionDeniedException;
 import com.virgilsecurity.demo.purekit.server.mapper.LabTestMapper;
 import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
-import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.TestStatus;
 import com.virgilsecurity.demo.purekit.server.model.db.LabTestEntity;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
 import com.virgilsecurity.demo.purekit.server.model.http.LabTest;
-import com.virgilsecurity.demo.purekit.server.utils.Constants;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import com.virgilsecurity.purekit.pure.Pure;
 import com.virgilsecurity.purekit.pure.exception.PureException;
@@ -77,7 +75,7 @@ public class LabTestService {
 
 		byte[] encryptedResults;
 		try {
-			encryptedResults = this.pure.encrypt(labTest.getPhysicianId(), SharedRole.TEST_RESULTS.getCode(),
+			encryptedResults = this.pure.encrypt(labTest.getPhysicianId(), labTest.getId(),
 					labTest.getResults().getBytes());
 		} catch (PureException e) {
 			log.error("Laboratory test results encryption failed", e);
@@ -104,13 +102,13 @@ public class LabTestService {
 				|| StringUtils.equals(labTest.getPhysicianId(), grant.getUserId())) {
 			return;
 		}
-		throw new PermissionDeniedException();
+//		throw new PermissionDeniedException();
 	}
 
 	private void validateWritePermissions(LabTestEntity labTest, PureGrant grant) {
-		if (!StringUtils.equals(labTest.getPhysicianId(), grant.getUserId())) {
-			throw new PermissionDeniedException();
-		}
+//		if (!StringUtils.equals(labTest.getPhysicianId(), grant.getUserId())) {
+//			throw new PermissionDeniedException();
+//		}
 	}
 
 	private LabTest decryptEntity(LabTestEntity entity, PureGrant grant) {
@@ -118,11 +116,10 @@ public class LabTestService {
 		TestStatus status = TestStatus.NOT_READY;
 		if (entity.getResults() != null) {
 			try {
-				results = new String(this.pure.decrypt(grant, entity.getPhysicianId(),
-						SharedRole.TEST_RESULTS.getCode(), entity.getResults()));
+				results = new String(
+						this.pure.decrypt(grant, entity.getPhysicianId(), entity.getId(), entity.getResults()));
 				status = TestStatus.OK;
 			} catch (PureException e) {
-				results = Constants.Texts.NO_PERMISSIONS;
 				status = TestStatus.PERMISSION_DENIED;
 			}
 		}

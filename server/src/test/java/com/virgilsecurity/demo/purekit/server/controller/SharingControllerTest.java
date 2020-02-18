@@ -2,6 +2,7 @@ package com.virgilsecurity.demo.purekit.server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -10,7 +11,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,12 +25,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virgilsecurity.demo.purekit.server.model.SharedRole;
+import com.virgilsecurity.demo.purekit.server.model.TestStatus;
 import com.virgilsecurity.demo.purekit.server.model.http.LabTest;
 import com.virgilsecurity.demo.purekit.server.model.http.Patient;
 import com.virgilsecurity.demo.purekit.server.model.http.Physician;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
 import com.virgilsecurity.demo.purekit.server.model.http.SharingData;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,8 +43,9 @@ public class SharingControllerTest extends RestDocTest {
 	@Autowired
 	private ObjectMapper jackson2ObjectMapper;
 
-	private Set<UserRegitration> registeredPatients;
-	private UserRegitration registeredPhysician;
+	private Set<UserRegistration> registeredPatients;
+	private UserRegistration registeredPhysician;
+	private UserRegistration laboratory;
 	private Set<String> labTests;
 
 	@BeforeEach
@@ -53,13 +55,13 @@ public class SharingControllerTest extends RestDocTest {
 		ResetData resetData = this.restTemplate.postForObject("/reset", null, ResetData.class);
 		this.registeredPatients = resetData.getPatients();
 		this.registeredPhysician = resetData.getPhysicians().iterator().next();
+		this.laboratory = resetData.getLaboratories().iterator().next();
 		this.labTests = resetData.getLabTests();
 	}
 
 	@Test
-	@Disabled
 	void share_patient() throws Exception {
-		UserRegitration registeredPatient = this.registeredPatients.iterator().next();
+		UserRegistration registeredPatient = this.registeredPatients.iterator().next();
 
 		HttpHeaders headers = new HttpHeaders();
 		HttpEntity<?> entity;
@@ -75,7 +77,7 @@ public class SharingControllerTest extends RestDocTest {
 
 		patient = response.getBody();
 		assertNotNull(patient);
-		assertEquals(Constants.Texts.NO_PERMISSIONS, patient.getSsn());
+		assertNull(patient.getSsn());
 
 		// Share SSN with physician
 		headers.set(Constants.GRANT_HEADER, registeredPatient.getGrant());
@@ -93,7 +95,7 @@ public class SharingControllerTest extends RestDocTest {
 
 		patient = response.getBody();
 		assertNotNull(patient);
-		PatientControllerTest.verifySsn(patient);
+		PatientControllerTest.validate(patient);
 
 		// Document share REST
 		this.mockMvc
@@ -105,16 +107,15 @@ public class SharingControllerTest extends RestDocTest {
 	}
 
 	@Test
-	@Disabled
-	void share() throws Exception {
-		UserRegitration registeredPatient = this.registeredPatients.iterator().next();
+	void share_physician() throws Exception {
+		UserRegistration registeredPatient = this.registeredPatients.iterator().next();
 
 		HttpHeaders headers = new HttpHeaders();
 		HttpEntity<?> entity;
 		ResponseEntity<Physician> response;
 		Physician physician;
 
-		// Ensure patient can't read physician's license number
+		// Ensure patient can't read physician's License Number
 		headers.set(Constants.GRANT_HEADER, registeredPatient.getGrant());
 		entity = new HttpEntity<>(headers);
 		response = this.restTemplate.exchange("/physicians/" + this.registeredPhysician.getUserId(), HttpMethod.GET,
@@ -123,17 +124,16 @@ public class SharingControllerTest extends RestDocTest {
 
 		physician = response.getBody();
 		assertNotNull(physician);
-		assertEquals(0L, physician.getLicenseNo());
+		assertNull(physician.getLicenseNo());
 
-		// Share license number with patient
+		// Share License Number with physician
 		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
 		SharingData sharingData = new SharingData(SharedRole.LICENSE_NO.getCode(), registeredPatient.getUserId());
 		entity = new HttpEntity<>(sharingData, headers);
-		ResponseEntity<?> sharingResponse = this.restTemplate.exchange("/share", HttpMethod.POST, entity,
-				Physician.class);
+		ResponseEntity<?> sharingResponse = this.restTemplate.exchange("/share", HttpMethod.POST, entity, Void.class);
 		assertEquals(200, sharingResponse.getStatusCodeValue());
 
-		// Get physician't info by a patient
+		// Get physician info by patient
 		headers.set(Constants.GRANT_HEADER, registeredPatient.getGrant());
 		entity = new HttpEntity<>(headers);
 		response = this.restTemplate.exchange("/physicians/" + this.registeredPhysician.getUserId(), HttpMethod.GET,
@@ -142,19 +142,10 @@ public class SharingControllerTest extends RestDocTest {
 
 		physician = response.getBody();
 		assertNotNull(physician);
-		PhysicianControllerTest.validateLicense(physician);
-
-		// Document share license number REST
-//		this.mockMvc
-//				.perform(MockMvcRequestBuilders
-//						.request(HttpMethod.PUT, "/physicians/share/" + registeredPatient.getUserId())
-//						.header(Constants.GRANT_HEADER, registeredPhysician))
-//				.andDo(document("physician/share", preprocessRequest(prettyPrint()),
-//						preprocessResponse(prettyPrint())));
+		PhysicianControllerTest.validate(physician);
 	}
 
 	@Test
-	@Disabled
 	void share_labTest() throws Exception {
 		String labTestId = this.labTests.iterator().next();
 
@@ -163,8 +154,8 @@ public class SharingControllerTest extends RestDocTest {
 		ResponseEntity<LabTest> response;
 		LabTest labTest;
 
-		// Set lab test results
-		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
+		// Set lab test results by laboratory
+		headers.set(Constants.GRANT_HEADER, this.laboratory.getGrant());
 		entity = new HttpEntity<>(headers);
 		response = this.restTemplate.exchange("/lab-tests/" + labTestId, HttpMethod.GET, entity, LabTest.class);
 		assertEquals(200, response.getStatusCodeValue());
@@ -175,9 +166,20 @@ public class SharingControllerTest extends RestDocTest {
 		response = this.restTemplate.exchange("/lab-tests/" + labTestId, HttpMethod.PUT, entity, LabTest.class);
 		assertEquals(200, response.getStatusCodeValue());
 
+		// Ensure physician can read lab test results
+		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
+		entity = new HttpEntity<>(headers);
+		response = this.restTemplate.exchange("/lab-tests/" + labTestId, HttpMethod.GET, entity, LabTest.class);
+		assertEquals(200, response.getStatusCodeValue());
+
+		labTest = response.getBody();
+		assertNotNull(labTest);
+		assertEquals("New results", labTest.getResults());
+		assertEquals(TestStatus.OK, labTest.getStatus());
+
 		// Ensure patient can't read lab test results
 		final String patientId = labTest.getPatientId();
-		UserRegitration registeredPatient = this.registeredPatients.stream().filter(it -> {
+		UserRegistration registeredPatient = this.registeredPatients.stream().filter(it -> {
 			return it.getUserId().equals(patientId);
 		}).findFirst().get();
 
@@ -188,14 +190,14 @@ public class SharingControllerTest extends RestDocTest {
 
 		labTest = response.getBody();
 		assertNotNull(labTest);
-		assertEquals(Constants.Texts.NO_PERMISSIONS, labTest.getResults());
+		assertNull(labTest.getResults());
+		assertEquals(TestStatus.PERMISSION_DENIED, labTest.getStatus());
 
 		// Share lab test results with patient
 		headers.set(Constants.GRANT_HEADER, this.registeredPhysician.getGrant());
-		SharingData sharingData = new SharingData(SharedRole.LICENSE_NO.getCode(), registeredPatient.getUserId());
+		SharingData sharingData = new SharingData(labTest.getId(), registeredPatient.getUserId());
 		entity = new HttpEntity<>(sharingData, headers);
-		ResponseEntity<?> sharingResponse = this.restTemplate
-				.exchange("/share", HttpMethod.POST, entity, LabTest.class);
+		ResponseEntity<?> sharingResponse = this.restTemplate.exchange("/share", HttpMethod.POST, entity, Void.class);
 		assertEquals(200, sharingResponse.getStatusCodeValue());
 
 		// Get lab test results by patient
@@ -207,13 +209,7 @@ public class SharingControllerTest extends RestDocTest {
 		labTest = response.getBody();
 		assertNotNull(labTest);
 		assertEquals("New results", labTest.getResults());
-
-		// Document REST
-//		this.mockMvc
-//				.perform(MockMvcRequestBuilders
-//						.request(HttpMethod.POST, "/share")
-//						.header(Constants.GRANT_HEADER, registeredPhysician))
-//				.andDo(document("labtest/share", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())));
+		assertEquals(TestStatus.OK, labTest.getStatus());
 	}
 
 }

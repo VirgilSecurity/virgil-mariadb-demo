@@ -2,7 +2,7 @@ package com.virgilsecurity.demo.purekit.server.model;
 
 public enum SharedRole {
 
-	SSN("ssn"), LICENSE_NO("license_no"), TEST_RESULTS("test_result"), PRESCRIPTION("prescription");
+	SSN("ssn"), LICENSE_NO("license_no"), PRESCRIPTION("prescription");
 
 	private String code;
 

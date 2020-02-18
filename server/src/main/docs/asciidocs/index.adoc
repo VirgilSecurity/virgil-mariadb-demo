@@ -77,6 +77,14 @@ include::{snippets}/prescription/update/http-response.adoc[]
 
 == Laboratory test
 
+=== Create
+
+.request
+include::{snippets}/labtest/create/http-request.adoc[]
+
+.response
+include::{snippets}/labtest/create/http-response.adoc[]
+
 === Get
 
 .request

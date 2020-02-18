@@ -2,6 +2,7 @@ package com.virgilsecurity.demo.purekit.server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -25,7 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.virgilsecurity.demo.purekit.server.model.http.Patient;
 import com.virgilsecurity.demo.purekit.server.model.http.ResetData;
-import com.virgilsecurity.demo.purekit.server.model.http.UserRegitration;
+import com.virgilsecurity.demo.purekit.server.model.http.UserRegistration;
 import com.virgilsecurity.demo.purekit.server.utils.Constants;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,7 +35,7 @@ public class PatientControllerTest extends RestDocTest {
 	@Autowired
 	private TestRestTemplate restTemplate;
 
-	private Set<UserRegitration> registeredPatients;
+	private Set<UserRegistration> registeredPatients;
 
 	@BeforeEach
 	void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
@@ -46,7 +47,7 @@ public class PatientControllerTest extends RestDocTest {
 
 	@Test
 	void get() throws Exception {
-		UserRegitration registeredPatient = this.registeredPatients.iterator().next();
+		UserRegistration registeredPatient = this.registeredPatients.iterator().next();
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(Constants.GRANT_HEADER, registeredPatient.getGrant());
@@ -59,7 +60,7 @@ public class PatientControllerTest extends RestDocTest {
 
 		Patient patient = response.getBody();
 		assertNotNull(patient);
-		verifySsn(patient);
+		validate(patient);
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/patients/" + registeredPatient.getUserId())
@@ -69,7 +70,7 @@ public class PatientControllerTest extends RestDocTest {
 
 	@Test
 	void list() throws Exception {
-		for (UserRegitration registeredPatient : this.registeredPatients) {
+		for (UserRegistration registeredPatient : this.registeredPatients) {
 			// Get patients from REST
 			HttpHeaders headers = new HttpHeaders();
 			headers.set(Constants.GRANT_HEADER, registeredPatient.getGrant());
@@ -88,9 +89,9 @@ public class PatientControllerTest extends RestDocTest {
 			// Verify patients data
 			for (Patient patient : patients) {
 				if (registeredPatient.getUserId().equals(patient.getId())) {
-					verifySsn(patient);
+					validate(patient);
 				} else {
-					assertEquals(Constants.Texts.NO_PERMISSIONS, patient.getSsn());
+					assertNull(patient.getSsn());
 				}
 			}
 
@@ -108,7 +109,7 @@ public class PatientControllerTest extends RestDocTest {
 		assertEquals(400, response.getStatusCodeValue());
 	}
 
-	public static void verifySsn(Patient patient) {
+	public static void validate(Patient patient) {
 		assertEquals("1234567890" + StringUtils.substring(patient.getName(), -1), patient.getSsn());
 	}
 
