@@ -12,11 +12,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 import com.virgilsecurity.demo.purekit.server.model.db.LabTestEntity;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 
 @MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class LabTestMapperTest {
 
 	@Autowired

@@ -9,6 +9,7 @@ public class V2__Init_purekit extends BaseJavaMigration {
 
 	@Override
 	public void migrate(Context context) throws Exception {
+		System.out.println(context.getConfiguration().getDataSource().getConnection().getMetaData().getDatabaseProductName());
 		if (!"HSQL Database Engine".equals(
 				context.getConfiguration().getDataSource().getConnection().getMetaData().getDatabaseProductName())) {
 			MariaDbPureStorage pureStorage = new MariaDbPureStorage(context.getConfiguration().getDataSource());

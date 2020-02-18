@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 import com.virgilsecurity.demo.purekit.server.model.db.PatientEntity;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
@@ -18,6 +19,7 @@ import com.virgilsecurity.demo.purekit.server.utils.Utils;
 import ch.qos.logback.core.encoder.ByteArrayUtil;
 
 @MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PatientMapperTest {
 
 	public static final String PATIENT1_ID = "780b28cb531c4e4fb1513529b09b8a34";

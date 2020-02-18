@@ -1,7 +1,10 @@
 package com.virgilsecurity.demo.purekit.server;
 
+import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
+import org.h2.server.web.WebServer;
+import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,16 +27,41 @@ public class ServerApplication {
 	@Autowired
 	private Environment env;
 
-	@Autowired
-	private DataSource dataSource;
+	private Server server;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServerApplication.class, args);
 	}
 
+//	@Bean(name = "dataSource")
+//	public DataSource dataSource() {
+//		@SuppressWarnings("rawtypes")
+//		DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+//		dataSourceBuilder.driverClassName(this.env.getProperty("spring.datasource.driverClassName"));
+//		dataSourceBuilder.url(this.env.getProperty("spring.datasource.url"));
+//		if (StringUtils.isNotBlank(this.env.getProperty("spring.datasource.username"))) {
+//			dataSourceBuilder.username(this.env.getProperty("spring.datasource.username"));
+//		}
+//		if (StringUtils.isNotBlank(this.env.getProperty("spring.datasource.password"))) {
+//			dataSourceBuilder.password(this.env.getProperty("spring.datasource.password"));
+//		}
+//		DataSource dataSource = dataSourceBuilder.build();
+//		return dataSource;
+//	}
+
+	@Bean(name = "webServiceUrl")
+	public String webServiceUrl(DataSource dataSource) throws Exception {
+		this.server = Server.createWebServer("-webPort", env.getProperty("db.viewer.port", "0"), "-webAllowOthers");
+		WebServer service = (WebServer) server.getService();
+		String url = service.addSession(dataSource.getConnection());
+		log.debug("Database console url: {}", url);
+		this.server.start();
+		return url;
+	}
+
 	@Bean
-	MariaDbPureStorage pureStorage() {
-		return new MariaDbPureStorage(this.dataSource);
+	MariaDbPureStorage pureStorage(DataSource dataSource) {
+		return new MariaDbPureStorage(dataSource);
 	}
 
 	@Bean
@@ -65,6 +93,11 @@ public class ServerApplication {
 				registry.addMapping("/**").allowedOrigins("*");
 			}
 		};
+	}
+
+	@PreDestroy
+	public void preDestroy() {
+		this.server.stop();
 	}
 
 }

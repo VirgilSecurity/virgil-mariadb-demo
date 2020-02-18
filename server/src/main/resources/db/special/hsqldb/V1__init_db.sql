@@ -31,7 +31,7 @@ CREATE TABLE prescriptions (
   assign_date timestamp,
   release_date timestamp,
   PRIMARY KEY (id)
-)
+);
 
 CREATE TABLE lab_tests (
   id char(32) NOT NULL,
