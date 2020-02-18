@@ -58,16 +58,28 @@ function App() {
     nextTestId
   };
 
-  // useEffect(() => {
-  //   connection.send(new PrescriptionsReq().onSuccess((resp)=>{
-  //       setPrescription(resp);
-  //   }));
-  // }, []);
+  useEffect(() => {
+    const pat = localStorage.getItem('patientCred');
+    const phy = localStorage.getItem('physicianCred');
+    if (pat) {
+      setPatientCred(JSON.parse(pat));
+    }
+    if (phy) {
+      setPhysicianCred(JSON.parse(phy));
+    }
+  }, []);
   
+  const handleClear = () => {
+    localStorage.clear();
+    window.location.reload(false);
+  };
+
   const handleReset = () => {
+    localStorage.clear();
     connection.send(new ResetReq()
       .onSuccess((resp) => {
-        // console.log(resp);
+        localStorage.setItem('patientCred', JSON.stringify(resp.patients[1]));
+        localStorage.setItem('physicianCred', JSON.stringify(resp.physicians[0]));
         setPatientCred(resp.patients[1]);
         setPhysicianCred(resp.physicians[0]);
       })
@@ -76,12 +88,19 @@ function App() {
 
   return (
     <StoreContext.Provider value={providerValue}>
-      <Button
-        onClick={handleReset}
-        color="primary"
-        variant="contained"
-        style={{display:'block', backgroundColor: '#7bbd00', margin: '0 auto'}}
-      >Restart demo</Button>
+      <div style={{display: 'flex', justifyContent: 'center', margin: '0 auto'}}>
+        <Button
+          onClick={handleReset}
+          color="primary"
+          variant="contained"
+          style={{backgroundColor: '#7bbd00', marginRight: '10px'}}
+        >Restart demo</Button>
+        <Button
+          onClick={handleClear}
+          color="secondary"
+          variant="contained"
+        >Clear</Button>
+      </div>
       <div className={classes.root}>
 
         {patientCred && <Card className={classes.card}>
