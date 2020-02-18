@@ -70,7 +70,14 @@ const AddPrescription:React.FC<AddPrescriptionProps> = ({onSubmit, patient_id}) 
             <form onSubmit={handleSubmit}>
                 <FormControl className={css.form}>
                     <InputLabel required htmlFor="notes">Notes</InputLabel>
-                    <Input required name="notes" className={css.input} onChange={handleInputChange} id="notes" />
+                    <Input
+                        required
+                        name="notes"
+                        className={css.input}
+                        onChange={handleInputChange}
+                        id="notes"
+                        autoFocus={true}
+                    />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             required

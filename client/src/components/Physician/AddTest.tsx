@@ -54,7 +54,14 @@ const AddTest:React.FC<AddTestProps> = ({onSubmit, patient_id}) => {
             <form onSubmit={handleSubmit}>
                 <FormControl className={css.form}>
                     <InputLabel required htmlFor="text">Name</InputLabel>
-                    <Input required name="text" className={css.input} onChange={handleInputChange} id="text" />
+                    <Input
+                        required
+                        name="text"
+                        autoFocus={true}
+                        className={css.input}
+                        onChange={handleInputChange}
+                        id="text"
+                    />
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             variant="inline"

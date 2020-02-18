@@ -35,7 +35,7 @@ const Item: React.FC<ItemProps> = ({ item, grant }) => {
             share_with: [item.patient_id],
             roles: null
         }, grant).onSuccess(() => {
-            localStorage.setItem(item.id, 'true');
+            sessionStorage.setItem(item.id, 'true');
             reloadPage();
         }));
     };
@@ -51,7 +51,7 @@ const Item: React.FC<ItemProps> = ({ item, grant }) => {
             </TableCell>
             <TableCell>{dateCrop(item.test_date)}</TableCell>
             <TableCell>
-                { item.status === Status.ok && !localStorage.getItem(item.id) && 
+                { item.status === Status.ok && !sessionStorage.getItem(item.id) && 
                     <div onClick={handleClick} className={css.btn}>Share</div>
                 }
             </TableCell>

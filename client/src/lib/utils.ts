@@ -20,10 +20,8 @@ export const useSignUpForm = (callback: () => void) => {
 };
 
 export const reloadPage = () => {
-  setTimeout(() => {
-    // eslint-disable-next-line no-restricted-globals
-    location.reload();
-  }, 500);
+  // eslint-disable-next-line no-restricted-globals
+  location.reload();
 };
 
 export const dateCrop = (str: string) => str.replace(/T.+/g, '');

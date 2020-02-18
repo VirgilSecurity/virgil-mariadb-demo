@@ -48,7 +48,7 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
                 share_with: [physician.id],
                 roles: null
             }, patientCred.grant).onSuccess(() => {
-                localStorage.setItem('sharePatient', 'true');
+                sessionStorage.setItem('sharePatient', 'true');
                 reloadPage();
             }));
         }
@@ -60,7 +60,7 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
             <div className={gCss.addInfoContainer}>
                 <div className={gCss.label}>Social security number:</div>
                 <div className={gCss.addInfo}>{person.ssn}</div>
-                {!localStorage.getItem('sharePatient') &&  physician &&
+                {!sessionStorage.getItem('sharePatient') &&  physician &&
                 <div onClick={handelShareInfo} className={gCss.share}>
                     {`share to ${physician.name}`}
                 </div>}

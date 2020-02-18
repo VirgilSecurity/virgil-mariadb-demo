@@ -3,7 +3,6 @@ import { FormControl, Button, makeStyles, TextField } from '@material-ui/core';
 import { useGlobalStyles } from '../../lib/styles';
 import { useSignUpForm } from '../../lib/utils';
 
-
 export interface AddResultProps {
     onSubmit: (res: string) => void; 
 };
@@ -38,7 +37,8 @@ const AddResult:React.FC<AddResultProps> = ({onSubmit}) => {
                         multiline
                         className={css.input}
                         onChange={handleInputChange}
-                        rows="4"  
+                        rows="4"
+                        autoFocus={true}
                     />
                     <Button color="primary" variant="contained" type="submit">Submit</Button>
                 </FormControl>

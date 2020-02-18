@@ -44,7 +44,7 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
         }));
         // get patient info
         connection.send(new PatientListReq(physicianCred.grant).onSuccess((resp) => {
-            setPatient(resp[1]);
+            setPatient(resp[0]);
         }));
         // get prescriptions
         connection.send(new PrescriptionsListReq(physicianCred.grant).onSuccess((resp) => {
@@ -71,7 +71,7 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
                 share_with: [patient.id],
                 roles: null
             }, physicianCred.grant).onSuccess(() => {
-                localStorage.setItem('sharePhysician', 'true');
+                sessionStorage.setItem('sharePhysician', 'true');
                 reloadPage();
             }));
         }
@@ -83,7 +83,7 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
             <div className={gCss.addInfoContainer}>
                 <div className={gCss.label}>license number:</div>
                 <div className={gCss.addInfo}>{person.license_no}</div>
-                {!localStorage.getItem('sharePhysician') &&  patient &&
+                {!sessionStorage.getItem('sharePhysician') &&  patient &&
                 <div onClick={handelShareInfo} className={gCss.share}>
                     {`share to ${patient.name}`}
                 </div>}

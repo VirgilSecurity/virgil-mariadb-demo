@@ -3,7 +3,7 @@ import Patient from './components/Patient/Patient';
 import Physician from './components/Physician/Physician';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardContent, Button } from '@material-ui/core';
-import { ICredentials } from './lib/Interfaces';
+import { ICredentials, IReset } from './lib/Interfaces';
 import { useGlobalStyles } from './lib/styles';
 import { ResetReq } from './lib/Connection/Endpoints';
 import { Connection } from './lib/Connection/Connection';
@@ -34,58 +34,48 @@ function App() {
   const [patientCred, setPatientCred] = useState<ICredentials | undefined>();
   const [physicianCred, setPhysicianCred] = useState<ICredentials | undefined>();
   const [labCred, setLabCred] = useState<ICredentials | undefined>();
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const pat = localStorage.getItem('patientCred');
-    const phy = localStorage.getItem('physicianCred');
-    const lab = localStorage.getItem('labCred');
-    if (pat) {
-      setPatientCred(JSON.parse(pat));
-    }
-    if (phy) {
-      setPhysicianCred(JSON.parse(phy));
-    }
-    if (lab) {
-      setLabCred(JSON.parse(lab));
-    }
-  }, []);
-  
-  const handleClear = () => {
-    localStorage.clear();
-    window.location.reload(false);
+  const initDemo = (init:IReset) => {
+    setPatientCred(init.patients[0]);
+    setPhysicianCred(init.physicians[0]);
+    setLabCred(init.laboratories[0]);
   };
 
+  useEffect(() => {
+    const init:IReset | null = JSON.parse(sessionStorage.getItem('init') || '{}');
+    if (init?.patients) {
+      initDemo(init);
+    } else {
+      handleReset();
+    }
+  }, []);
+
   const handleReset = () => {
-    localStorage.clear();
+    sessionStorage.clear();
+    setLoading(true);
     connection.send(new ResetReq()
-      .onSuccess((resp) => {
-        localStorage.setItem('patientCred', JSON.stringify(resp.patients[1]));
-        localStorage.setItem('physicianCred', JSON.stringify(resp.physicians[0]));
-        localStorage.setItem('labCred', JSON.stringify(resp.laboratories[0]));
-        setPatientCred(resp.patients[1]);
-        setPhysicianCred(resp.physicians[0]);
-        setLabCred(resp.laboratories[0]);
+    .onSuccess((resp) => {
+      sessionStorage.setItem('init', JSON.stringify({...resp, isInit: true}));
+      initDemo(resp);
+      setLoading(false);
       })
     );
   };
 
+  if (isLoading) {
+    return <div style={{textAlign: 'center', margin: '0 auto'}}>Loading...</div>;
+  }
+
   return (
     <>
-      <div style={{display: 'flex', justifyContent: 'center', margin: '0 auto'}}>
-        <Button
-          onClick={handleReset}
-          color="primary"
-          variant="contained"
-          style={{backgroundColor: '#7bbd00', marginRight: '10px'}}
-        >Restart demo</Button>
-        <Button
-          onClick={handleClear}
-          color="secondary"
-          variant="contained"
-        >Clear</Button>
-      </div>
+      <Button
+        onClick={handleReset}
+        color="primary"
+        variant="contained"
+        style={{display: 'block', backgroundColor: '#7bbd00', margin: '0 auto'}}
+      >Restart demo</Button>
       <div className={classes.root}>
-
         {patientCred && <Card className={classes.card}>
           <h2 className={styles.pageTitle}>Patient card</h2>
           <CardContent>
