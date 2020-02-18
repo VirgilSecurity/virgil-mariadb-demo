@@ -19,15 +19,11 @@ export const useSignUpForm = (callback: () => void) => {
     };
 };
 
-export const useCount = (start: number) => {
-  const [count, setCount] = useState(start);
-
-  const getNext = () => {
-    setCount(count + 1);
-    return count;
-  };
-
-  return getNext;
+export const reloadPage = () => {
+  setTimeout(() => {
+    // eslint-disable-next-line no-restricted-globals
+    location.reload();
+  }, 500);
 };
 
 export const dateCrop = (str: string) => str.replace(/T.+/g, '');

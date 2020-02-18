@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobalStyles } from '../../lib/styles';
 import { PrescriptionsListReq, LabTestListReq, ShareReq } from '../../lib/Connection/Endpoints';
-import { PatientInfoReq, ChangePatientInfo, GetLabTest } from './PatientEndpoint';
-import StoreContext from '../StoreContext/StoreContext';
+import { PatientInfoReq } from './PatientEndpoint';
 import { IPatient, IPhysician, IPrescription, ILabTest, ICredentials } from '../../lib/Interfaces';
 import Prescriptions from '../../lib/components/Prescription/Prescription';
 import LabTest from './LabTest';
 import { PhysicianListReq } from '../Physician/PhysicianEndpoint';
+import { Connection } from '../../lib/Connection/Connection';
+import { reloadPage } from '../../lib/utils';
 
 export interface PatientProps {
     patientCred: ICredentials;
@@ -14,7 +15,7 @@ export interface PatientProps {
 
 const Patient: React.FC<PatientProps> = ({ patientCred }) => {
     const gCss = useGlobalStyles();
-    const { connection } = React.useContext(StoreContext);
+    const connection: Connection = new Connection();
     const [patient, setPatient] = useState<IPatient | undefined>();
     const [physician, setPhysician] = useState<IPhysician | undefined>();
     const [prescriptions, setPrescriptions] = useState<IPrescription[] | undefined>();
@@ -48,8 +49,7 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
                 roles: null
             }, patientCred.grant).onSuccess(() => {
                 localStorage.setItem('sharePatient', 'true');
-                // eslint-disable-next-line no-restricted-globals
-                location.reload();
+                reloadPage();
             }));
         }
     };

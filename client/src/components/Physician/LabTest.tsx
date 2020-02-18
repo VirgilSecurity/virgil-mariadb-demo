@@ -3,9 +3,9 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, makeS
 import { ILabTest, Status } from '../../lib/Interfaces';
 import Paper from '@material-ui/core/Paper';
 import { TableTitle, TextEllipsis } from '../../lib/components/Global';
-import StoreContext from '../StoreContext/StoreContext';
-import { dateCrop } from '../../lib/utils';
+import { dateCrop, reloadPage } from '../../lib/utils';
 import { ShareReq } from '../../lib/Connection/Endpoints';
+import { Connection } from '../../lib/Connection/Connection';
 
 export interface LabTestProps {
     data: ILabTest[];
@@ -27,7 +27,7 @@ const useStyles = makeStyles(() => ({
 
 const Item: React.FC<ItemProps> = ({ item, grant }) => {
     const css = useStyles();
-    const { connection } = React.useContext(StoreContext);
+    const connection: Connection = new Connection();
 
     const handleClick = () => {
         connection.send(new ShareReq({
@@ -36,8 +36,7 @@ const Item: React.FC<ItemProps> = ({ item, grant }) => {
             roles: null
         }, grant).onSuccess(() => {
             localStorage.setItem(item.id, 'true');
-            // eslint-disable-next-line no-restricted-globals
-            location.reload();
+            reloadPage();
         }));
     };
     

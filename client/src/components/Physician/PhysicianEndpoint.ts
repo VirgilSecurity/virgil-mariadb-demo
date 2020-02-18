@@ -3,8 +3,6 @@ import { Method } from '../../lib/Connection/Connection'
 import { IPhysician, IPrescriptionPost, ILabTestPost } from '../../lib/Interfaces';
 
 const LAB_TESTS = 'lab-tests';
-const CHANGE_PERMISSION = 'lab_tests/';
-
 
 const PHYSICIAN_BASE = 'physicians';
 const PHYSICIAN_INFO = (id: string) => `${PHYSICIAN_BASE}/${id}`;
@@ -44,19 +42,5 @@ export class AddLabTestReq extends Request<ILabTestPost, null> {
 	constructor(data: ILabTestPost, public grant: string) {
 		super();
 		this.params = data;
-	}
-};
-
-
-
-
-
-export class ChangePermissionToResultReq extends Request<ILabTestPost, null> {
-	method = Method.Put;
-	endpoint = CHANGE_PERMISSION;
-	constructor(data: ILabTestPost, id: string) {
-		super();
-		this.params = data;
-		this.endpoint += id;
 	}
 };

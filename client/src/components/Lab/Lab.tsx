@@ -3,11 +3,11 @@ import { AddResultReq } from './LabEndpoint';
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { TableTitle, TextEllipsis } from '../../lib/components/Global';
 import { ILabTest, ICredentials, Status } from '../../lib/Interfaces';
-import StoreContext from '../StoreContext/StoreContext';
 import SimpleModal from '../../lib/components/Modal/Modal';
 import AddResult from './AddResult';
 import { LabTestListReq } from '../../lib/Connection/Endpoints';
-import { dateCrop } from '../../lib/utils';
+import { dateCrop, reloadPage } from '../../lib/utils';
+import { Connection } from '../../lib/Connection/Connection';
 
 interface ItemProps {
     item: ILabTest;
@@ -15,17 +15,14 @@ interface ItemProps {
 }
 
 const Item: React.FC<ItemProps> = ({ item, grant }) => {
-    const { connection } = React.useContext(StoreContext);
+    const connection: Connection = new Connection();
 
     const handleSubmit = (res: string) => {
         connection.send(new AddResultReq({
             ...item,
             status: 'OK',
             results: res
-        }, grant, item.id).onSuccess(() => {
-            // eslint-disable-next-line no-restricted-globals
-            location.reload();
-        }));
+        }, grant, item.id).onSuccess(reloadPage));
     };
 
     return (
@@ -48,7 +45,7 @@ export interface LabProps {
 
 const Lab:React.FC<LabProps> = ({ labCred }) => {
     const [labTests, setLabTests] = useState<undefined | ILabTest[]>();
-    const { connection } = React.useContext(StoreContext);
+    const connection: Connection = new Connection();
 
     useEffect(() => {
         connection.send(new LabTestListReq(labCred.grant).onSuccess((resp) => {

@@ -3,7 +3,6 @@ import { FormControl, InputLabel, Input, Button, makeStyles } from '@material-ui
 import { useGlobalStyles } from '../../lib/styles';
 import { useSignUpForm } from '../../lib/utils';
 import { ILabTestPost } from '../../lib/Interfaces';
-import StoreContext from '../StoreContext/StoreContext';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker,

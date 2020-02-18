@@ -3,13 +3,11 @@ import Patient from './components/Patient/Patient';
 import Physician from './components/Physician/Physician';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardContent, Button } from '@material-ui/core';
-import StoreContext from './components/StoreContext/StoreContext';
-import { IPatient, IPhysician, IPrescription, ICredentials } from './lib/Interfaces';
+import { ICredentials } from './lib/Interfaces';
 import { useGlobalStyles } from './lib/styles';
 import { ResetReq } from './lib/Connection/Endpoints';
 import { Connection } from './lib/Connection/Connection';
 import Lab from './components/Lab/Lab';
-import { useCount } from './lib/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -36,28 +34,6 @@ function App() {
   const [patientCred, setPatientCred] = useState<ICredentials | undefined>();
   const [physicianCred, setPhysicianCred] = useState<ICredentials | undefined>();
   const [labCred, setLabCred] = useState<ICredentials | undefined>();
-
-  const [patient, setPatient] = useState<IPatient | undefined>();
-  const [physician, setPhysician] = useState<IPhysician | undefined>();
-  const [prescription, setPrescription] = useState<IPrescription[] | undefined>();
-  const nextPrescriptionId = useCount(Math.floor(Math.random() * Math.floor(100000)));
-  const nextTestId = useCount(Math.floor(Math.random() * Math.floor(100000)));
-  
-
-  const providerValue = {
-    connection,
-
-
-
-    patient,
-    setPatient,
-    physician,
-    setPhysician,
-    prescription,
-    setPrescription,
-    nextPrescriptionId,
-    nextTestId
-  };
 
   useEffect(() => {
     const pat = localStorage.getItem('patientCred');
@@ -94,7 +70,7 @@ function App() {
   };
 
   return (
-    <StoreContext.Provider value={providerValue}>
+    <>
       <div style={{display: 'flex', justifyContent: 'center', margin: '0 auto'}}>
         <Button
           onClick={handleReset}
@@ -129,7 +105,7 @@ function App() {
           </CardContent>
         </Card>}
       </div>
-    </StoreContext.Provider>
+    </>
   );
 };
 

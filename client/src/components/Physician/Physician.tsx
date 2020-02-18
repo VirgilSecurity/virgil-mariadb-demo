@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobalStyles } from '../../lib/styles';
 import { AddLabTestReq, PhysicianInfoReq, AddPrescriptionsReq } from './PhysicianEndpoint';
-import StoreContext from '../StoreContext/StoreContext';
 import { IPhysician, IPatient, IPrescription, ILabTest, ICredentials, IPrescriptionPost, ILabTestPost } from '../../lib/Interfaces';
 import { makeStyles } from '@material-ui/core';
 import Prescriptions from '../../lib/components/Prescription/Prescription';
@@ -11,6 +10,8 @@ import LabTest from './LabTest';
 import AddTest from './AddTest';
 import { PatientListReq } from '../Patient/PatientEndpoint';
 import { PrescriptionsListReq, LabTestListReq, ShareReq } from '../../lib/Connection/Endpoints';
+import { Connection } from '../../lib/Connection/Connection';
+import { reloadPage } from '../../lib/utils';
 
 const useStyles = makeStyles(() => ({
     containerBtn: {
@@ -29,7 +30,7 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
     const gCss = useGlobalStyles();
     const css = useStyles();
 
-    const { connection } = React.useContext(StoreContext);
+    const connection: Connection = new Connection();
 
     const [physician, setPhysician] = useState<IPhysician | undefined>();
     const [patient, setPatient] = useState<IPatient | undefined>();
@@ -56,17 +57,11 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
     }, [physicianCred]);
 
     const AddPrescriptions = (data: IPrescriptionPost) => {
-        connection.send(new AddPrescriptionsReq(data, physicianCred.grant).onSuccess(()=>{
-            // eslint-disable-next-line no-restricted-globals
-            location.reload();
-        }));
+        connection.send(new AddPrescriptionsReq(data, physicianCred.grant).onSuccess(reloadPage));
     };
 
     const AddLabTest = (data: ILabTestPost) => {
-        connection.send(new AddLabTestReq(data, physicianCred.grant).onSuccess(()=>{
-            // eslint-disable-next-line no-restricted-globals
-            location.reload(); 
-        }));
+        connection.send(new AddLabTestReq(data, physicianCred.grant).onSuccess(reloadPage));
     };
 
     const handelShareInfo = () => {
@@ -77,8 +72,7 @@ const Physician:React.FC<PhysicianProps> = ({ physicianCred }) => {
                 roles: null
             }, physicianCred.grant).onSuccess(() => {
                 localStorage.setItem('sharePhysician', 'true');
-                // eslint-disable-next-line no-restricted-globals
-                location.reload();
+                reloadPage();
             }));
         }
     };
