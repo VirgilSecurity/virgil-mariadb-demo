@@ -10,7 +10,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +83,7 @@ public class PatientControllerTest extends RestDocTest {
 			// Extract patients from request
 			Patient[] patients = response.getBody();
 			assertNotNull(patients);
-			assertEquals(2, patients.length);
+			assertEquals(1, patients.length);
 
 			// Verify patients data
 			for (Patient patient : patients) {
@@ -110,7 +109,8 @@ public class PatientControllerTest extends RestDocTest {
 	}
 
 	public static void validate(Patient patient) {
-		assertEquals("1234567890" + StringUtils.substring(patient.getName(), -1), patient.getSsn());
+		assertEquals("Alice", patient.getName());
+		assertEquals("12345678901", patient.getSsn());
 	}
 
 }

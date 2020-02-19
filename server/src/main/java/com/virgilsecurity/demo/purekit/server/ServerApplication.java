@@ -37,7 +37,8 @@ public class ServerApplication {
 	@Bean
 	@Scope("singleton")
 	public WebServer webServer() throws Exception {
-		this.server = Server.createWebServer("-webPort", env.getProperty("spring.dbviewer.port", "0"), "-webAllowOthers");
+		this.server = Server.createWebServer("-webPort", env.getProperty("spring.dbviewer.port", "0"),
+				"-webAllowOthers");
 		WebServer service = (WebServer) server.getService();
 		this.server.start();
 		return service;

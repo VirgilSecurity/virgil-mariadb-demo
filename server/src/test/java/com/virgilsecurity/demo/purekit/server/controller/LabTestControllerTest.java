@@ -134,7 +134,7 @@ public class LabTestControllerTest extends RestDocTest {
 
 		LabTest[] retrievedLabTests = response.getBody();
 		assertNotNull(retrievedLabTests);
-		assertEquals(3, retrievedLabTests.length);
+		assertEquals(2, retrievedLabTests.length);
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/lab-tests").header(Constants.GRANT_HEADER,

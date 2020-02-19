@@ -81,7 +81,6 @@ public class PhysicianControllerTest extends RestDocTest {
 		// Verify patients data
 		Physician physician = physicians[0];
 		assertEquals(this.registeredPhysician.getUserId(), physician.getId());
-		assertEquals("PhysicianEntity 1", physician.getName());
 		validate(physician);
 
 		this.mockMvc
@@ -106,7 +105,8 @@ public class PhysicianControllerTest extends RestDocTest {
 	}
 
 	public static void validate(Physician physician) {
-		assertEquals("1001", physician.getLicenseNo());
+		assertEquals("Bob", physician.getName());
+		assertEquals("77774444", physician.getLicenseNo());
 	}
 
 }
