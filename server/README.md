@@ -18,11 +18,12 @@ mvn clean package
 ## Build Docker image
 
 ```
-docker build -t virgil/mariadb-demo .
+docker build -t virgil/mariadb-demo-server .
 ```
 
 ## Run Docker container
 
 ```
+cd ..
 docker-compose up
 ```

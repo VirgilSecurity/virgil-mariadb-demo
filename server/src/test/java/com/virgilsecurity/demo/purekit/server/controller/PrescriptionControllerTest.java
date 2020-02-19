@@ -129,7 +129,7 @@ public class PrescriptionControllerTest extends RestDocTest {
 
 		Prescription[] retrievedPrescriptions = response.getBody();
 		assertNotNull(retrievedPrescriptions);
-		assertEquals(3, retrievedPrescriptions.length);
+		assertEquals(2, retrievedPrescriptions.length);
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/prescriptions").header(Constants.GRANT_HEADER,
