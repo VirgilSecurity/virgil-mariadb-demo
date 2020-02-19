@@ -16,7 +16,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: rootpassword
       WAIT_HOSTS: mysql:3306
-      db.viewer.port: 8081
+      spring_dbviewer_port: 8081
     depends_on:
       - mariadb
   mariadb:
