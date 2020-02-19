@@ -27,8 +27,6 @@
 
 	<dependencies>
 		<!-- Virgil -->
-		<!-- dependency> <groupId>com.virgilsecurity.crypto</groupId> <artifactId>phe</artifactId> 
-			<version>${virgil-crypto.version}</version> </dependency -->
 		<dependency>
 			<groupId>com.virgilsecurity.sdk</groupId>
 			<artifactId>crypto</artifactId>
@@ -73,6 +71,10 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 		</dependency>
 
 		<!-- Tests -->

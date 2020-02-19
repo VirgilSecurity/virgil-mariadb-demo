@@ -11,12 +11,14 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 
 @MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PureTablesTest {
 
 	@Autowired

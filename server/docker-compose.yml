@@ -4,8 +4,10 @@ services:
     image: "virgil/mariadb-demo"
     expose:
       - "8080"
+      - "8081"
     ports:
       - "8080:8080"
+      - "8081:8081"
     env_file:
       - .env
     environment:
@@ -14,6 +16,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: rootpassword
       WAIT_HOSTS: mysql:3306
+      db.viewer.port: 8081
     depends_on:
       - mariadb
   mariadb:

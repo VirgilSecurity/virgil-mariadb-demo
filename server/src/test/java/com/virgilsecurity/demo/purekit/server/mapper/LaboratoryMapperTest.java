@@ -10,11 +10,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 
 import com.virgilsecurity.demo.purekit.server.model.db.LaboratoryEntity;
 import com.virgilsecurity.demo.purekit.server.utils.Utils;
 
 @MybatisTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class LaboratoryMapperTest {
 
 	public static final String LABORATORY1_ID = "0e1ddb5ff64941e382b36018f1ee8664";
