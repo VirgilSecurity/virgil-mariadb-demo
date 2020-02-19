@@ -68,7 +68,8 @@ function App() {
       sessionStorage.setItem('init', JSON.stringify({...resp, isInit: true}));
       initDemo(resp);
       setLoading(false);
-      })
+    })
+    .onError((err) => {console.log(err)})
     );
   };
   

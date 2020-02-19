@@ -2,8 +2,8 @@ import { Request } from './Request';
 
 const PORT = '8080';
 const DB_PORT = '8080';
-export const SITE_URL = `http://localhost:${PORT}/`;
-export const DB_URL = `http://localhost:${DB_PORT}/db`;
+export const REST_API = `http://localhost:${PORT}/api/v1/`;
+export const DB_URL = `http://localhost:${DB_PORT}/api/v1/db`;
 
 export enum Method {
 	Get = 'GET',
@@ -18,7 +18,7 @@ export interface IConnection {
 
 export class Connection implements IConnection {
 	send = <ReqParams, RespParams>(request: Request<ReqParams, RespParams>): void => {
-		const url = SITE_URL + request.endpoint;
+		const url = REST_API + request.endpoint;
 		fetch(url, request.getOptions())
 			.then(response => this.handleResponse(request, response))
 			.then(request.handleSuccess)
@@ -32,7 +32,7 @@ export class Connection implements IConnection {
 		if (res.ok) {
 			return req.getResponseBody(res);
 		}
-
+		sessionStorage.clear();
 		throw new Error(`Error: ${res.status}`);
 	}
 };
