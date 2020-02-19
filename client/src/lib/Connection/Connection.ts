@@ -1,6 +1,9 @@
 import { Request } from './Request';
 
-const URL = 'http://127.0.0.1:8080/';
+const PORT = '8080';
+const DB_PORT = '8081';
+export const SITE_URL = `http://127.0.0.1:${PORT}/`;
+export const DB_URL = `http://127.0.0.1:${DB_PORT}/`;
 
 export enum Method {
 	Get = 'GET',
@@ -15,7 +18,7 @@ export interface IConnection {
 
 export class Connection implements IConnection {
 	send = <ReqParams, RespParams>(request: Request<ReqParams, RespParams>): void => {
-		const url = URL + request.endpoint;
+		const url = SITE_URL + request.endpoint;
 		fetch(url, request.getOptions())
 			.then(response => this.handleResponse(request, response))
 			.then(request.handleSuccess)

@@ -6,7 +6,7 @@ import { Card, CardContent, Button } from '@material-ui/core';
 import { ICredentials, IReset } from './lib/Interfaces';
 import { useGlobalStyles } from './lib/styles';
 import { ResetReq } from './lib/Connection/Endpoints';
-import { Connection } from './lib/Connection/Connection';
+import { Connection, DB_URL } from './lib/Connection/Connection';
 import Lab from './components/Lab/Lab';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -74,12 +74,23 @@ function App() {
   
   return (
     <>
-      <Button
-        onClick={handleReset}
-        color="primary"
-        variant="contained"
-        style={{display: 'block', backgroundColor: '#7bbd00', margin: '0 auto'}}
-      >Restart demo</Button>
+      <div 
+          style={{display: 'flex', justifyContent: 'center'}}
+      >
+        <Button
+          onClick={handleReset}
+          color="primary"
+          variant="contained"
+          style={{backgroundColor: '#7bbd00'}}
+          >Restart demo</Button>
+        <Button
+          onClick={handleReset}
+          href={DB_URL}
+          color="primary"
+          variant="contained"
+          style={{backgroundColor: '#7bbd00', marginLeft: '10px'}}
+          >View MariaDB</Button>
+        </div>
       {isLoading ? 
         <img style={{display: 'block', margin: '0 auto'}} src="https://flevix.com/wp-content/uploads/2019/07/Ring-Preloader.gif"/>
         :
