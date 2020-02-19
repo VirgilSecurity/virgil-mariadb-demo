@@ -84,10 +84,10 @@ function App() {
           style={{backgroundColor: '#7bbd00'}}
           >Restart demo</Button>
         <Button
-          onClick={handleReset}
-          href={DB_URL}
+          target='_blank'
           color="primary"
           variant="contained"
+          href={DB_URL}
           style={{backgroundColor: '#7bbd00', marginLeft: '10px'}}
           >View MariaDB</Button>
         </div>

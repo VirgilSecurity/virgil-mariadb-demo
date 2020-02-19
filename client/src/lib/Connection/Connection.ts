@@ -1,9 +1,9 @@
 import { Request } from './Request';
 
 const PORT = '8080';
-const DB_PORT = '8081';
-export const SITE_URL = `http://127.0.0.1:${PORT}/`;
-export const DB_URL = `http://127.0.0.1:${DB_PORT}/`;
+const DB_PORT = '8080';
+export const SITE_URL = `http://localhost:${PORT}/`;
+export const DB_URL = `http://localhost:${DB_PORT}/db`;
 
 export enum Method {
 	Get = 'GET',
