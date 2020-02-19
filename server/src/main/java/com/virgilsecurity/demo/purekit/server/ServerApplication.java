@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -33,30 +34,13 @@ public class ServerApplication {
 		SpringApplication.run(ServerApplication.class, args);
 	}
 
-//	@Bean(name = "dataSource")
-//	public DataSource dataSource() {
-//		@SuppressWarnings("rawtypes")
-//		DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-//		dataSourceBuilder.driverClassName(this.env.getProperty("spring.datasource.driverClassName"));
-//		dataSourceBuilder.url(this.env.getProperty("spring.datasource.url"));
-//		if (StringUtils.isNotBlank(this.env.getProperty("spring.datasource.username"))) {
-//			dataSourceBuilder.username(this.env.getProperty("spring.datasource.username"));
-//		}
-//		if (StringUtils.isNotBlank(this.env.getProperty("spring.datasource.password"))) {
-//			dataSourceBuilder.password(this.env.getProperty("spring.datasource.password"));
-//		}
-//		DataSource dataSource = dataSourceBuilder.build();
-//		return dataSource;
-//	}
-
-	@Bean(name = "webServiceUrl")
-	public String webServiceUrl(DataSource dataSource) throws Exception {
-		this.server = Server.createWebServer("-webPort", env.getProperty("db.viewer.port", "0"), "-webAllowOthers");
+	@Bean
+	@Scope("singleton")
+	public WebServer webServer() throws Exception {
+		this.server = Server.createWebServer("-webPort", env.getProperty("dbviewer.port", "0"), "-webAllowOthers");
 		WebServer service = (WebServer) server.getService();
-		String url = service.addSession(dataSource.getConnection());
-		log.debug("Database console url: {}", url);
 		this.server.start();
-		return url;
+		return service;
 	}
 
 	@Bean
