@@ -25,6 +25,7 @@ RUN wget $MAVEN_URL -O $MAVEN_FILENAME \
 #WORKDIR server
 #RUN mvn clean package
 #RUN cp ./target/server.jar /server.jar
+#RUN rm -rf /server/*
 
 # Case 2 - Copy pre-built resources from outside. This operation is much faster,
 # because Java artifacts already cached in you local maven repository.
@@ -35,8 +36,9 @@ WORKDIR /
 COPY scripts/wait-for-it.sh /wait-for-it.sh
 RUN chmod 777 /wait-for-it.sh
 
-EXPOSE 8080
-#ENTRYPOINT ["java","-jar","/server.jar"]
-ENTRYPOINT ["./wait-for-it.sh", "mariadb:3306", "--timeout=120", "--", "java", "-jar", "/server.jar"]
+USER nobody
+RUN chown nobody /wait-for-it.sh
+RUN chown nobody /server.jar
 
-#ENTRYPOINT ["/bin/bash"]
+EXPOSE 8080
+ENTRYPOINT ["./wait-for-it.sh", "mariadb:3306", "--timeout=120", "--", "java", "-jar", "/server.jar"]
