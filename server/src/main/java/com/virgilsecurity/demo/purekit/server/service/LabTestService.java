@@ -1,5 +1,6 @@
 package com.virgilsecurity.demo.purekit.server.service;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class LabTestService {
 
 		String id = Utils.generateId();
 		LabTestEntity entity = new LabTestEntity(id, labTest.getName(), labTest.getPatientId(), grant.getUserId(),
-				labTest.getTestDate(), null);
+				labTest.getTestDate(), null, new Date());
 		this.mapper.insert(entity);
 
 		return id;
@@ -124,7 +125,7 @@ public class LabTestService {
 			}
 		}
 		return new LabTest(entity.getId(), entity.getName(), entity.getPatientId(), entity.getPhysicianId(),
-				entity.getTestDate(), results, status);
+				entity.getTestDate(), results, status, entity.getCreatedAt());
 	}
 
 }

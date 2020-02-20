@@ -73,6 +73,22 @@ public class PatientService {
 		return result;
 	}
 
+	/**
+	 * Get all patients assigned to a physician.
+	 * 
+	 * @param physicianId physician identifier.
+	 * @param grant       physician's grant.
+	 * @return list of patients.
+	 */
+	public List<Patient> findByPhysician(String physicianId, PureGrant grant) {
+		List<PatientEntity> patients = this.mapper.findByPhysician(physicianId);
+		List<Patient> result = new LinkedList<Patient>();
+		patients.forEach(patientEntity -> {
+			result.add(decryptPatient(patientEntity, grant));
+		});
+		return result;
+	}
+
 	public void reset() {
 		this.mapper.deleteAll();
 	}

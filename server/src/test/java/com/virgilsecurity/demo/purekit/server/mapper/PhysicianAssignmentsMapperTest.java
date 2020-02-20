@@ -13,15 +13,46 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 public class PhysicianAssignmentsMapperTest {
 
 	@Autowired
+	private PatientMapper patientMapper;
+
+	@Autowired
+	private PhysicianMapper physicianMapper;
+
+	@Autowired
 	private PhysicianAssignmentsMapper mapper;
 
 	@Test
-	void assignPhysicianTest() {
+	void assignPhysician() {
 		assertFalse(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
 
 		this.mapper.assignPhysician(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID);
 
 		assertTrue(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
+	}
+
+	@Test
+	void deleteAll() {
+		this.mapper.assignPhysician(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID);
+		this.mapper.deleteAll();
+		assertFalse(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
+	}
+
+	@Test
+	void deletePatient() {
+		this.mapper.assignPhysician(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID);
+		assertTrue(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
+
+		this.patientMapper.deleteAll();
+		assertFalse(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
+	}
+
+	@Test
+	void deletePhysician() {
+		this.mapper.assignPhysician(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID);
+		assertTrue(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
+
+		this.physicianMapper.deleteAll();
+		assertFalse(this.mapper.isAssigned(PatientMapperTest.PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID));
 	}
 
 }

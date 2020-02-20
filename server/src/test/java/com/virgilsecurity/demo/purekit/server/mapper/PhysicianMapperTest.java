@@ -26,6 +26,9 @@ public class PhysicianMapperTest {
 	@Autowired
 	private PhysicianMapper physicianMapper;
 
+	@Autowired
+	private PhysicianAssignmentsMapper assignmentsMapper;
+
 	@Test
 	void findAllTest() {
 		List<PhysicianEntity> physicians = this.physicianMapper.findAll();
@@ -48,7 +51,7 @@ public class PhysicianMapperTest {
 	@Test
 	void updateTest() {
 		byte[] licenseNo = ByteBuffer.allocate(8).putLong(12345).array();
-		
+
 		PhysicianEntity physician = this.physicianMapper.findById(PHYSICIAN1_ID);
 		assertNotNull(physician);
 
@@ -69,7 +72,31 @@ public class PhysicianMapperTest {
 		assertNotNull(physician);
 		assertEquals(PHYSICIAN1_ID, physician.getId());
 		assertEquals("physician1", physician.getName());
-		assertArrayEquals(new byte[] {1}, physician.getLicenseNo());
+		assertArrayEquals(new byte[] { 1 }, physician.getLicenseNo());
+	}
+
+	@Test
+	void findByPatient() {
+		List<PhysicianEntity> physicians = this.physicianMapper.findByPatient(PatientMapperTest.PATIENT1_ID);
+		assertNotNull(physicians);
+		assertTrue(physicians.isEmpty());
+
+		this.assignmentsMapper.assignPhysician(PatientMapperTest.PATIENT1_ID, PHYSICIAN1_ID);
+
+		physicians = this.physicianMapper.findByPatient(PatientMapperTest.PATIENT1_ID);
+		assertEquals(1, physicians.size());
+
+		PhysicianEntity physician = physicians.get(0);
+		assertNotNull(physician);
+		assertEquals(PHYSICIAN1_ID, physician.getId());
+		assertEquals("physician1", physician.getName());
+		assertArrayEquals(new byte[] { 1 }, physician.getLicenseNo());
+	}
+
+	@Test
+	void findByPatient_notExists() {
+		List<PhysicianEntity> physicians = this.physicianMapper.findByPatient("0");
+		assertTrue(physicians.isEmpty());
 	}
 
 	@Test

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.virgilsecurity.demo.purekit.server.exception.EncryptionException;
 import com.virgilsecurity.demo.purekit.server.exception.NotFoundException;
+import com.virgilsecurity.demo.purekit.server.mapper.PhysicianAssignmentsMapper;
 import com.virgilsecurity.demo.purekit.server.mapper.PhysicianMapper;
 import com.virgilsecurity.demo.purekit.server.model.SharedRole;
 import com.virgilsecurity.demo.purekit.server.model.db.PhysicianEntity;
@@ -28,6 +29,9 @@ public class PhysicianService {
 
 	@Autowired
 	private PhysicianMapper mapper;
+
+	@Autowired
+	private PhysicianAssignmentsMapper assignmentsMapper;
 
 	@Autowired
 	private Pure pure;
@@ -67,6 +71,15 @@ public class PhysicianService {
 		return result;
 	}
 
+	public List<Physician> findByPatient(String patientId, PureGrant grant) {
+		List<PhysicianEntity> physicians = this.mapper.findByPatient(patientId);
+		List<Physician> result = new LinkedList<Physician>();
+		physicians.forEach(entity -> {
+			result.add(decryptPhysician(entity, grant));
+		});
+		return result;
+	}
+
 	public Physician get(String physicianId, PureGrant grant) {
 		PhysicianEntity physicianEntity = this.mapper.findById(physicianId);
 		if (physicianEntity == null) {
@@ -74,6 +87,10 @@ public class PhysicianService {
 		}
 
 		return decryptPhysician(physicianEntity, grant);
+	}
+
+	public void assignPatient(String patientId, String physicianId) {
+		this.assignmentsMapper.assignPhysician(patientId, physicianId);
 	}
 
 	public void reset() {

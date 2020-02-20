@@ -27,6 +27,9 @@ public class PatientMapperTest {
 	@Autowired
 	private PatientMapper patientMapper;
 
+	@Autowired
+	private PhysicianAssignmentsMapper assignmentsMapper;
+
 	@Test
 	void findAllTest() {
 		List<PatientEntity> patients = this.patientMapper.findAll();
@@ -75,6 +78,30 @@ public class PatientMapperTest {
 	void findById_notExists() {
 		PatientEntity patient = this.patientMapper.findById("0");
 		assertNull(patient);
+	}
+
+	@Test
+	void findByPhysician() {
+		List<PatientEntity> patients = this.patientMapper.findByPhysician(PhysicianMapperTest.PHYSICIAN1_ID);
+		assertNotNull(patients);
+		assertTrue(patients.isEmpty());
+
+		this.assignmentsMapper.assignPhysician(PATIENT1_ID, PhysicianMapperTest.PHYSICIAN1_ID);
+
+		patients = this.patientMapper.findByPhysician(PhysicianMapperTest.PHYSICIAN1_ID);
+		assertEquals(1, patients.size());
+
+		PatientEntity patient = patients.get(0);
+		assertNotNull(patient);
+		assertEquals(PATIENT1_ID, patient.getId());
+		assertEquals("patient1", patient.getName());
+		assertArrayEquals(ByteArrayUtil.hexStringToByteArray("123456789012"), patient.getSsn());
+	}
+
+	@Test
+	void findByPhysician_notExists() {
+		List<PatientEntity> patients = this.patientMapper.findByPhysician("0");
+		assertTrue(patients.isEmpty());
 	}
 
 	@Test

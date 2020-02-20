@@ -108,6 +108,18 @@ public class PatientControllerTest extends RestDocTest {
 		assertEquals(400, response.getStatusCodeValue());
 	}
 
+	@Test
+	void assignedPhysicians() throws Exception {
+		UserRegistration registeredPatient = this.registeredPatients.iterator().next();
+
+		this.mockMvc
+				.perform(MockMvcRequestBuilders
+						.request(HttpMethod.GET, "/patients/" + registeredPatient.getUserId() + "/physicians")
+						.header(Constants.GRANT_HEADER, registeredPatient.getGrant()))
+				.andDo(document("patient/physicians", preprocessRequest(prettyPrint()),
+						preprocessResponse(prettyPrint())));
+	}
+
 	public static void validate(Patient patient) {
 		assertEquals("Alice", patient.getName());
 		assertEquals("12345678901", patient.getSsn());

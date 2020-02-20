@@ -95,6 +95,9 @@ public class ResetService {
 			throw new RuntimeException();
 		}
 
+		// Assing patient to physician
+		this.physicianService.assignPatient(registeredPatient.getUserId(), registeredPhysician.getUserId());
+
 		// Register laboratory
 		Laboratory laboratory = new Laboratory("Lab");
 		UserRegistration registeredLaboratory = this.laboratoryService.register(laboratory, password);

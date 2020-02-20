@@ -14,8 +14,16 @@ CREATE TABLE physicians (
 
 CREATE TABLE physician_assignments (
   patient_id char(32) NOT NULL,
-  physician_id char(32) NOT NULL
+  physician_id char(32) NOT NULL,
+  FOREIGN KEY (patient_id)
+    REFERENCES patients (id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (physician_id)
+    REFERENCES physicians (id)
+    ON DELETE CASCADE
 );
+CREATE UNIQUE INDEX physician_assignments_index
+  ON physician_assignments (patient_id, physician_id);
 
 CREATE TABLE laboratories (
   id char(32) NOT NULL,
@@ -30,6 +38,13 @@ CREATE TABLE prescriptions (
   notes varbinary(2000),
   assign_date timestamp,
   release_date timestamp,
+  created_at timestamp NOT NULL,
+  FOREIGN KEY (patient_id)
+    REFERENCES patients (id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (physician_id)
+    REFERENCES physicians (id)
+    ON DELETE CASCADE,
   PRIMARY KEY (id)
 );
 
@@ -40,5 +55,12 @@ CREATE TABLE lab_tests (
   physician_id char(32) NOT NULL,
   test_date timestamp,
   results varbinary(2000),
+  created_at timestamp NOT NULL,
+  FOREIGN KEY (patient_id)
+    REFERENCES patients (id)
+    ON DELETE CASCADE,
+  FOREIGN KEY (physician_id)
+    REFERENCES physicians (id)
+    ON DELETE CASCADE,
   PRIMARY KEY (id)
 );

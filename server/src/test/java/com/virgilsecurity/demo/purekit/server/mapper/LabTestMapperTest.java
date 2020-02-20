@@ -89,7 +89,7 @@ public class LabTestMapperTest {
 
 	private LabTestEntity insertLabTest(String id) {
 		LabTestEntity labTest = new LabTestEntity(id, "Test_" + id, PatientMapperTest.PATIENT1_ID,
-				PhysicianMapperTest.PHYSICIAN1_ID, Utils.today(), ("Results " + id).getBytes());
+				PhysicianMapperTest.PHYSICIAN1_ID, Utils.today(), ("Results " + id).getBytes(), Utils.yesterday());
 		this.labTestMapper.insert(labTest);
 
 		return labTest;

@@ -28,12 +28,14 @@ public class LabTest implements Serializable {
 	private String physicianId;
 
 	@JsonProperty("test_date")
-//	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
 	private Date testDate;
 
 	private String results;
 
 	private TestStatus status;
+
+	@JsonProperty("created_at")
+	private Date createdAt;
 
 	public LabTest(String name, String patientId, Date testDate) {
 		super();

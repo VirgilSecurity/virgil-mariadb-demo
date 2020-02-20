@@ -14,14 +14,18 @@ import com.virgilsecurity.demo.purekit.server.model.db.LabTestEntity;
 @Mapper
 public interface LabTestMapper {
 
-	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results FROM lab_tests")
+	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results, created_at "
+			+ "FROM lab_tests "
+			+ "ORDER BY created_at ASC")
 	List<LabTestEntity> findAll();
 
-	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results FROM lab_tests WHERE id = #{id}")
+	@Select("SELECT id, test_name, patient_id, physician_id, test_date, results,created_at "
+			+ "FROM lab_tests "
+			+ "WHERE id = #{id}")
 	LabTestEntity findById(@Param("id") String id);
 
-	@Insert("INSERT INTO lab_tests (id, test_name, patient_id, physician_id, test_date, results) "
-			+ "VALUES (#{id}, #{name}, #{patientId}, #{physicianId}, #{testDate}, #{results})")
+	@Insert("INSERT INTO lab_tests (id, test_name, patient_id, physician_id, test_date, results, created_at) "
+			+ "VALUES (#{id}, #{name}, #{patientId}, #{physicianId}, #{testDate}, #{results}, #{createdAt})")
 	void insert(LabTestEntity labTest);
 
 	@Update("UPDATE lab_tests "

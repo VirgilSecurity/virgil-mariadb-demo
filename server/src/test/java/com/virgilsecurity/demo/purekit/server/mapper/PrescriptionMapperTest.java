@@ -106,7 +106,7 @@ public class PrescriptionMapperTest {
 	private PrescriptionEntity insertPrescription(String id) {
 		Date date = Utils.today();
 		PrescriptionEntity prescription = new PrescriptionEntity(id, PatientMapperTest.PATIENT1_ID,
-				PhysicianMapperTest.PHYSICIAN1_ID, "notes as a text".getBytes(), date, date);
+				PhysicianMapperTest.PHYSICIAN1_ID, "notes as a text".getBytes(), date, date, Utils.yesterday());
 		this.prescriptionMapper.insert(prescription);
 
 		return prescription;

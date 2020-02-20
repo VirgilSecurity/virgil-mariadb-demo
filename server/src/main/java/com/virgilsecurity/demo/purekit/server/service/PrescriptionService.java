@@ -3,6 +3,7 @@ package com.virgilsecurity.demo.purekit.server.service;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class PrescriptionService {
 		String id = Utils.generateId();
 		byte[] encryptedNotes = encryptNotes(prescription, grant);
 		PrescriptionEntity entity = new PrescriptionEntity(id, prescription.getPatientId(), grant.getUserId(),
-				encryptedNotes, prescription.getAssingDate(), prescription.getReleaseDate());
+				encryptedNotes, prescription.getAssingDate(), prescription.getReleaseDate(), new Date());
 		this.mapper.insert(entity);
 
 		return id;
@@ -123,7 +124,7 @@ public class PrescriptionService {
 			}
 		}
 		return new Prescription(entity.getId(), entity.getPatientId(), entity.getPhysicianId(), notes,
-				entity.getAssingDate(), entity.getReleaseDate());
+				entity.getAssingDate(), entity.getReleaseDate(), entity.getCreatedAt());
 	}
 
 	private byte[] encryptNotes(Prescription prescription, PureGrant grant) {

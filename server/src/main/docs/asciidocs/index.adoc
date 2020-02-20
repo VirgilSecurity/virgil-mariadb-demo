@@ -17,11 +17,20 @@ include::{snippets}/patient/get/http-request.adoc[]
 include::{snippets}/patient/get/http-response.adoc[]
 
 === List
+
 .request
 include::{snippets}/patient/list/http-request.adoc[]
 
 .response
 include::{snippets}/patient/list/http-response.adoc[]
+
+=== Get assigned physicians
+
+.request
+include::{snippets}/patient/physicians/http-request.adoc[]
+
+.response
+include::{snippets}/patient/physicians/http-response.adoc[]
 
 == Physician
 
@@ -40,6 +49,14 @@ include::{snippets}/physician/list/http-request.adoc[]
 
 .response
 include::{snippets}/physician/list/http-response.adoc[]
+
+=== Get assigned patients
+
+.request
+include::{snippets}/physician/patients/http-request.adoc[]
+
+.response
+include::{snippets}/physician/patients/http-response.adoc[]
 
 == Prescription
 

@@ -17,6 +17,11 @@ public interface PhysicianMapper {
 	@Select("SELECT id, full_name, license_no FROM physicians")
 	List<PhysicianEntity> findAll();
 
+	@Select("SELECT p.id, p.full_name, p.license_no "
+			+ "FROM physicians p JOIN physician_assignments pa ON p.id = pa.physician_id "
+			+ "WHERE pa.patient_id = #{patientId}")
+	List<PhysicianEntity> findByPatient(@Param("patientId") String patientId);
+
 	@Select("SELECT id, full_name, license_no FROM physicians WHERE id = #{id}")
 	PhysicianEntity findById(@Param("id") String id);
 
