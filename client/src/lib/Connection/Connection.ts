@@ -1,4 +1,5 @@
 import { Request } from './Request';
+import { reloadPage } from '../utils';
 
 const PORT = '8080';
 const DB_PORT = '8080';
@@ -33,6 +34,9 @@ export class Connection implements IConnection {
 			return req.getResponseBody(res);
 		}
 		sessionStorage.clear();
+		if (res.status === 400) {
+			reloadPage();
+		}
 		throw new Error(`Error: ${res.status}`);
 	}
 };
