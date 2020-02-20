@@ -20,10 +20,3 @@ mvn clean package
 ```
 docker build -t virgil/mariadb-demo-server .
 ```
-
-## Run Docker container
-
-```
-cd ..
-docker-compose up
-```

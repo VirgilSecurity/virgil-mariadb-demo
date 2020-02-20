@@ -9,7 +9,7 @@ services:
       - "8080:8080"
       - "8081:8081"
     env_file:
-      - .env
+      - server/.env
     environment:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_DATASOURCE_URL: jdbc:mysql://mariadb:3306/purekit?characterEncoding=UTF-8&serverTimezone=UTC
