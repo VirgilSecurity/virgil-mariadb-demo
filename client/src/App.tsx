@@ -53,6 +53,9 @@ function App() {
 
   useEffect(() => {
     const init:IReset | null = JSON.parse(sessionStorage.getItem('init') || '{}');
+    if (window !== undefined && window.location.pathname !== '/') {
+      window.location.pathname = '/';
+    }
     if (init?.patients) {
       initDemo(init);
     } else {
@@ -64,12 +67,11 @@ function App() {
     sessionStorage.clear();
     setLoading(true);
     connection.send(new ResetReq()
-    .onSuccess((resp) => {
-      sessionStorage.setItem('init', JSON.stringify({...resp, isInit: true}));
-      initDemo(resp);
-      setLoading(false);
-    })
-    .onError((err) => {console.log(err)})
+      .onSuccess((resp) => {
+        sessionStorage.setItem('init', JSON.stringify({...resp, isInit: true}));
+        initDemo(resp);
+        setLoading(false);
+      })
     );
   };
   
