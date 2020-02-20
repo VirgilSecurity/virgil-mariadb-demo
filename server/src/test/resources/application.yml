@@ -8,3 +8,12 @@ spring:
       url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
    flyway:
       locations: classpath:db/migration, classpath:db/special/hsqldb
+virgil:
+   appId: @virgil_appId@
+   at: @virgil_at@
+   nms: @virgil_nms@
+   bu: @virgil_bu@
+   sk: @virgil_sk@
+   pk: @virgil_pk@
+   pheServiceAddress: @virgil_pheServiceAddress@
+   kmsServiceAddress: @virgil_kmsServiceAddress@

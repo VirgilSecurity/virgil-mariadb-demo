@@ -109,6 +109,25 @@
 
 	<build>
 		<finalName>server</finalName>
+		<filters>
+			<filter>.env</filter>
+		</filters>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<excludes>
+					<exclude>*.yml</exclude>
+				</excludes>
+				<filtering>false</filtering>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<includes>
+					<include>*.yml</include>
+				</includes>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.asciidoctor</groupId>

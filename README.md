@@ -10,7 +10,7 @@
 
 ## Create configuration files
 
-Copy `env.template` file to a new `.env` file and define configuration parameters.
+Copy `env.template` file to a new `.env` file in `server` directory and define configuration parameters.
 
 ## Build Java application
 
