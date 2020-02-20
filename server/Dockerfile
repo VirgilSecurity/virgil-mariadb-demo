@@ -37,8 +37,6 @@ COPY scripts/wait-for-it.sh /wait-for-it.sh
 RUN chmod 777 /wait-for-it.sh
 
 USER nobody
-RUN chown nobody /wait-for-it.sh
-RUN chown nobody /server.jar
 
 EXPOSE 8080
 ENTRYPOINT ["./wait-for-it.sh", "mariadb:3306", "--timeout=120", "--", "java", "-jar", "/server.jar"]
