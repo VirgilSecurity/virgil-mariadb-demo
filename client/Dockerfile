@@ -10,4 +10,5 @@ RUN yarn build
 FROM nginx:stable-alpine
 RUN apk add --no-cache --update ca-certificates
 COPY --from=build /client/build/ /usr/share/nginx/html/
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
