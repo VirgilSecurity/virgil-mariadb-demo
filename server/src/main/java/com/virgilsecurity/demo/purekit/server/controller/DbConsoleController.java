@@ -17,6 +17,9 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import lombok.extern.log4j.Log4j2;
 
+/**
+ * DB Console controller.
+ */
 @RequestMapping("/db")
 @RestController
 @Log4j2
@@ -28,12 +31,19 @@ public class DbConsoleController {
 	@Autowired
 	private DataSource dataSource;
 
+	/**
+	 * Obtain database connection and start web server.
+	 *
+	 * @param request  the request.
+	 * @param response the response.
+	 * @throws IOException  if request can't be processed.
+	 * @throws SQLException if database connection can't be established.
+	 */
 	@GetMapping
-	public void view(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+	public void view(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
 		URL url = new URL(webServer.addSession(dataSource.getConnection()));
 		String location = new DefaultUriBuilderFactory().builder().scheme(url.getProtocol())
-				.host(request.getServerName()).port(url.getPort()).path(url.getPath()).query(url.getQuery()).build()
-				.toString();
+				.host(request.getServerName()).path(url.getPath()).query(url.getQuery()).build().toString();
 		log.debug("Database console url: {}", location);
 		response.sendRedirect(location);
 	}
