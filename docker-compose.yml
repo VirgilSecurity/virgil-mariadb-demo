@@ -23,9 +23,9 @@ services:
   client:
     image: "virgil/mariadb-demo-client"
     expose:
-      - "3000"
+      - "80"
     ports:
-      - "3000:3000"
+      - "3000:80"
     depends_on:
       - app
   mariadb:
