@@ -194,3 +194,7 @@ spec:
           serviceName: mariadb-demo-server
           servicePort: 8080
         path: /api/v1
+      - backend:
+          serviceName: mariadb-demo-server
+          servicePort: 8081
+        path: /db
