@@ -178,10 +178,10 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "mariadb-demo-db"
+  name: "mariadb-demo.1"
   annotations:
     kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
   - host: mariadb-demo.virgilsecurity.com
@@ -190,12 +190,13 @@ spec:
       - backend:
           serviceName: mariadb-demo-server
           servicePort: 8081
-        path: /db
+        path: /db(/|$)(.*)
 
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "mariadb-demo"
+  name: "mariadb-demo.2"
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
