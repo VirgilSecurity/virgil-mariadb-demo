@@ -133,6 +133,8 @@ spec:
               value: "root"
             - name: SPRING_DATASOURCE_PASSWORD
               value: "rootpassword"
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: "/api/v1/"
             - name: WAIT_HOSTS
               value: "mariadb:3306"
             - name: spring_dbviewer_port
