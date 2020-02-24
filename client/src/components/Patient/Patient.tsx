@@ -1,104 +1,138 @@
-import React, { useEffect, useState } from 'react';
-import { useGlobalStyles } from '../../lib/styles';
-import { PrescriptionsListReq, LabTestListReq, ShareReq } from '../../lib/Connection/Endpoints';
-import { PatientInfoReq } from './PatientEndpoint';
-import { IPatient, IPhysician, IPrescription, ILabTest, ICredentials } from '../../lib/Interfaces';
-import Prescriptions from '../../lib/components/Prescription/Prescription';
-import LabTest from './LabTest';
-import { PhysicianListReq } from '../Physician/PhysicianEndpoint';
-import { Connection } from '../../lib/Connection/Connection';
-import { reloadPage } from '../../lib/utils';
+import React, { useEffect, useState } from "react";
+import {
+  PrescriptionsListReq,
+  LabTestListReq,
+  ShareReq
+} from "../../lib/Connection/Endpoints";
+import { PatientInfoReq } from "./PatientEndpoint";
+import {
+  IPatient,
+  IPhysician,
+  IPrescription,
+  ILabTest,
+  ICredentials
+} from "../../lib/Interfaces";
+import Prescriptions from "../../lib/components/Prescription/Prescription";
+import LabTest from "./LabTest";
+import { PhysicianListReq } from "../Physician/PhysicianEndpoint";
+import { Connection } from "../../lib/Connection/Connection";
+import { reloadPage } from "../../lib/utils";
+import {
+  Container,
+  Name,
+  AddInfoContainer,
+  AddInfo,
+  Share,
+  Label,
+  SurName,
+  SectionTitle
+} from "../../lib/styles";
 
 export interface PatientProps {
-    patientCred: ICredentials;
-};
+  patientCred: ICredentials;
+}
 
 const Patient: React.FC<PatientProps> = ({ patientCred }) => {
-    const gCss = useGlobalStyles();
-    const connection: Connection = new Connection();
-    const [patient, setPatient] = useState<IPatient | undefined>();
-    const [physician, setPhysician] = useState<IPhysician | undefined>();
-    const [prescriptions, setPrescriptions] = useState<IPrescription[] | undefined>();
-    const [labTests, setLabTests] = useState<ILabTest[] | undefined>();
+  const connection: Connection = new Connection();
+  const [patient, setPatient] = useState<IPatient | undefined>();
+  const [physician, setPhysician] = useState<IPhysician | undefined>();
+  const [prescriptions, setPrescriptions] = useState<
+    IPrescription[] | undefined
+  >();
+  const [labTests, setLabTests] = useState<ILabTest[] | undefined>();
 
-    useEffect(() => {
-        // get patient info
-        connection.send(new PatientInfoReq(patientCred.id, patientCred.grant).onSuccess((resp) => {
-            setPatient(resp)
-        }));
-        // get physician info
-        connection.send(new PhysicianListReq(patientCred.grant).onSuccess((resp) => {
-            setPhysician(resp[0]);
-        }));
-        // get prescriptions
-        connection.send(new PrescriptionsListReq(patientCred.grant).onSuccess((resp) => {
-            setPrescriptions(resp);
-        }));
-        // get labsTest
-        connection.send(new LabTestListReq(patientCred.grant).onSuccess((resp) => {
-            setLabTests(resp);
-        }));
-        
-    }, [patientCred]);
-
-    const handelShareInfo = () => {
-        if (physician) {
-            connection.send(new ShareReq({
-                data_id: 'ssn',
-                share_with: [physician.id],
-                roles: null
-            }, patientCred.grant).onSuccess(() => {
-                sessionStorage.setItem('sharePatient', 'true');
-                reloadPage();
-            }));
-        }
-    };
-
-    const renderInfo = (person: IPatient) => (
-        <div className={gCss.container}>
-            <div className={gCss.name}>{person.name}</div>
-            <div className={gCss.addInfoContainer}>
-                <div className={gCss.label}>Social security number:</div>
-                <div className={gCss.addInfo}>{person.ssn}</div>
-                {!sessionStorage.getItem('sharePatient') &&  physician &&
-                <div onClick={handelShareInfo} className={gCss.share}>
-                    {`share to ${physician.name}`}
-                </div>}
-            </div>
-        </div>
+  useEffect(() => {
+    // get patient info
+    connection.send(
+      new PatientInfoReq(patientCred.id, patientCred.grant).onSuccess(resp => {
+        setPatient(resp);
+      })
     );
-
-    const renderPhysician = (person: IPhysician) => (
-        <>
-            <div className={gCss.sectionTitle}>Physician:</div>
-            <div className={gCss.container}>
-                <div className={gCss.surName}>{person.name}</div>
-                {person.license_no ?
-                <div className={gCss.addInfoContainer}>
-                    <div className={gCss.label}>license number:</div>
-                    <div className={gCss.addInfo}>{person.license_no}</div>
-                </div> : null }
-            </div>
-        </>
+    // get physician info
+    connection.send(
+      new PhysicianListReq(patientCred.grant).onSuccess(resp => {
+        setPhysician(resp[0]);
+      })
     );
-
-    const renderPrescription = (prescriptions: IPrescription[]) => {
-        return <Prescriptions data={prescriptions} />;
-    };
-    
-    const renderLabTest = (tests: ILabTest[]) => {
-        return <LabTest data={tests} />;
-    };
-
-    return (
-        <>
-            {patient && renderInfo(patient)}
-            {physician && renderPhysician(physician)}
-            <div style={{marginTop: '61px'}}/>
-            {prescriptions && renderPrescription(prescriptions)}
-            {labTests && renderLabTest(labTests)}
-        </>
+    // get prescriptions
+    connection.send(
+      new PrescriptionsListReq(patientCred.grant).onSuccess(resp => {
+        setPrescriptions(resp);
+      })
     );
+    // get labsTest
+    connection.send(
+      new LabTestListReq(patientCred.grant).onSuccess(resp => {
+        setLabTests(resp);
+      })
+    );
+  }, [patientCred]);
+
+  const handelShareInfo = () => {
+    if (physician) {
+      connection.send(
+        new ShareReq(
+          {
+            data_id: "ssn",
+            share_with: [physician.id],
+            roles: null
+          },
+          patientCred.grant
+        ).onSuccess(() => {
+          sessionStorage.setItem("sharePatient", "true");
+          reloadPage();
+        })
+      );
+    }
+  };
+
+  const renderInfo = (person: IPatient) => (
+    <Container>
+      <Name>{person.name}</Name>
+      <AddInfoContainer>
+        <Label>Social security number:</Label>
+        <AddInfo>{person.ssn}</AddInfo>
+        {!sessionStorage.getItem("sharePatient") && physician && (
+          <Share onClick={handelShareInfo}>
+            {`share to ${physician.name}`}
+          </Share>
+        )}
+      </AddInfoContainer>
+    </Container>
+  );
+
+  const renderPhysician = (person: IPhysician) => (
+    <>
+      <SectionTitle>Physician:</SectionTitle>
+      <Container>
+        <SurName>{person.name}</SurName>
+        {person.license_no ? (
+          <AddInfoContainer>
+            <Label>license number:</Label>
+            <AddInfo>{person.license_no}</AddInfo>
+          </AddInfoContainer>
+        ) : null}
+      </Container>
+    </>
+  );
+
+  const renderPrescription = (prescriptions: IPrescription[]) => {
+    return <Prescriptions data={prescriptions} />;
+  };
+
+  const renderLabTest = (tests: ILabTest[]) => {
+    return <LabTest data={tests} />;
+  };
+
+  return (
+    <>
+      {patient && renderInfo(patient)}
+      {physician && renderPhysician(physician)}
+      <div style={{ marginTop: "61px" }} />
+      {prescriptions && renderPrescription(prescriptions)}
+      {labTests && renderLabTest(labTests)}
+    </>
+  );
 };
 
 export default Patient;
