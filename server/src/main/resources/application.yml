@@ -10,6 +10,6 @@ spring:
       url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
       hikari:
          idle-timeout: 120000
-         maximum-pool-size: 50
+         maximum-pool-size: 100
    flyway:
       locations: classpath:db/migration, classpath:db/special/mysql
