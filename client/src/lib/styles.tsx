@@ -1,4 +1,25 @@
 import styled from "styled-components";
+import { Card } from "@material-ui/core";
+
+export const Wrapper = styled.section`
+  margin: 0px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-family: "Helvetica";
+`;
+
+export const StyledCard = styled(Card)`
+  padding: 20px 10px;
+  margin: 20px 10px;
+  background-color: #fffa;
+  min-width: 200px;
+  max-width: 430px;
+  @media (max-width: 1250px) {
+  }
+`;
 
 export const Container = styled.div`
   display: flex;
@@ -61,11 +82,18 @@ export const StyledTableTitle = styled.div`
 `;
 
 export const Ellipsis = styled.span`
-  width: 160px;
+  max-width: 100px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
   text-decoration: underline;
   display: block;
+`;
+
+export const HR = styled.div`
+  margin-top: 61px;
+  @media (max-width: 1250px) {
+    display: none;
+  }
 `;

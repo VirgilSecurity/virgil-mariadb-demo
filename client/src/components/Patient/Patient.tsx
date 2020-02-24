@@ -25,7 +25,8 @@ import {
   Share,
   Label,
   SurName,
-  SectionTitle
+  SectionTitle,
+  HR
 } from "../../lib/styles";
 
 export interface PatientProps {
@@ -128,7 +129,7 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
     <>
       {patient && renderInfo(patient)}
       {physician && renderPhysician(physician)}
-      <div style={{ marginTop: "61px" }} />
+      <HR />
       {prescriptions && renderPrescription(prescriptions)}
       {labTests && renderLabTest(labTests)}
     </>

@@ -1,32 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Patient from "./components/Patient/Patient";
 import Physician from "./components/Physician/Physician";
-import { Card, CardContent, Button } from "@material-ui/core";
+import { CardContent } from "@material-ui/core";
 import { ICredentials, IReset } from "./lib/Interfaces";
 import { ResetReq } from "./lib/Connection/Endpoints";
-import { Connection, DB_URL } from "./lib/Connection/Connection";
+import { Connection } from "./lib/Connection/Connection";
 import Lab from "./components/Lab/Lab";
-import styled from "styled-components";
-import { PageTitle } from "./lib/styles";
-
-const Wrapper = styled.section`
-  margin: 0px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  font-family: "Helvetica";
-  @media (max-width: 1250px) {
-    flex-direction: column;
-  }
-`;
-
-const StyledCard = styled(Card)`
-  padding: 20px 10px;
-  margin: 20px 10px;
-  background-color: #fffa;
-  min-width: 250px;
-`;
+import { PageTitle, Wrapper, StyledCard } from "./lib/styles";
+import Nav from "./components/Nav/Nav";
 
 function App() {
   const connection: Connection = new Connection();
@@ -74,25 +55,7 @@ function App() {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          onClick={handleReset}
-          color="primary"
-          variant="contained"
-          style={{ backgroundColor: "#7bbd00" }}
-        >
-          Restart demo
-        </Button>
-        <Button
-          target="_blank"
-          color="primary"
-          variant="contained"
-          href={DB_URL}
-          style={{ backgroundColor: "#7bbd00", marginLeft: "10px" }}
-        >
-          View MariaDB
-        </Button>
-      </div>
+      <Nav handleReset={handleReset} />
       {isLoading ? (
         <img
           style={{ display: "block", margin: "0 auto" }}
@@ -100,6 +63,7 @@ function App() {
         />
       ) : (
         <Wrapper>
+          <div id="patient" />
           {patientCred && (
             <StyledCard>
               <PageTitle>Patient card</PageTitle>
@@ -108,6 +72,7 @@ function App() {
               </CardContent>
             </StyledCard>
           )}
+          <div id="physician" />
           {physicianCred && (
             <StyledCard>
               <PageTitle>Physician card</PageTitle>
@@ -116,6 +81,7 @@ function App() {
               </CardContent>
             </StyledCard>
           )}
+          <div id="lab" />
           {labCred && (
             <StyledCard>
               <PageTitle>Lab</PageTitle>
