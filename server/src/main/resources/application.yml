@@ -8,5 +8,8 @@ spring:
    datasource:
       driverClassName: org.hsqldb.jdbc.JDBCDriver
       url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
+      hikari:
+         idle-timeout: 120000
+         maximum-pool-size: 50
    flyway:
       locations: classpath:db/migration, classpath:db/special/mysql
