@@ -139,6 +139,8 @@ spec:
               value: "mariadb:3306"
             - name: spring_dbviewer_port
               value: "8081"
+            - name: spring_dbviewer_context
+              value: "/db/"
             - name: virgil_appId
               value: "${virgil_appId}"
             - name: virgil_at
