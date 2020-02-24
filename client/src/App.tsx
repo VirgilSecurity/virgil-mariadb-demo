@@ -58,32 +58,29 @@ function App() {
       <Nav handleReset={handleReset} />
       {isLoading ? (
         <img
-          style={{ display: "block", margin: "0 auto" }}
+          style={{ display: "block", margin: "0 auto", width: "100%" }}
           src="https://flevix.com/wp-content/uploads/2019/07/Ring-Preloader.gif"
         />
       ) : (
         <Wrapper>
-          <div id="patient" />
           {patientCred && (
-            <StyledCard>
+            <StyledCard id="patient">
               <PageTitle>Patient card</PageTitle>
               <CardContent>
                 <Patient patientCred={patientCred} />
               </CardContent>
             </StyledCard>
           )}
-          <div id="physician" />
           {physicianCred && (
-            <StyledCard>
+            <StyledCard id="physician">
               <PageTitle>Physician card</PageTitle>
               <CardContent>
                 <Physician physicianCred={physicianCred} />
               </CardContent>
             </StyledCard>
           )}
-          <div id="lab" />
           {labCred && (
-            <StyledCard>
+            <StyledCard id="lab">
               <PageTitle>Lab</PageTitle>
               <CardContent>
                 <Lab labCred={labCred} />

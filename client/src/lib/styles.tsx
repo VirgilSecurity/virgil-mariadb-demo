@@ -17,7 +17,9 @@ export const StyledCard = styled(Card)`
   background-color: #fffa;
   min-width: 200px;
   max-width: 430px;
-  @media (max-width: 1250px) {
+  @media (max-width: 820px) {
+    padding: 0px;
+    margin: 10px 0px;
   }
 `;
 
@@ -89,11 +91,14 @@ export const Ellipsis = styled.span`
   cursor: pointer;
   text-decoration: underline;
   display: block;
+  @media (max-width: 820px) {
+    max-width: 60px;
+  }
 `;
 
 export const HR = styled.div`
   margin-top: 61px;
-  @media (max-width: 1250px) {
+  @media (max-width: 820px) {
     display: none;
   }
 `;

@@ -1,8 +1,15 @@
 import { Request } from "./Request";
 import { reloadPage } from "../utils";
 
-export const REST_API = "/api/v1/";
-export const DB_URL = "/api/v1/db";
+const isLocalHost =
+  window !== undefined && window.location.hostname === "localhost";
+
+export const REST_API = isLocalHost
+  ? "http://localhost:8080/api/v1/"
+  : "/api/v1/";
+export const DB_URL = isLocalHost
+  ? "http://localhost:8080/api/v1/db"
+  : "/api/v1/db";
 
 export enum Method {
   Get = "GET",

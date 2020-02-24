@@ -14,7 +14,7 @@ const ButtonContainer = styled.div`
 
 const Top = styled.div`
   display: none;
-  @media (max-width: 940px) {
+  @media (max-width: 928px) {
     display: block;
     height: 70px;
   }
@@ -26,7 +26,7 @@ const NavList = styled.ul`
   justify-content: center;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-  @media (max-width: 940px) {
+  @media (max-width: 928px) {
     display: flex;
     position: fixed;
     background: #000;
@@ -52,21 +52,31 @@ const NavLink = styled.a`
 `;
 
 const Nav: React.FC<NavProps> = ({ handleReset }) => {
+  const handleScroll = (id: string) => {
+    const el = document.querySelector(id);
+    if (el) {
+      window.scrollTo({ top: 0 });
+      const rect = el.getBoundingClientRect();
+      window.scrollTo({ top: rect.y - 68 });
+    }
+  };
   return (
     <>
       <Top id="top" />
       <NavList>
         <NavItem>
-          <NavLink href="#top">Top</NavLink>
+          <NavLink onClick={() => handleScroll("#top")}>Top</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink href="#patient">Patient</NavLink>
+          <NavLink onClick={() => handleScroll("#patient")}>Patient</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink href="#physician">Physician</NavLink>
+          <NavLink onClick={() => handleScroll("#physician")}>
+            Physician
+          </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink href="#lab">Lab</NavLink>
+          <NavLink onClick={() => handleScroll("#lab")}>Lab</NavLink>
         </NavItem>
       </NavList>
       <ButtonContainer>
