@@ -1,0 +1,200 @@
+#### mariadb-demo-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-demo-client
+  labels:
+    app: mariadb-demo-client
+spec:
+  selector:
+    app: mariadb-demo-client
+  ports:
+  - port: 80
+    targetPort: 80
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mariadb-demo-client
+  labels:
+    app: mariadb-demo-client
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: mariadb-demo-client
+  template:
+    metadata:
+      labels:
+        app: mariadb-demo-client
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - mariadb-demo-client
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: mariadb-demo-client
+          image: virgilsecurity/mariadb-demo-client
+          imagePullPolicy: "Always"
+          ports:
+            - name: http
+              containerPort: 80
+          env:
+            - name: ALWAYS_CHANGE_VAR
+              value: "${DATE}"
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+
+#### mariadb-demo-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-demo-server
+  labels:
+    app: mariadb-demo-server
+spec:
+  selector:
+    app: mariadb-demo-server
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  - name: http1
+    port: 8081
+    targetPort: 8081
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mariadb-demo-server
+  labels:
+    app: mariadb-demo-server
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: mariadb-demo-server
+  template:
+    metadata:
+      labels:
+        app: mariadb-demo-server
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - mariadb-demo-server
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: mariadb-demo-server
+          image: virgilsecurity/mariadb-demo-server
+          imagePullPolicy: "Always"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: http1
+              containerPort: 8081
+          env:
+            - name: ALWAYS_CHANGE_VAR
+              value: "${DATE}"
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "com.mysql.cj.jdbc.Driver"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mariadb:3306/purekit?characterEncoding=UTF-8&serverTimezone=UTC"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "rootpassword"
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: "/api/v1/"
+            - name: WAIT_HOSTS
+              value: "mariadb:3306"
+            - name: spring_dbviewer_port
+              value: "8081"
+            - name: virgil_appId
+              value: "${virgil_appId}"
+            - name: virgil_at
+              value: "${virgil_at}"
+            - name: virgil_nms
+              value: "${virgil_nms}"
+            - name: virgil_bu
+              value: "${virgil_bu}"
+            - name: virgil_sk
+              value: "${virgil_sk}"
+            - name: virgil_pk
+              value: "${virgil_pk}"
+            - name: virgil_pheServiceAddress
+              value: "${virgil_pheServiceAddress}"
+            - name: virgil_kmsServiceAddress
+              value: "${virgil_kmsServiceAddress}"
+
+
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: 8080
+          #    scheme: HTTP
+          #  initialDelaySeconds: 10
+          #  timeoutSeconds: 1
+          #  periodSeconds: 5
+          #  failureThreshold: 2
+
+---
+### ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "mariadb-demo"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: mariadb-demo.virgilsecurity.com
+    http:
+      paths:
+      - backend:
+          serviceName: mariadb-demo-client
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: mariadb-demo-server
+          servicePort: 8080
+        path: /api/v1
+      - backend:
+          serviceName: mariadb-demo-server
+          servicePort: 8081
+        path: /db

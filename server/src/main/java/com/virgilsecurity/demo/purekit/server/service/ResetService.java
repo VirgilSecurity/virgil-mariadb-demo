@@ -1,9 +1,45 @@
+/*
+ * Copyright (c) 2015-2020, Virgil Security, Inc.
+ *
+ * Lead Maintainer: Virgil Security Inc. <support@virgilsecurity.com>
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     (1) Redistributions of source code must retain the above copyright notice, this
+ *     list of conditions and the following disclaimer.
+ *
+ *     (2) Redistributions in binary form must reproduce the above copyright notice,
+ *     this list of conditions and the following disclaimer in the documentation
+ *     and/or other materials provided with the distribution.
+ *
+ *     (3) Neither the name of virgil nor the names of its
+ *     contributors may be used to endorse or promote products derived from
+ *     this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.virgilsecurity.demo.purekit.server.service;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.virgilsecurity.demo.purekit.server.model.http.LabTest;
@@ -26,6 +62,9 @@ import lombok.extern.log4j.Log4j2;
 public class ResetService {
 
 	@Autowired
+	private Flyway flyway;
+
+	@Autowired
 	private Pure pure;
 
 	@Autowired
@@ -46,27 +85,45 @@ public class ResetService {
 	@Autowired
 	private LabTestService labTestService;
 
+	@Value("${virgil.purekit.cleanDb:true}")
+	private Boolean cleanDb;
+
 	public ResetData reset() {
-		clearTables();
+		recreateDbStructure();
 		return fillTables();
 	}
 
-	private void clearTables() {
+	/**
+	 * Remove all data from the database.
+	 */
+	public void clearTables() {
 		this.labTestService.reset();
 		this.prescriptionService.reset();
 		this.laboratoryService.reset();
 		this.patientService.reset();
 		this.physicianService.reset();
-		;
-
-//FIXME
-//		try {
-//			this.pureStorage.cleanDb();
-//		} catch (SQLException e) {
-//			log.error("Can't reset Pure Storage data", e);
-//		}
+		if (cleanDb) {
+			try {
+				this.pureStorage.cleanDb();
+			} catch (SQLException e) {
+				log.error("Can't reset Pure Storage data", e);
+			}
+		}
 	}
 
+	/**
+	 * Recreate database structure.
+	 */
+	private void recreateDbStructure() {
+		this.flyway.clean();
+		this.flyway.migrate();
+	}
+
+	/**
+	 * Fill database with initial data.
+	 * 
+	 * @return metadata about created entities.
+	 */
 	private ResetData fillTables() {
 		ResetData resetData = new ResetData();
 		String password = UUID.randomUUID().toString();
@@ -95,13 +152,15 @@ public class ResetService {
 			throw new RuntimeException();
 		}
 
+		// Assing patient to physician
+		this.physicianService.assignPatient(registeredPatient.getUserId(), registeredPhysician.getUserId());
+
 		// Register laboratory
 		Laboratory laboratory = new Laboratory("Lab");
 		UserRegistration registeredLaboratory = this.laboratoryService.register(laboratory, password);
 		resetData.getLaboratories().add(registeredLaboratory);
-		PureGrant laboratoryPureGrant;
 		try {
-			laboratoryPureGrant = this.pure.decryptGrantFromUser(registeredLaboratory.getGrant());
+			this.pure.decryptGrantFromUser(registeredLaboratory.getGrant());
 		} catch (PureException e) {
 			log.error("Laboratory grant decryption failed", e);
 			throw new RuntimeException();
