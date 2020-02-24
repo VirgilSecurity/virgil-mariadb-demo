@@ -6,6 +6,8 @@ spring:
    datasource:
       driverClassName: org.hsqldb.jdbc.JDBCDriver
       url: jdbc:hsqldb:mem:testdb;sql.syntax_mys=true
+      hikari:
+         maximum-pool-size: 100
    flyway:
       locations: classpath:db/migration, classpath:db/special/hsqldb
 virgil:
@@ -17,3 +19,5 @@ virgil:
    pk: @virgil_pk@
    pheServiceAddress: @virgil_pheServiceAddress@
    kmsServiceAddress: @virgil_kmsServiceAddress@
+   purekit:
+      cleanDb: false
