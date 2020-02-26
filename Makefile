@@ -1,4 +1,4 @@
-build: demo-client build-mvn demo-server
+build: demo-client generate-env build-mvn demo-server
 
 IMAGENAME_CLIENT = virgilsecurity/mariadb-demo-client
 IMAGENAME_SERVER = virgilsecurity/mariadb-demo-server
@@ -15,6 +15,9 @@ endef
 
 demo-client:
 	cd client && docker build -t $(IMAGENAME_CLIENT) .
+
+generate-env:
+	./generate-env.sh
 
 build-mvn:
 	cd server && mvn clean package -DskipTests
