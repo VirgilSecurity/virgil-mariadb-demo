@@ -19,3 +19,4 @@ virgil_kmsServiceAddress=${virgil_kmsServiceAddress}
 EOF
 
 ls -la ./
+cat .env
