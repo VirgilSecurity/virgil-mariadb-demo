@@ -17,7 +17,7 @@ demo-client:
 	cd client && docker build -t $(IMAGENAME_CLIENT) .
 
 generate-env:
-	cd server && generate-env.sh
+	cd server && ./generate-env.sh
 
 build-mvn:
 	cd server && mvn clean package
