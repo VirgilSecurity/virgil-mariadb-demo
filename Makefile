@@ -5,7 +5,7 @@ IMAGENAME_SERVER = virgilsecurity/mariadb-demo-server
 
 define tag_docker
   @if [ "$(TRAVIS_BRANCH)" = "master" -a "$(TRAVIS_PULL_REQUEST)" = "false" ]; then \
-    docker tag $(1) $(1):latest; \
+    docker tag $(1) $(1):stable; \
   fi
   @if [ "$(TRAVIS_BRANCH)" != "master" ]; then \
     docker tag $(1) $(1):$(TRAVIS_BRANCH); \
@@ -20,7 +20,7 @@ generate-env:
 	./generate-env.sh
 
 build-mvn:
-	cd server && mvn clean package -DskipTests
+	cd server && mvn clean package
 	
 demo-server:
 	cd server && docker build -t $(IMAGENAME_SERVER) .
