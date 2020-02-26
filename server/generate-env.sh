@@ -17,3 +17,5 @@ virgil_pk=${virgil_pk}
 virgil_pheServiceAddress=${virgil_pheServiceAddress}
 virgil_kmsServiceAddress=${virgil_kmsServiceAddress}
 EOF
+
+ls -la ./
