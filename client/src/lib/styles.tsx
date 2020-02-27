@@ -9,6 +9,13 @@ export const Wrapper = styled.section`
   justify-content: center;
   flex-wrap: wrap;
   font-family: "Helvetica";
+  @media (max-width: 820px) {
+    flex-direction: column;
+    align-content: center;
+    td, th {
+      white-space: nowrap;
+    }
+  }
 `;
 
 export const StyledCard = styled(Card)`
@@ -16,10 +23,10 @@ export const StyledCard = styled(Card)`
   margin: 20px 10px;
   background-color: #fffa;
   min-width: 200px;
-  max-width: 430px;
   @media (max-width: 820px) {
     padding: 0px;
     margin: 10px 0px;
+    max-width: 100%;
   }
 `;
 
