@@ -187,10 +187,10 @@ metadata:
     nginx.ingress.kubernetes.io/auth-realm: Authorization Required
     nginx.ingress.kubernetes.io/auth-secret: demo-auth
     nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/enable-access-log: "false"
+    nginx.ingress.kubernetes.io/enable-access-log: "true"
 spec:
   rules:
-  - host: mariadb-demo.virgilsecurity.com
+  - host: "${DOMAIN}"
     http:
       paths:
       - backend:
@@ -208,10 +208,10 @@ metadata:
     nginx.ingress.kubernetes.io/auth-realm: Authorization Required
     nginx.ingress.kubernetes.io/auth-secret: demo-auth
     nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/enable-access-log: "false"
+    nginx.ingress.kubernetes.io/enable-access-log: "true"
 spec:
   rules:
-  - host: mariadb-demo.virgilsecurity.com
+  - host: "${DOMAIN}"
     http:
       paths:
       - backend:

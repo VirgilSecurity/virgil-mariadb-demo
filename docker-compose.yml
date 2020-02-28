@@ -1,7 +1,7 @@
 version: '3'
 services:
-  server:
-    image: "virgil/mariadb-demo-server"
+  mariadb-demo-server:
+    image: "virgilsecurity/mariadb-demo-server"
     env_file:
       - server/.env
     environment:
@@ -15,10 +15,10 @@ services:
       spring_dbviewer_context: /db/
     depends_on:
       - mariadb
-  client:
-    image: "virgil/mariadb-demo-client"
+  mariadb-demo-client:
+    image: "virgilsecurity/mariadb-demo-client"
     depends_on:
-      - server
+      - mariadb-demo-server
     expose:
       - "80"
     ports:
