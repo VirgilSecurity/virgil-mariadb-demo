@@ -23,7 +23,7 @@ mvn clean package
 
 Execute next command in `server` directory
 ```
-docker build -t virgil/mariadb-demo-server .
+docker build -t virgilsecurity/mariadb-demo-server .
 ```
 
 ## Build client application
@@ -37,7 +37,7 @@ yarn install
 
 Execute next command in `client` directory
 ```
-docker build -t virgil/mariadb-demo-client .
+docker build -t virgilsecurity/mariadb-demo-client .
 ```
 
 ## Run Docker container
