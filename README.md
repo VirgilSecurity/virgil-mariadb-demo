@@ -3,7 +3,7 @@ The Demo App is a simple web application that illustrates how [Virgil PureKit](h
 
 <img width="100%" src="https://cdn.virgilsecurity.com/assets/images/github/purekit_demo/purekit_mariadb.png" align="left" hspace="6" vspace="6">
 
-Read more about demo and how it works [here](#how-demo-works).
+Read more about demo and how it works [here](#explore-demo).
 
 ## Prerequisites
 - [Docker](https://www.docker.com/)
@@ -48,34 +48,7 @@ docker-compose up
 ```
 - **Step #5.** Browse to http://localhost:80 to explore the demo.
 
-
-## Build docker images (Optional).
-
-Prerequisites
-- [Java 11+](https://jdk.java.net/)
-- [Maven](https://maven.apache.org/)
-- [Docker](https://www.docker.com/)
-
-To re-build docker images for demo's client and server use the steps below:
-- **Step #1.** Build Java application. Navigate to the `server` directory of the PureKit Demo and execute the following command:
-
-```bash
-mvn clean package
-```
-
-- **Step #2.** Build Docker image. Execute the next command in `server` directory:
-
-```bash
-docker build -t virgilsecurity/mariadb-demo-server .
-```
-
-- **Step #3.** Build docker image for the client, navigate to the `client` directory and execute the next command:
-
-```bash
-docker build -t virgilsecurity/mariadb-demo-client .
-```
-
-## How demo works
+## Explore demo
 
 The Demo App consists of three cards (actors): Patient (Alice), Physician (Bob) and Lab.
 
@@ -118,6 +91,32 @@ Now, to see the results of your actions in the database:
 - click "View MariaDB" in the top of the page. There, in the left field, scroll to the very bottom to see the PureKit-related tables.
 - Click on any table and "Execute" to see the data in that table.
 - Note that most of the data will be encrypted (results of the lab tests in `lab_tests`, Patient's SSN in `patients`, Physician's license number in `physycians`, notes in `prescriptions`, encrypted keys and etc.) and can only be decrypted by users who have the right keys to do so. Therefore, sensitive data cannot be accessed by unauthorized parties.
+
+## Build docker images (Optional).
+
+Prerequisites
+- [Java 11+](https://jdk.java.net/)
+- [Maven](https://maven.apache.org/)
+- [Docker](https://www.docker.com/)
+
+To re-build docker images for demo's client and server use the steps below:
+- **Step #1.** Build Java application. Navigate to the `server` directory of the PureKit Demo and execute the following command:
+
+```bash
+mvn clean package
+```
+
+- **Step #2.** Build Docker image. Execute the next command in `server` directory:
+
+```bash
+docker build -t virgilsecurity/mariadb-demo-server .
+```
+
+- **Step #3.** Build docker image for the client, navigate to the `client` directory and execute the next command:
+
+```bash
+docker build -t virgilsecurity/mariadb-demo-client .
+```
 
 ## License
 
