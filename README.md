@@ -3,18 +3,17 @@ The Demo App is a simple web application that illustrates how [Virgil PureKit](h
 
 <img width="100%" src="https://cdn.virgilsecurity.com/assets/images/github/purekit_demo/purekit_mariadb.png" align="left" hspace="6" vspace="6">
 
-Read more about Demo and how it works [here](#how-demo-works).
+Read more about demo and how it works [here](#how-demo-works).
 
 ## Prerequisites
 - [Java 11+](https://jdk.java.net/)
 - [Maven](https://maven.apache.org/)
 - [Docker](https://www.docker.com/)
-- [yarn](https://yarnpkg.com/)
 - [Virgil Developer Account](https://dashboard.virgilsecurity.com/)
 
 ## Clone the demo
 
-- Clone the PureKit Demo application:
+- Clone the PureKit demo application:
 
 ```bash
 git clone https://github.com/VirgilSecurity/virgil-mariadb-demo.git
@@ -62,10 +61,9 @@ docker build -t virgilsecurity/mariadb-demo-server .
 ```bash
 docker-compose up
 ```
+- **Step #2.** Browse to http://localhost:80 to explore the demo.
 
-- **Step #2.** Browse to http://localhost:80 to explore the demo
-
-> If you need to re-build docker image for the client, navigate to the `client` directory and execute the next command in client directory: "docker build -t virgilsecurity/mariadb-demo-client ."
+> If you need to re-build docker image for the client, navigate to the client directory and execute the next command in client directory: "docker build -t virgilsecurity/mariadb-demo-client .".
 
 ## How demo works
 
