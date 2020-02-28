@@ -31,8 +31,6 @@ git clone https://github.com/VirgilSecurity/virgil-mariadb-demo.git
 | `virgil_nms` | Your PureKit Nonrotatable master secret. |
 | `virgil_bu` | Your PureKit Backup public key |
 | `virgil_sk` | Your PureKit App secret key |
-| `virgil_pheServiceAddress` | Virgil PHE Service URL: https://api-dev.virgilsecurity.com/phe/v1 |
-| `virgil_kmsServiceAddress` | Virgil KMS Service URL: https://api-dev.virgilsecurity.com/kms/v1 |
 
 To generate `virgil_nms`, `virgil_bu` and `virgil_sk`, install the [Virgil CLI](https://developer.virgilsecurity.com/docs/platform/cli/install/) and then run the following command:
 
