@@ -6,8 +6,6 @@ The Demo App is a simple web application that illustrates how [Virgil PureKit](h
 Read more about demo and how it works [here](#how-demo-works).
 
 ## Prerequisites
-- [Java 11+](https://jdk.java.net/)
-- [Maven](https://maven.apache.org/)
 - [Docker](https://www.docker.com/)
 - [Virgil Developer Account](https://dashboard.virgilsecurity.com/)
 
@@ -19,7 +17,7 @@ Read more about demo and how it works [here](#how-demo-works).
 git clone https://github.com/VirgilSecurity/virgil-mariadb-demo.git
 ```
 
-## Setup and run demo server
+## Setup and run demo
 - **Step #1.** Launch Docker
 - **Step #2.** Create configuration files. Copy `env.template` file and rename to a new `.env` file in the `server` directory.
 - **Step #3.** Get Virgil PureKit credentials. Fill in the Virgil PureKit values inside of `.env` file. The following environment variables must be defined to run the server:
@@ -43,27 +41,39 @@ virgil pure keygen all
 
 Make sure to save the generated keys in a safe storage.
 
-- **Step #4.** Build Java application. Navigate to the `server` directory of the PureKit Demo and execute the following command:
+- **Step #4.** To run the demo client use the following command:
+
+```bash
+docker-compose up
+```
+- **Step #5.** Browse to http://localhost:80 to explore the demo.
+
+
+## Build docker images (Optional).
+
+Prerequisites
+- [Java 11+](https://jdk.java.net/)
+- [Maven](https://maven.apache.org/)
+- [Docker](https://www.docker.com/)
+
+To re-build docker images for demo's client and server use the steps below:
+- **Step #1.** Build Java application. Navigate to the `server` directory of the PureKit Demo and execute the following command:
 
 ```bash
 mvn clean package
 ```
 
-- **Step #5.** Build Docker image. Execute the next command in `server` directory:
+- **Step #2.** Build Docker image. Execute the next command in `server` directory:
 
 ```bash
 docker build -t virgilsecurity/mariadb-demo-server .
 ```
 
-## Run demo client
-- **Step #1.** To run the demo client use the following command:
+- **Step #3.** Build docker image for the client, navigate to the `client` directory and execute the next command:
 
 ```bash
-docker-compose up
+docker build -t virgilsecurity/mariadb-demo-client .
 ```
-- **Step #2.** Browse to http://localhost:80 to explore the demo.
-
-> If you need to re-build docker image for the client, navigate to the client directory and execute the next command in client directory: "docker build -t virgilsecurity/mariadb-demo-client .".
 
 ## How demo works
 
