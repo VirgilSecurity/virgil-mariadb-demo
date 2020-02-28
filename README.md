@@ -3,6 +3,7 @@ The Demo App is a simple web application that illustrates how [Virgil PureKit](h
 
 <img width="100%" src="https://cdn.virgilsecurity.com/assets/images/github/purekit_demo/purekit_mariadb.png" align="left" hspace="6" vspace="6">
 
+
 Read more about demo and how it works [here](#explore-demo).
 
 ## Prerequisites
@@ -92,7 +93,7 @@ Now, to see the results of your actions in the database:
 - Click on any table and "Execute" to see the data in that table.
 - Note that most of the data will be encrypted (results of the lab tests in `lab_tests`, Patient's SSN in `patients`, Physician's license number in `physycians`, notes in `prescriptions`, encrypted keys and etc.) and can only be decrypted by users who have the right keys to do so. Therefore, sensitive data cannot be accessed by unauthorized parties.
 
-## Build docker images (Optional).
+## Build docker images (optional)
 
 Prerequisites
 - [Java 11+](https://jdk.java.net/)
