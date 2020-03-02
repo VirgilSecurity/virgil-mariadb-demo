@@ -16,7 +16,7 @@ import Prescriptions from "../../lib/components/Prescription/Prescription";
 import LabTest from "./LabTest";
 import { PhysicianListReq } from "../Physician/PhysicianEndpoint";
 import { Connection } from "../../lib/Connection/Connection";
-import { reloadPage } from "../../lib/utils";
+import { reloadPage, debounce } from "../../lib/utils";
 import {
   Container,
   Name,
@@ -69,7 +69,7 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
     );
   }, [patientCred]);
 
-  const handelShareInfo = () => {
+  const handelShareInfo = debounce(() => {
     if (physician) {
       connection.send(
         new ShareReq(
@@ -85,7 +85,7 @@ const Patient: React.FC<PatientProps> = ({ patientCred }) => {
         })
       );
     }
-  };
+  }, 500);
 
   const renderInfo = (person: IPatient) => (
     <Container>

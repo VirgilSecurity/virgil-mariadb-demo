@@ -6,7 +6,7 @@ import { ILabTest, ICredentials, Status } from '../../lib/Interfaces';
 import SimpleModal from '../../lib/components/Modal/Modal';
 import AddResult from './AddResult';
 import { LabTestListReq } from '../../lib/Connection/Endpoints';
-import { dateCrop, reloadPage } from '../../lib/utils';
+import { dateCrop, reloadPage, debounce } from '../../lib/utils';
 import { Connection } from '../../lib/Connection/Connection';
 
 interface ItemProps {
@@ -17,13 +17,13 @@ interface ItemProps {
 const Item: React.FC<ItemProps> = ({ item, grant }) => {
     const connection: Connection = new Connection();
 
-    const handleSubmit = (res: string) => {
+    const handleSubmit = debounce((res: string) => {
         connection.send(new AddResultReq({
             ...item,
             status: 'OK',
             results: res
         }, grant, item.id).onSuccess(reloadPage));
-    };
+    }, 500);
 
     return (
         <TableRow>

@@ -25,7 +25,7 @@ import {
   ShareReq
 } from "../../lib/Connection/Endpoints";
 import { Connection } from "../../lib/Connection/Connection";
-import { reloadPage } from "../../lib/utils";
+import { reloadPage, debounce } from "../../lib/utils";
 import {
   Container,
   Name,
@@ -47,7 +47,7 @@ const ContainerButton = styled.div`
 
 export interface PhysicianProps {
   physicianCred: ICredentials;
-}
+};
 
 const Physician: React.FC<PhysicianProps> = ({ physicianCred }) => {
   const connection: Connection = new Connection();
@@ -88,19 +88,19 @@ const Physician: React.FC<PhysicianProps> = ({ physicianCred }) => {
     );
   }, [physicianCred]);
 
-  const AddPrescriptions = (data: IPrescriptionPost) => {
+  const AddPrescriptions = debounce((data: IPrescriptionPost) => {
     connection.send(
       new AddPrescriptionsReq(data, physicianCred.grant).onSuccess(reloadPage)
     );
-  };
+  }, 500);
 
-  const AddLabTest = (data: ILabTestPost) => {
+  const AddLabTest = debounce((data: ILabTestPost) => {
     connection.send(
       new AddLabTestReq(data, physicianCred.grant).onSuccess(reloadPage)
     );
-  };
+  }, 500);
 
-  const handelShareInfo = () => {
+  const handelShareInfo = debounce(() => {
     if (patient) {
       connection.send(
         new ShareReq(
@@ -116,7 +116,7 @@ const Physician: React.FC<PhysicianProps> = ({ physicianCred }) => {
         })
       );
     }
-  };
+  }, 500);
 
   const renderInfo = (person: IPhysician) => (
     <Container>

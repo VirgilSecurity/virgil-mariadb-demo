@@ -6,8 +6,9 @@ import { ICredentials, IReset } from "./lib/Interfaces";
 import { ResetReq } from "./lib/Connection/Endpoints";
 import { Connection } from "./lib/Connection/Connection";
 import Lab from "./components/Lab/Lab";
-import { PageTitle, Wrapper, StyledCard } from "./lib/styles";
+import { PageTitle, Wrapper, StyledCard, Preloader } from "./lib/styles";
 import Nav from "./components/Nav/Nav";
+import { debounce } from "./lib/utils";
 
 function App() {
   const connection: Connection = new Connection();
@@ -38,7 +39,7 @@ function App() {
     }
   }, []);
 
-  const handleReset = () => {
+  const handleReset = debounce(() => {
     sessionStorage.clear();
     setLoading(true);
     connection.send(
@@ -51,16 +52,13 @@ function App() {
         setLoading(false);
       })
     );
-  };
+  }, 500);
 
   return (
     <>
       <Nav handleReset={handleReset} />
       {isLoading ? (
-        <img
-          style={{ display: "block", margin: "0 auto", width: "100%" }}
-          src="https://flevix.com/wp-content/uploads/2019/07/Ring-Preloader.gif"
-        />
+        <Preloader />
       ) : (
         <Wrapper>
           {patientCred && (

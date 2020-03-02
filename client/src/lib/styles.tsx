@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import { Card } from "@material-ui/core";
+import React from "react";
+
+export const Preloader = () => {
+  return <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>;
+};
 
 export const Wrapper = styled.section`
   margin: 0px;
@@ -58,7 +63,7 @@ export const AddInfo = styled.div`
 export const Share = styled.div`
   font-size: 12px;
   cursor: pointer;
-  color: link;
+  color: #191ed3;
 `;
 
 export const Label = styled.div`
