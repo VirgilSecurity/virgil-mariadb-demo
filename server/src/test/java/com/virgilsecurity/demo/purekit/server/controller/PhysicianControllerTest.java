@@ -35,11 +35,13 @@ package com.virgilsecurity.demo.purekit.server.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,9 +114,14 @@ public class PhysicianControllerTest extends RestDocTest {
 		assertEquals(2, physicians.length);
 
 		// Verify patients data
-		Physician physician = physicians[1];
-		assertEquals(this.registeredPhysician.getUserId(), physician.getId());
-		validate(physician);
+		boolean physicianWasFound = false;
+		for (Physician physician : physicians) {
+			if (StringUtils.equals(this.registeredPhysician.getUserId(), physician.getId())) {
+				physicianWasFound = true;
+				validate(physician);
+			}
+		}
+		assertTrue(physicianWasFound);
 
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.request(HttpMethod.GET, "/physicians/").header(Constants.GRANT_HEADER,

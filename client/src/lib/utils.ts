@@ -25,3 +25,21 @@ export const reloadPage = () => {
 };
 
 export const dateCrop = (str: string) => str.replace(/T.+/g, '');
+
+// tslint:disable:no-any
+export function debounce(func: Function, wait: number, immediate?: boolean) {
+	let timeout: any;
+
+	return function(this: any) {
+		const context = this;
+		const args = arguments;
+		const later = function() {
+			timeout = undefined;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};

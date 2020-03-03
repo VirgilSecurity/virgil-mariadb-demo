@@ -109,25 +109,6 @@
 
 	<build>
 		<finalName>server</finalName>
-		<filters>
-			<filter>.env</filter>
-		</filters>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<excludes>
-					<exclude>*.yml</exclude>
-				</excludes>
-				<filtering>false</filtering>
-			</testResource>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.asciidoctor</groupId>
@@ -165,6 +146,39 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>prepare-tests</id>
+			<activation>
+				<file>
+					<exists>env.config</exists>
+				</file>
+			</activation>
+			<build>
+				<filters>
+					<filter>filters/production.properties</filter>
+					<filter>env.config</filter>
+				</filters>
+				<testResources>
+					<testResource>
+						<directory>src/test/resources</directory>
+						<excludes>
+							<exclude>*.yml</exclude>
+						</excludes>
+						<filtering>false</filtering>
+					</testResource>
+					<testResource>
+						<directory>src/test/resources</directory>
+						<includes>
+							<include>*.yml</include>
+						</includes>
+						<filtering>true</filtering>
+					</testResource>
+				</testResources>
+			</build>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>
