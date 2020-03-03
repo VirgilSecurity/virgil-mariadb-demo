@@ -3,7 +3,7 @@ services:
   mariadb-demo-server:
     image: "virgilsecurity/mariadb-demo-server"
     env_file:
-      - server/.env
+      - server/env.config
     environment:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_DATASOURCE_URL: jdbc:mysql://mariadb:3306/purekit?characterEncoding=UTF-8&serverTimezone=UTC
