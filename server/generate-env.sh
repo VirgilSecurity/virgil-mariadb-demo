@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "generating .env from Travis environment variables for CI tests"
-cat << EOF > .env
+echo "generating env.config from Travis environment variables for CI tests"
+cat << EOF > env.config
 # generating vars for tests from CI Env variables
 # Application ID
 virgil_appId=${virgil_appId}
@@ -19,4 +19,4 @@ virgil_kmsServiceAddress=${virgil_kmsServiceAddress}
 EOF
 
 ls -la ./
-cat .env
+cat env.config

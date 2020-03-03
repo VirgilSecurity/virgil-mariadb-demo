@@ -152,13 +152,13 @@
 			<id>prepare-tests</id>
 			<activation>
 				<file>
-					<exists>.env</exists>
+					<exists>env.config</exists>
 				</file>
 			</activation>
 			<build>
 				<filters>
 					<filter>filters/production.properties</filter>
-					<filter>.env</filter>
+					<filter>env.config</filter>
 				</filters>
 				<testResources>
 					<testResource>
