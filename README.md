@@ -20,8 +20,8 @@ git clone https://github.com/VirgilSecurity/virgil-mariadb-demo.git
 
 ## Setup and run demo
 - **Step #1.** Launch Docker
-- **Step #2.** Create configuration files. Copy `env.template` file and rename to a new `.env` file in the `server` directory.
-- **Step #3.** Get Virgil PureKit credentials. Fill in the Virgil PureKit values inside of `.env` file. The following environment variables must be defined to run the server:
+- **Step #2.** Create configuration files. Copy `env.template` file and rename to a new `env.config` file in the `server` directory.
+- **Step #3.** Get Virgil PureKit credentials. Fill in the Virgil PureKit values inside of `env.config` file. The following environment variables must be defined to run the server:
 
 | Variable Name | Description |
 | ------------- | ------------ |
