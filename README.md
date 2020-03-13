@@ -1,5 +1,5 @@
 # Virgil PureKit MariaDB Demo
-The Demo App is a simple web application that illustrates how [Virgil PureKit](https://developer-dev.virgilsecurity.com/docs/purekit/) can be used with MariaDB to store and share data in the most secure way. The Demo App is based on use case involving a hypothetical business scenario involving a patient, physician and laboratory, and shows how distinct roles within a customer's application can be defined and used to restrict ePHI access in a HIPAA-compliant manner.
+The Demo App is a simple web application that illustrates how [Virgil PureKit](https://developer.virgilsecurity.com/docs/purekit/) can be used with MariaDB to store and share data in the most secure way. The Demo App is based on use case involving a hypothetical business scenario involving a patient, physician and laboratory, and shows how distinct roles within a customer's application can be defined and used to restrict ePHI access in a HIPAA-compliant manner.
 
 <img width="100%" src="https://cdn.virgilsecurity.com/assets/images/github/purekit_demo/purekit_mariadb.png" align="left" hspace="6" vspace="6">
 
