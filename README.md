@@ -35,7 +35,7 @@ git clone https://github.com/VirgilSecurity/virgil-mariadb-demo.git
 To generate `virgil_nms`, `virgil_bu` and `virgil_sk`, install the [Virgil CLI](https://developer.virgilsecurity.com/docs/platform/cli/install/) and then run the following command:
 
 ```bash
-virgil pure keygen all
+virgil purekit keygen all
 ```
 
 Make sure to save the generated keys in a safe storage.
