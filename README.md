@@ -40,7 +40,7 @@ virgil purekit keygen all
 
 Make sure to save the generated keys in a safe storage.
 
-- **Step #4.** To run the demo client use the following command:
+- **Step #4.** To run the demo client, navigate to the downloaded MariaDB PureKit repository and use the following command:
 
 ```bash
 docker-compose up
