@@ -8,7 +8,7 @@ Read more about demo and how it works [here](#explore-demo).
 
 ## Prerequisites
 - [Docker](https://www.docker.com/)
-- [Virgil Developer Account](https://dashboard.virgilsecurity.com/)
+- [Virgil Developer Account](https://dashboard.virgilsecurity.com/) and create a new Virgil Application called "PureKit Demo"
 
 ## Clone the demo
 
@@ -25,12 +25,12 @@ git clone https://github.com/VirgilSecurity/virgil-mariadb-demo.git
 
 | Variable Name | Description |
 | ------------- | ------------ |
-| `virgil_appId` | Your Virgil Application ID. Can be found in your [Virgil dashboard](https://dashboard.virgilsecurity.com/). |
-| `virgil_at` | Your Virgil Application token.  Can be found in your [Virgil dashboard](https://dashboard.virgilsecurity.com/). |
-| `virgil_pk` | PHE Service public key of your PureKit application. Can be found in your PureKit application at [Virgil dashboard](https://dashboard.virgilsecurity.com/) |
+| `virgil_appId` | Your Virgil Application ID. At [Virgil Dashboard](https://dashboard.virgilsecurity.com/) in your "PureKit Demo" application, navigate to "Settings" and copy the App ID. |
+| `virgil_at` | Your Virgil Application token.  At [Virgil Dashboard](https://dashboard.virgilsecurity.com/) in your "PureKit Demo" application, navigate to the PureKit tab and click "Generate credentials" if you haven't. Copy and save the generated App Token. |
+| `virgil_pk` | PHE Service public key of your PureKit application. At [Virgil Dashboard](https://dashboard.virgilsecurity.com/) in your "PureKit Demo" application, navigate to the PureKit tab and click "Generate credentials" if you haven't. Copy and save the generated PHE Service public key.  |
 | `virgil_nms` | Your PureKit Nonrotatable master secret. |
-| `virgil_bu` | Your PureKit Backup public key |
-| `virgil_sk` | Your PureKit App secret key |
+| `virgil_bu` | Your PureKit Backup public key. |
+| `virgil_sk` | Your PureKit App secret key. |
 
 To generate `virgil_nms`, `virgil_bu` and `virgil_sk`, install the [Virgil CLI](https://developer.virgilsecurity.com/docs/platform/cli/install/) and then run the following command:
 
